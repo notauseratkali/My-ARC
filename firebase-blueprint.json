@@ -1,0 +1,146 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "Scout crew member profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "idCard": { "type": "string" },
+        "dob": { "type": "string" },
+        "age": { "type": "number" },
+        "gender": { "type": "string" },
+        "section": { "type": "string" },
+        "crewId": { "type": "string" },
+        "crewName": { "type": "string" },
+        "councilRole": { "type": "string" },
+        "investitureDate": { "type": "string" },
+        "status": { "type": "string" },
+        "term": { "type": "string" },
+        "email": { "type": "string" },
+        "mobile": { "type": "string" },
+        "permAddress": { "type": "string" },
+        "currAddress": { "type": "string" },
+        "emergencyContactName": { "type": "string" },
+        "emergencyContactNumber": { "type": "string" },
+        "attendanceUnexcused": { "type": "number" },
+        "attendanceExcused": { "type": "number" }
+      },
+      "required": ["id", "name", "email", "status"]
+    },
+    "CrewEvent": {
+      "title": "CrewEvent",
+      "description": "Assembly or activity event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "type": { "type": "string" },
+        "crewId": { "type": "string" },
+        "crewName": { "type": "string" },
+        "location": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "description": { "type": "string" },
+        "targetAudience": { "type": "string" },
+        "isCompulsory": { "type": "boolean" },
+        "createdBy": { "type": "string" },
+        "notificationSent": { "type": "boolean" }
+      },
+      "required": ["id", "title", "startDate"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Individual event attendance mark",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "eventId": { "type": "string" },
+        "memberId": { "type": "string" },
+        "status": { "type": "string" },
+        "exemptionReason": { "type": "string" },
+        "markedAt": { "type": "string" },
+        "markedBy": { "type": "string" }
+      },
+      "required": ["id", "eventId", "memberId", "status"]
+    },
+    "JournalEntry": {
+      "title": "JournalEntry",
+      "description": "Portfolio notebook record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "memberId": { "type": "string" },
+        "title": { "type": "string" },
+        "category": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string" },
+        "aiPolished": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "title", "memberId"]
+    },
+    "DisciplinaryIncident": {
+      "title": "DisciplinaryIncident",
+      "description": "Council disciplinary record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "memberId": { "type": "string" },
+        "memberName": { "type": "string" },
+        "incidentDate": { "type": "string" },
+        "infractionCategory": { "type": "string" },
+        "narrativeNotes": { "type": "string" },
+        "actionTaken": { "type": "string" },
+        "status": { "type": "string" },
+        "loggedBy": { "type": "string" }
+      },
+      "required": ["id", "memberId", "actionTaken"]
+    },
+    "MeetingMinutes": {
+      "title": "MeetingMinutes",
+      "description": "Council meeting minutes record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "meetingNumber": { "type": "string" },
+        "meetingType": { "type": "string" },
+        "date": { "type": "string" },
+        "chairperson": { "type": "string" },
+        "secretary": { "type": "string" },
+        "content": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "title", "date"]
+    }
+  },
+  "firestore": {
+    "/members/{memberId}": {
+      "schema": { "$ref": "#/entities/Member" },
+      "description": "Collection of crew members"
+    },
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/CrewEvent" },
+      "description": "Collection of crew events"
+    },
+    "/attendance/{attendanceId}": {
+      "schema": { "$ref": "#/entities/AttendanceRecord" },
+      "description": "Collection of attendance records"
+    },
+    "/journals/{journalId}": {
+      "schema": { "$ref": "#/entities/JournalEntry" },
+      "description": "Collection of journal entries"
+    },
+    "/disciplinary/{incidentId}": {
+      "schema": { "$ref": "#/entities/DisciplinaryIncident" },
+      "description": "Collection of disciplinary incidents"
+    },
+    "/minutes/{minuteId}": {
+      "schema": { "$ref": "#/entities/MeetingMinutes" },
+      "description": "Collection of meeting minutes"
+    }
+  }
+}

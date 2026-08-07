@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@layer base {
+  * {
+    font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+  body {
+    background-color: #0F1115;
+    color: #E2E8F0;
+    font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+  }
+}
+
+/* Custom subtle scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #161920;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2A303C;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #10B981;
+}
+
+/* Light Mode Overrides */
+.light-mode {
+  color-scheme: light;
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+.light-mode body {
+  background-color: #F8FAFC !important;
+  color: #0F172A !important;
+}
+
+.light-mode .bg-\[\#0F1115\] {
+  background-color: #F8FAFC !important;
+}
+
+.light-mode .bg-\[\#161920\],
+.light-mode .bg-\[\#1A1E26\] {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+}
+
+.light-mode .bg-\[\#12151B\],
+.light-mode .bg-\[\#161920\]\/95,
+.light-mode .bg-\[\#161920\]\/90,
+.light-mode .bg-\[\#161920\]\/80 {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.light-mode .bg-\[\#111318\],
+.light-mode .bg-\[\#14171F\],
+.light-mode .bg-\[\#161920\] {
+  background-color: #FFFFFF !important;
+}
+
+.light-mode .bg-\[\#181B22\],
+.light-mode .bg-slate-900,
+.light-mode .bg-slate-900\/80,
+.light-mode .bg-slate-900\/50,
+.light-mode .bg-slate-950,
+.light-mode .bg-slate-950\/80,
+.light-mode .bg-slate-950\/60 {
+  background-color: #F1F5F9 !important;
+}
+
+.light-mode .border-slate-800,
+.light-mode .border-slate-800\/80,
+.light-mode .border-slate-800\/60,
+.light-mode .border-slate-800\/50,
+.light-mode .border-slate-700,
+.light-mode .border-slate-700\/50,
+.light-mode .border-slate-700\/40 {
+  border-color: #E2E8F0 !important;
+}
+
+.light-mode .text-slate-100,
+.light-mode .text-slate-200,
+.light-mode .text-slate-300,
+.light-mode .text-slate-400,
+.light-mode .text-slate-500,
+.light-mode .text-slate-600,
+.light-mode .text-slate-700,
+.light-mode .text-gray-300,
+.light-mode .text-gray-400,
+.light-mode .text-gray-500,
+.light-mode .text-gray-600,
+.light-mode .text-zinc-300,
+.light-mode .text-zinc-400,
+.light-mode .text-zinc-500 {
+  color: #020617 !important; /* Pure high-contrast dark black/slate-950 */
+}
+
+.light-mode .text-slate-400\/80,
+.light-mode .text-slate-500\/80 {
+  color: #1E293B !important;
+}
+
+.light-mode .bg-slate-800,
+.light-mode .bg-slate-800\/50,
+.light-mode .bg-slate-800\/40,
+.light-mode .bg-slate-800\/80 {
+  background-color: #E2E8F0 !important;
+}
+
+.light-mode .hover\:bg-slate-800:hover {
+  background-color: #CBD5E1 !important;
+}
+
+.light-mode .hover\:bg-slate-800\/80:hover {
+  background-color: #E2E8F0 !important;
+}
+
+.light-mode .hover\:bg-slate-800\/40:hover {
+  background-color: #F1F5F9 !important;
+}
+
+.light-mode input,
+.light-mode select,
+.light-mode textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+.light-mode ::-webkit-scrollbar-track {
+  background: #E2E8F0;
+}
+
+.light-mode ::-webkit-scrollbar-thumb {
+  background: #94A3B8;
+}
