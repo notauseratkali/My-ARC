@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { hasPermission } from '../utils/permissions';
 
-import { Crown, LogOut, LogIn } from 'lucide-react';
+import { Crown, LogOut, LogIn, Vote } from 'lucide-react';
 
 export type TabType =
   | 'superadmin'

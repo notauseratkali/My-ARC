@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, LogOut, LogIn, Shield, Building2, Bell } from 'lucide-react';
+import { Crown, LogOut, LogIn, Shield, Building2 } from 'lucide-react';
 import {
   INITIAL_ORGANISATIONS,
   INITIAL_MEMBERS,
