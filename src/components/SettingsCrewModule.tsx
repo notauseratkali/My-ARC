@@ -62,7 +62,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
     activeTerm: '2025-2026',
     councilPositions: [],
     paymentDetails: {
-      accountName: 'Arabiyya Rover Crew Official Account',
+      accountName: 'My Rovers Crew Official Account',
       accountNumber: '7730000123456',
       bankName: 'Bank of Maldives (BML)',
     },
@@ -108,7 +108,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
 
   // Superadmin Payment Details Form State
   const [paymentForm, setPaymentForm] = useState({
-    accountName: settings?.paymentDetails?.accountName || 'Arabiyya Rover Crew Official Account',
+    accountName: settings?.paymentDetails?.accountName || 'My Rovers Crew Official Account',
     accountNumber: settings?.paymentDetails?.accountNumber || '7730000123456',
     bankName: settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)',
   });
@@ -692,7 +692,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 <div className="space-y-2 text-xs">
                   <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
                     <span className="text-slate-400 text-[11px]">Account Name</span>
-                    <span className="font-semibold text-slate-200 text-right">{settings?.paymentDetails?.accountName || 'Arabiyya Rover Crew'}</span>
+                    <span className="font-semibold text-slate-200 text-right">{settings?.paymentDetails?.accountName || 'My Rovers Crew'}</span>
                   </div>
                   <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
                     <span className="text-slate-400 text-[11px]">Account Number</span>

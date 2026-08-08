@@ -54,7 +54,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
 
   // Superadmin Payment Details Form State
   const [paymentForm, setPaymentForm] = useState({
-    accountName: settings?.paymentDetails?.accountName || 'Arabiyya Rover Crew Official Account',
+    accountName: settings?.paymentDetails?.accountName || 'My Rovers Crew Official Account',
     accountNumber: settings?.paymentDetails?.accountNumber || '7730000123456',
     bankName: settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)',
   });

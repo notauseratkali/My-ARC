@@ -18,8 +18,8 @@ import { getPlaceholderAvatar } from '../utils/avatarUtils';
 export const INITIAL_ORGANISATIONS: Organisation[] = [
   {
     id: 'org-arabiyya',
-    name: 'Arabiyya Rover Network',
-    code: 'ARABIYYA',
+    name: 'My Rovers Crew Network',
+    code: 'MYROVERS',
     roverAdvisorName: 'Dr. Hussain Farooq',
     roverAdvisorEmail: 'advisor.farooq@arabiyya.scout.mv',
     roverAdvisorNid: 'A100999',
@@ -979,7 +979,7 @@ export const INITIAL_SETTINGS: PortalSettings = {
     'Crew Leader',
   ],
   paymentDetails: {
-    accountName: 'Arabiyya Rover Crew Official Account',
+    accountName: 'My Rovers Crew Official Account',
     accountNumber: '7730000123456',
     bankName: 'Bank of Maldives (BML)',
   },
@@ -989,10 +989,10 @@ export const INITIAL_ROVER_POLICY: RoverOperatingPolicy = {
   id: 'pol-1',
   organisationId: 'org-arabiyya',
   version: 'v2.4 (2026 Revision)',
-  title: 'Arabiyya Rover Crew Operating Policy & Bylaws',
+  title: 'My Rovers Crew Operating Policy & Bylaws',
   lastUpdated: '2026-07-01',
   updatedBy: 'Council Executive Committee',
-  content: `# Arabiyya Rover Crew Operating Policy & Bylaws
+  content: `# My Rovers Crew Operating Policy & Bylaws
 
 ## Article I: Governance & Council Authority
 1. **Council Access & Amendments**: The Rover Council holds full authority to draft and propose amendments to the Operating Policy.

@@ -1,6 +1,6 @@
 {
-  "name": "Arabiyya Rovers Web Portal",
-  "description": "Complete management portal for Arabiyya Rovers & Explorers crew, progression awards, personal portfolios, events, attendance, and disciplinary records.",
+  "name": "My Rovers",
+  "description": "Complete management portal for My Rovers crew, progression awards, personal portfolios, events, attendance, and disciplinary records.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

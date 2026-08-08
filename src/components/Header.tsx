@@ -91,7 +91,7 @@ export const Header: React.FC<HeaderProps> = ({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="font-bold text-lg bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent tracking-tight leading-none">
-                Arabiyya Rovers
+                My Rovers
               </h1>
               <span className="bg-[#002B7F]/30 text-amber-300 border border-[#FFC72C]/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
                 ASG • Term {settings?.activeTerm || '1'}
