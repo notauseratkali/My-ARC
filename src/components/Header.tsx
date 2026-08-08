@@ -81,16 +81,20 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
         {/* Logo and App Title */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-md shadow-black/40 border border-emerald-500/30">
-            <Compass className="w-6 h-6 text-emerald-100" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#002B7F] via-[#800020] to-[#006B3F] flex items-center justify-center text-white shadow-md shadow-black/40 border border-[#FFC72C]/40 relative group">
+            <Compass className="w-6 h-6 text-amber-300" />
+            <span className="absolute -bottom-1 -right-1 flex h-3 w-3">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FFC72C] border border-slate-900"></span>
+            </span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-bold text-lg text-emerald-500 tracking-tight leading-none">
+              <h1 className="font-bold text-lg bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent tracking-tight leading-none">
                 Arabiyya Rovers
               </h1>
-              <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                Term {settings?.activeTerm || '1'}
+              <span className="bg-[#002B7F]/30 text-amber-300 border border-[#FFC72C]/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                ASG • Term {settings?.activeTerm || '1'}
               </span>
 
               {/* Council vs Member Access Indicator Badge */}

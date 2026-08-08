@@ -28,6 +28,10 @@ import {
   Crown,
   UserX,
   RefreshCw,
+  Landmark,
+  CreditCard,
+  Copy,
+  Palette,
 } from 'lucide-react';
 
 interface SettingsCrewModuleProps {
@@ -43,7 +47,7 @@ interface SettingsCrewModuleProps {
 
 export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
   crews = [],
-  settings = { aiEnabled: true, smsNotificationsEnabled: true, emailNotificationsEnabled: true, activeTerm: '1', councilPositions: [] },
+  settings: settingsProp,
   members = [],
   currentMember,
   onAddCrew,
@@ -51,6 +55,18 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
   onUpdateSettings,
   onUpdateMember,
 }) => {
+  const settings: PortalSettings = settingsProp || {
+    aiEnabled: true,
+    smsNotificationsEnabled: true,
+    emailNotificationsEnabled: true,
+    activeTerm: '2025-2026',
+    councilPositions: [],
+    paymentDetails: {
+      accountName: 'Arabiyya Rover Crew Official Account',
+      accountNumber: '7730000123456',
+      bankName: 'Bank of Maldives (BML)',
+    },
+  };
   const isCouncil = currentMember.councilRole !== 'Member';
   const [activeTab, setActiveTab] = useState<'admin' | 'personal'>(isCouncil ? 'admin' : 'personal');
 
@@ -89,6 +105,38 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
       setActiveTab('personal');
     }
   }, [currentMember]);
+
+  // Superadmin Payment Details Form State
+  const [paymentForm, setPaymentForm] = useState({
+    accountName: settings?.paymentDetails?.accountName || 'Arabiyya Rover Crew Official Account',
+    accountNumber: settings?.paymentDetails?.accountNumber || '7730000123456',
+    bankName: settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)',
+  });
+  const [copiedAccount, setCopiedAccount] = useState(false);
+  const [copiedColor, setCopiedColor] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (settings?.paymentDetails) {
+      setPaymentForm({
+        accountName: settings.paymentDetails.accountName || '',
+        accountNumber: settings.paymentDetails.accountNumber || '',
+        bankName: settings.paymentDetails.bankName || '',
+      });
+    }
+  }, [settings?.paymentDetails]);
+
+  const handleSavePaymentDetails = (e: React.FormEvent) => {
+    e.preventDefault();
+    onUpdateSettings({
+      ...settings,
+      paymentDetails: {
+        accountName: paymentForm.accountName.trim(),
+        accountNumber: paymentForm.accountNumber.trim(),
+        bankName: paymentForm.bankName.trim(),
+      },
+    });
+    alert('Official payment details updated successfully!');
+  };
 
   // Council Roles Management State
   const defaultCouncilRoles = [
@@ -497,6 +545,79 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs font-mono text-emerald-300 focus:outline-none"
               />
             </div>
+
+            {/* Official Payment & Banking Details (Set by Super Admin) */}
+            <div className="bg-[#1A1E26] border border-amber-500/30 rounded-2xl p-5 shadow-lg space-y-4">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                    <Landmark className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-100">Official Payment & Banking Details</h3>
+                    <p className="text-[11px] text-slate-400">Configured by Superadmin for fee collection & event dues.</p>
+                  </div>
+                </div>
+                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded font-mono uppercase">
+                  Superadmin
+                </span>
+              </div>
+
+              <form onSubmit={handleSavePaymentDetails} className="space-y-3.5 text-xs">
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Account Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Arabiyya Rover Crew Official"
+                    value={paymentForm.accountName}
+                    onChange={(e) => setPaymentForm({ ...paymentForm, accountName: e.target.value })}
+                    className="w-full bg-[#161920] border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-medium focus:outline-none focus:border-amber-500 transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
+                    <CreditCard className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Account Number</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 7730000123456"
+                    value={paymentForm.accountNumber}
+                    onChange={(e) => setPaymentForm({ ...paymentForm, accountNumber: e.target.value })}
+                    className="w-full bg-[#161920] border border-slate-800 rounded-xl px-3 py-2 text-emerald-300 font-mono font-bold focus:outline-none focus:border-amber-500 transition"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
+                    <Landmark className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Bank Name</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Bank of Maldives (BML)"
+                    value={paymentForm.bankName}
+                    onChange={(e) => setPaymentForm({ ...paymentForm, bankName: e.target.value })}
+                    className="w-full bg-[#161920] border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-medium focus:outline-none focus:border-amber-500 transition"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold text-xs py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Save Payment Details</span>
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       )}
@@ -555,6 +676,124 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 <div className="bg-slate-900 p-3 rounded-xl border border-slate-800/80 text-[11px] text-slate-400 flex items-start gap-2">
                   <AlertCircle className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
                   <span>Official rank and council role changes must be requested through the Executive Council Secretary.</span>
+                </div>
+              </div>
+
+              {/* Official Crew Payment Details Widget for Members */}
+              <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-3">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <Landmark className="w-4 h-4 text-emerald-400" />
+                    <h4 className="text-xs font-bold text-slate-200">Official Crew Payment Account</h4>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">BML Direct Deposit</span>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <span className="text-slate-400 text-[11px]">Account Name</span>
+                    <span className="font-semibold text-slate-200 text-right">{settings?.paymentDetails?.accountName || 'Arabiyya Rover Crew'}</span>
+                  </div>
+                  <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <span className="text-slate-400 text-[11px]">Account Number</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono text-emerald-300 font-bold">{settings?.paymentDetails?.accountNumber || '7730000123456'}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (settings?.paymentDetails?.accountNumber) {
+                            navigator.clipboard.writeText(settings.paymentDetails.accountNumber);
+                            setCopiedAccount(true);
+                            setTimeout(() => setCopiedAccount(false), 2000);
+                          }
+                        }}
+                        className="text-slate-400 hover:text-emerald-300 transition p-1 cursor-pointer"
+                        title="Copy Account Number"
+                      >
+                        {copiedAccount ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+                    </div>
+                  </div>
+                  <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <span className="text-slate-400 text-[11px]">Bank Name</span>
+                    <span className="text-slate-300">{settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)'}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Arabiyya Scout Group Official Brand Color Palette Widget */}
+              <div className="bg-[#1A1E26] border border-amber-500/20 rounded-2xl p-5 shadow-lg space-y-3.5">
+                <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#002B7F] via-[#800020] to-[#006B3F] flex items-center justify-center text-amber-300 border border-[#FFC72C]/40">
+                      <Palette className="w-3.5 h-3.5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-slate-100">Arabiyya Scout Group Official Brand Palette</h4>
+                      <p className="text-[10px] text-slate-400">Click any color card to copy exact HEX code</p>
+                    </div>
+                  </div>
+                  <span className="bg-[#002B7F]/40 text-amber-300 border border-[#FFC72C]/40 text-[9px] font-bold px-2 py-0.5 rounded font-mono">
+                    ASG Branding
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  {[
+                    {
+                      name: 'Arabiyya Maroon',
+                      role: 'School & Emblem Trim',
+                      hex: '#800020',
+                      bg: 'bg-[#800020]',
+                      border: 'border-[#800020]',
+                      text: 'text-amber-200',
+                    },
+                    {
+                      name: 'Royal Blue',
+                      role: 'Scarf & Badge Crest',
+                      hex: '#002B7F',
+                      bg: 'bg-[#002B7F]',
+                      border: 'border-[#002B7F]',
+                      text: 'text-amber-200',
+                    },
+                    {
+                      name: 'Scout Gold',
+                      role: 'Emblem Ring & Star',
+                      hex: '#FFC72C',
+                      bg: 'bg-[#FFC72C]',
+                      border: 'border-[#FFC72C]',
+                      text: 'text-slate-950 font-bold',
+                    },
+                    {
+                      name: 'Islamic Green',
+                      role: 'Scout Association Flag',
+                      hex: '#006B3F',
+                      bg: 'bg-[#006B3F]',
+                      border: 'border-[#006B3F]',
+                      text: 'text-emerald-100',
+                    },
+                  ].map((col) => (
+                    <div
+                      key={col.hex}
+                      onClick={() => {
+                        navigator.clipboard.writeText(col.hex);
+                        setCopiedColor(col.hex);
+                        setTimeout(() => setCopiedColor(null), 2000);
+                      }}
+                      className="bg-[#161920] border border-slate-800 hover:border-amber-500/50 rounded-xl p-2.5 flex items-center gap-2.5 cursor-pointer transition group"
+                    >
+                      <div className={`w-8 h-8 rounded-lg ${col.bg} flex-shrink-0 border border-white/20 shadow-sm flex items-center justify-center`}>
+                        {copiedColor === col.hex && <CheckCircle2 className={`w-4 h-4 ${col.hex === '#FFC72C' ? 'text-slate-950' : 'text-white'}`} />}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[11px] font-bold text-slate-200 truncate">{col.name}</span>
+                          <span className="text-[10px] font-mono text-amber-300 font-bold ml-1">{col.hex}</span>
+                        </div>
+                        <p className="text-[9.5px] text-slate-400 truncate mt-0.5">{col.role}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>

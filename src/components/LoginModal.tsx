@@ -274,7 +274,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <span>
                 {isGoogleSigningIn
                   ? 'Authenticating with Google...'
-                  : 'Superadmin Google Auth Login (nazihnafiz@gmail.com)'}
+                  : 'Superadmin Google Auth Login'}
               </span>
             </button>
 

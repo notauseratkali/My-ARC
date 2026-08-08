@@ -26,7 +26,7 @@ import {
 } from 'lucide-react';
 import { hasPermission } from '../utils/permissions';
 
-import { Crown, LogOut, LogIn, Vote } from 'lucide-react';
+import { Crown, LogOut, LogIn, Vote, Wifi, WifiOff, RefreshCw, AlertCircle, Database } from 'lucide-react';
 
 export type TabType =
   | 'superadmin'
@@ -54,6 +54,8 @@ interface SidebarProps {
   unresolvedIncidentsCount?: number;
   theme?: 'dark' | 'light';
   onToggleTheme?: () => void;
+  syncStatus?: 'synced' | 'syncing' | 'offline' | 'error';
+  lastSyncedAt?: Date | null;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -68,6 +70,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   settings = { aiEnabled: true, smsNotificationsEnabled: true, emailNotificationsEnabled: true, activeTerm: '1' },
   theme = 'dark',
   onToggleTheme,
+  syncStatus = 'synced',
+  lastSyncedAt,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
@@ -159,16 +163,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Sidebar Brand Header */}
         <div className="p-4 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-emerald-800 flex items-center justify-center text-white shadow-md border border-emerald-500/30 flex-shrink-0">
-              <Compass className="w-6 h-6 text-emerald-100" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#002B7F] via-[#800020] to-[#006B3F] flex items-center justify-center text-white shadow-md border border-[#FFC72C]/40 flex-shrink-0 relative">
+              <Compass className="w-6 h-6 text-amber-300" />
             </div>
             {(!isCollapsed || isMobileOpen) && (
               <div className="min-w-0">
-                <h1 className="font-bold text-sm text-emerald-400 truncate leading-tight">
+                <h1 className="font-bold text-sm bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent truncate leading-tight">
                   Arabiyya Rovers
                 </h1>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="text-[10px] text-slate-400 font-mono">Term {settings?.activeTerm || '1'}</span>
+                  <span className="text-[10px] text-amber-300/80 font-mono">ASG • Term {settings?.activeTerm || '1'}</span>
                   {isAdvisor ? (
                     <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
                       <Crown className="w-2.5 h-2.5 text-purple-300" />
@@ -275,8 +279,107 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </div>
 
-        {/* Sidebar Footer: Theme & AI Status */}
+        {/* Sidebar Footer: Sync Status, Theme & AI Status */}
         <div className="p-3 border-t border-slate-800 bg-[#12151B] space-y-2">
+          {/* Real-time Firestore Sync Status Indicator */}
+          {(!isCollapsed || isMobileOpen) ? (
+            <div
+              className={`p-2.5 rounded-xl text-[11px] font-medium border flex items-center justify-between transition shadow-sm ${
+                syncStatus === 'synced'
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                  : syncStatus === 'syncing'
+                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
+                  : syncStatus === 'offline'
+                  ? 'bg-slate-800/90 border-slate-700 text-slate-400'
+                  : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
+              }`}
+            >
+              <div className="flex items-center gap-2 truncate">
+                {syncStatus === 'synced' && (
+                  <>
+                    <span className="relative flex h-2 w-2 flex-shrink-0">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                    </span>
+                    <div className="truncate">
+                      <div className="font-bold text-emerald-300 leading-tight">Firestore Synced</div>
+                      <div className="text-[9px] text-emerald-400/70 font-mono">Real-time Connected</div>
+                    </div>
+                  </>
+                )}
+                {syncStatus === 'syncing' && (
+                  <>
+                    <RefreshCw className="w-3.5 h-3.5 text-amber-400 animate-spin flex-shrink-0" />
+                    <div className="truncate">
+                      <div className="font-bold text-amber-200 leading-tight">Syncing Cloud...</div>
+                      <div className="text-[9px] text-amber-300/70 font-mono">Updating Firestore</div>
+                    </div>
+                  </>
+                )}
+                {syncStatus === 'offline' && (
+                  <>
+                    <WifiOff className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                    <div className="truncate">
+                      <div className="font-bold text-slate-300 leading-tight">Offline Mode</div>
+                      <div className="text-[9px] text-slate-500 font-mono">Using Local Cache</div>
+                    </div>
+                  </>
+                )}
+                {syncStatus === 'error' && (
+                  <>
+                    <AlertCircle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
+                    <div className="truncate">
+                      <div className="font-bold text-rose-300 leading-tight">Connection Issue</div>
+                      <div className="text-[9px] text-rose-400/70 font-mono">Check Network</div>
+                    </div>
+                  </>
+                )}
+              </div>
+              <Database
+                className={`w-3.5 h-3.5 flex-shrink-0 ${
+                  syncStatus === 'synced'
+                    ? 'text-emerald-400'
+                    : syncStatus === 'syncing'
+                    ? 'text-amber-400 animate-pulse'
+                    : syncStatus === 'offline'
+                    ? 'text-slate-500'
+                    : 'text-rose-400'
+                }`}
+              />
+            </div>
+          ) : (
+            <div
+              className={`p-2 rounded-xl flex items-center justify-center border transition ${
+                syncStatus === 'synced'
+                  ? 'bg-emerald-500/10 border-emerald-500/30'
+                  : syncStatus === 'syncing'
+                  ? 'bg-amber-500/10 border-amber-500/30'
+                  : syncStatus === 'offline'
+                  ? 'bg-slate-800 border-slate-700'
+                  : 'bg-rose-500/10 border-rose-500/30'
+              }`}
+              title={
+                syncStatus === 'synced'
+                  ? 'Firestore Live Synced'
+                  : syncStatus === 'syncing'
+                  ? 'Syncing changes to cloud...'
+                  : syncStatus === 'offline'
+                  ? 'App is offline (Local cache)'
+                  : 'Firestore connection issue'
+              }
+            >
+              {syncStatus === 'synced' && (
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+              )}
+              {syncStatus === 'syncing' && <RefreshCw className="w-4 h-4 text-amber-400 animate-spin" />}
+              {syncStatus === 'offline' && <WifiOff className="w-4 h-4 text-slate-400" />}
+              {syncStatus === 'error' && <AlertCircle className="w-4 h-4 text-rose-400" />}
+            </div>
+          )}
+
           {settings?.aiEnabled && (!isCollapsed || isMobileOpen) && (
             <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] p-2 rounded-xl font-medium">
               <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse flex-shrink-0" />

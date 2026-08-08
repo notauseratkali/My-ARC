@@ -117,6 +117,58 @@ export function initializeFirestoreDatabase() {
   seedSettingsIfEmpty(INITIAL_SETTINGS);
 }
 
+export type SyncStatus = 'synced' | 'syncing' | 'offline' | 'error';
+
+export function subscribeToSyncStatus(callback: (status: SyncStatus, lastSyncedAt?: Date) => void) {
+  let isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
+
+  const handleOnline = () => {
+    isOnline = true;
+    callback('syncing');
+  };
+
+  const handleOffline = () => {
+    isOnline = false;
+    callback('offline');
+  };
+
+  if (typeof window !== 'undefined') {
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+  }
+
+  const colRef = collection(db, 'settings');
+  const unsubscribe = onSnapshot(
+    colRef,
+    { includeMetadataChanges: true },
+    (snapshot) => {
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        callback('offline');
+      } else if (snapshot.metadata.hasPendingWrites) {
+        callback('syncing');
+      } else {
+        callback('synced', new Date());
+      }
+    },
+    (error) => {
+      console.warn('Firestore sync status notice:', error);
+      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+        callback('offline');
+      } else {
+        callback('error');
+      }
+    }
+  );
+
+  return () => {
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    }
+    unsubscribe();
+  };
+}
+
 // Subscribe to real-time updates for a collection
 export function subscribeToCollection<T>(
   collectionName: string,

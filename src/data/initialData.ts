@@ -10,6 +10,8 @@ import {
   MemberRequirementProgress,
   MeetingMinutes,
   Organisation,
+  RoverOperatingPolicy,
+  PolicyAmendmentPoll,
 } from '../types';
 import { getPlaceholderAvatar } from '../utils/avatarUtils';
 
@@ -88,7 +90,7 @@ export const INITIAL_MEMBERS: Member[] = [
     investitureDate: '2005-01-01',
     status: 'Active',
     term: '2025-2026',
-    email: 'nazihnafiz@gmail.com',
+    email: 'superadmin@scout.mv',
     mobile: '+960 7000000',
     phone: '+960 3000000',
     permAddress: 'National Scout HQ, Male City',
@@ -976,6 +978,11 @@ export const INITIAL_SETTINGS: PortalSettings = {
     'Media Coordinator',
     'Crew Leader',
   ],
+  paymentDetails: {
+    accountName: 'Arabiyya Rover Crew Official Account',
+    accountNumber: '7730000123456',
+    bankName: 'Bank of Maldives (BML)',
+  },
 };
 
 export const INITIAL_ROVER_POLICY: RoverOperatingPolicy = {

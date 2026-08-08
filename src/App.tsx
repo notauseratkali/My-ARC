@@ -34,6 +34,8 @@ import {
 import {
   initializeFirestoreDatabase,
   subscribeToCollection,
+  subscribeToSyncStatus,
+  type SyncStatus,
   saveDocumentToFirestore,
   saveBatchToFirestore,
   deleteDocumentFromFirestore,
@@ -72,12 +74,18 @@ export default function App() {
   const [polls, setPolls] = useState<PolicyAmendmentPoll[]>(INITIAL_POLICY_POLLS);
   const [settings, setSettings] = useState<PortalSettings>(INITIAL_SETTINGS);
 
+  // Real-time Firestore Sync Status
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
+  const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
+
   // Active Tab & Current Logged-In Persona Switcher
   const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [currentMemberId, setCurrentMemberId] = useState<string | null>(() => {
-    return localStorage.getItem('arabiya_logged_member_id') || 'm-0'; // Default: Dr. Hussain Farooq (Rover Advisor)
+    return localStorage.getItem('arabiya_logged_member_id') || null;
   });
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(() => {
+    return !localStorage.getItem('arabiya_logged_member_id');
+  });
   const [isOrgSignupOpen, setIsOrgSignupOpen] = useState<boolean>(false);
   const [activeOrgContext, setActiveOrgContext] = useState<string>('all');
 
@@ -169,6 +177,11 @@ export default function App() {
       if (data.length > 0) setPolls(data);
     });
 
+    const unsubSyncStatus = subscribeToSyncStatus((status, time) => {
+      setSyncStatus(status);
+      if (time) setLastSyncedAt(time);
+    });
+
     return () => {
       unsubOrgs();
       unsubMembers();
@@ -179,6 +192,7 @@ export default function App() {
       unsubMinutes();
       unsubPolicy();
       unsubPolls();
+      unsubSyncStatus();
     };
   }, []);
 
@@ -587,6 +601,8 @@ export default function App() {
         unresolvedIncidentsCount={(incidents || []).filter((i) => i.status !== 'Resolved').length}
         theme={theme}
         onToggleTheme={toggleTheme}
+        syncStatus={syncStatus}
+        lastSyncedAt={lastSyncedAt}
       />
 
       {/* Main Content Area */}
@@ -674,6 +690,8 @@ export default function App() {
               onAddDirectOrg={handleAddDirectOrg}
               onSelectActiveOrgContext={(orgId) => setActiveOrgContext(orgId)}
               activeOrgContext={activeOrgContext}
+              settings={settings}
+              onUpdateSettings={handleUpdateSettings}
             />
           )}
 
@@ -859,8 +877,13 @@ export default function App() {
 
       {/* Login Modal Dialog */}
       <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
+        isOpen={isLoginModalOpen || !currentMemberId}
+        onClose={() => {
+          if (currentMemberId) {
+            setIsLoginModalOpen(false);
+          }
+        }}
+        allowClose={!!currentMemberId}
         members={members}
         onLogin={handleLogin}
         onOpenOrgSignup={() => setIsOrgSignupOpen(true)}

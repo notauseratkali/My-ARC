@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Organisation, Member, PlanType } from '../types';
+import { Organisation, Member, PlanType, PortalSettings } from '../types';
 import {
   Shield,
   Building2,
@@ -20,6 +20,9 @@ import {
   ChevronRight,
   Layers,
   Sparkles,
+  Landmark,
+  Save,
+  User,
 } from 'lucide-react';
 
 interface SuperAdminDashboardProps {
@@ -30,6 +33,8 @@ interface SuperAdminDashboardProps {
   onAddDirectOrg: (newOrg: Omit<Organisation, 'id' | 'createdAt' | 'approvedAt'>) => void;
   onSelectActiveOrgContext: (orgId: string | 'all') => void;
   activeOrgContext: string;
+  settings?: PortalSettings;
+  onUpdateSettings?: (settings: PortalSettings) => void;
 }
 
 export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
@@ -40,10 +45,34 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
   onAddDirectOrg,
   onSelectActiveOrgContext,
   activeOrgContext,
+  settings,
+  onUpdateSettings,
 }) => {
-  const [activeTab, setActiveTab] = useState<'pending' | 'all' | 'create'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'all' | 'create' | 'payment'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedReceiptUrl, setSelectedReceiptUrl] = useState<string | null>(null);
+
+  // Superadmin Payment Details Form State
+  const [paymentForm, setPaymentForm] = useState({
+    accountName: settings?.paymentDetails?.accountName || 'Arabiyya Rover Crew Official Account',
+    accountNumber: settings?.paymentDetails?.accountNumber || '7730000123456',
+    bankName: settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)',
+  });
+
+  const handleSavePaymentDetails = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onUpdateSettings && settings) {
+      onUpdateSettings({
+        ...settings,
+        paymentDetails: {
+          accountName: paymentForm.accountName.trim(),
+          accountNumber: paymentForm.accountNumber.trim(),
+          bankName: paymentForm.bankName.trim(),
+        },
+      });
+      alert('Superadmin payment account details saved successfully!');
+    }
+  };
 
   // Direct Creation State
   const [newOrgName, setNewOrgName] = useState('');
@@ -232,6 +261,18 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
           >
             <Plus className="w-4 h-4" />
             <span>Create Organisation</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('payment')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+              activeTab === 'payment'
+                ? 'bg-amber-500 text-slate-950 shadow-lg font-extrabold'
+                : 'bg-[#161920] text-slate-400 hover:text-slate-100 border border-slate-800'
+            }`}
+          >
+            <Landmark className="w-4 h-4" />
+            <span>Payment Details</span>
           </button>
         </div>
 
@@ -540,6 +581,78 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
               <Plus className="w-4 h-4" />
               <span>Instantly Create & Activate Organisation</span>
             </button>
+          </form>
+        </div>
+      )}
+
+      {/* Payment Details Tab Content */}
+      {activeTab === 'payment' && (
+        <div className="bg-[#161920] border border-amber-500/30 rounded-2xl p-6 shadow-xl space-y-6 max-w-2xl mx-auto">
+          <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
+              <Landmark className="w-5 h-5" />
+            </div>
+            <div>
+              <h2 className="text-base font-bold text-slate-100">Superadmin Official Payment Configuration</h2>
+              <p className="text-xs text-slate-400">Set and update bank transfer details for organisation fees, subscriptions, and crew payments.</p>
+            </div>
+          </div>
+
+          <form onSubmit={handleSavePaymentDetails} className="space-y-4 text-xs">
+            <div>
+              <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
+                <User className="w-4 h-4 text-amber-400" />
+                <span>Account Name</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Account Name (e.g. Arabiyya Rover Crew Official)"
+                value={paymentForm.accountName}
+                onChange={(e) => setPaymentForm({ ...paymentForm, accountName: e.target.value })}
+                className="w-full bg-[#1A1E26] border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 font-medium text-sm focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
+                <CreditCard className="w-4 h-4 text-amber-400" />
+                <span>Account Number</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Account Number (e.g. 7730000123456)"
+                value={paymentForm.accountNumber}
+                onChange={(e) => setPaymentForm({ ...paymentForm, accountNumber: e.target.value })}
+                className="w-full bg-[#1A1E26] border border-slate-800 rounded-xl px-4 py-2.5 text-emerald-300 font-mono font-bold text-sm focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+
+            <div>
+              <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
+                <Landmark className="w-4 h-4 text-amber-400" />
+                <span>Bank Name</span>
+              </label>
+              <input
+                type="text"
+                required
+                placeholder="Bank Name (e.g. Bank of Maldives (BML))"
+                value={paymentForm.bankName}
+                onChange={(e) => setPaymentForm({ ...paymentForm, bankName: e.target.value })}
+                className="w-full bg-[#1A1E26] border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 font-medium text-sm focus:outline-none focus:border-amber-500 transition"
+              />
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold text-xs py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Save className="w-4 h-4" />
+                <span>Save Official Payment Details</span>
+              </button>
+            </div>
           </form>
         </div>
       )}

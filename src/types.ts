@@ -330,6 +330,12 @@ export interface RoverOperatingPolicy {
   content: string; // Full text of policy
 }
 
+export interface PaymentDetails {
+  accountName: string;
+  accountNumber: string;
+  bankName: string;
+}
+
 export interface PortalSettings {
   aiEnabled: boolean;
   smsNotificationsEnabled: boolean;
@@ -339,5 +345,6 @@ export interface PortalSettings {
   networkName?: string;
   councilPositions?: string[];
   rolePermissions?: Record<string, CouncilPermissionKey[]>;
+  paymentDetails?: PaymentDetails;
 }
 
