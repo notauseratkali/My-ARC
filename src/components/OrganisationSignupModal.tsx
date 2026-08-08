@@ -20,12 +20,14 @@ interface OrganisationSignupModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSignupSubmit: (newOrgData: Omit<Organisation, 'id' | 'createdAt' | 'status'>) => void;
+  onOpenLogin?: () => void;
 }
 
 export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = ({
   isOpen,
   onClose,
   onSignupSubmit,
+  onOpenLogin,
 }) => {
   const [orgName, setOrgName] = useState('');
   const [orgCode, setOrgCode] = useState('');
@@ -425,6 +427,21 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
               <Building2 className="w-4 h-4" />
               <span>Submit Organisation Registration Request</span>
             </button>
+
+            {onOpenLogin && (
+              <div className="text-center pt-2 border-t border-slate-800">
+                <button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                    onOpenLogin();
+                  }}
+                  className="text-xs text-amber-400 hover:text-amber-300 font-semibold underline transition cursor-pointer"
+                >
+                  Already registered or have an account? Log In here
+                </button>
+              </div>
+            )}
           </form>
         )}
       </div>

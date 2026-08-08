@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs && node -e \"require('fs').copyFileSync('dist/index.html', 'dist/404.html')\"",
+    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs && node -e \"const fs = require('fs'); ['404', 'login', 'signup', 'auth', 'dashboard', 'members', 'directory', 'attendance', 'syllabus', 'events', 'minutes', 'policy', 'disciplinary', 'portfolio', 'journals', 'journal', 'settings', 'superadmin'].forEach(function(p){ fs.copyFileSync('dist/index.html', 'dist/' + p + '.html'); });\"",
     "start": "node dist/server.cjs",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",

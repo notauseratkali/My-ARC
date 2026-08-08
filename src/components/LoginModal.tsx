@@ -146,7 +146,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 </span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                The Scout Association of Maldives • Organisation Credentials Required
+                The Scout Association of Maldives • Authentication
               </p>
             </div>
           </div>
@@ -160,6 +160,30 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </button>
           )}
         </div>
+
+        {/* Tab Switcher: Log In vs Sign Up */}
+        {onOpenOrgSignup && (
+          <div className="grid grid-cols-2 gap-2 bg-[#12151B] p-1.5 rounded-2xl border border-slate-800 relative z-10">
+            <button
+              type="button"
+              className="bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md"
+            >
+              <LogIn className="w-3.5 h-3.5" />
+              <span>Log In</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (onClose) onClose();
+                onOpenOrgSignup();
+              }}
+              className="text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+            >
+              <Building2 className="w-3.5 h-3.5 text-purple-400" />
+              <span>Sign Up / Register</span>
+            </button>
+          </div>
+        )}
 
         {/* Organisation Security Banner */}
         <div className="bg-[#12151B] p-3 rounded-2xl border border-amber-500/30 flex items-center gap-3 relative z-10 text-xs">

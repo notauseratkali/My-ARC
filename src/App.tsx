@@ -59,8 +59,64 @@ import { SettingsCrewModule } from './components/SettingsCrewModule';
 import { RoverPolicyModule } from './components/RoverPolicyModule';
 import { useToast } from './components/ToastContext';
 
+function getURLRouteState() {
+  const path = (window.location.pathname || '').toLowerCase();
+  const hash = (window.location.hash || '').toLowerCase();
+  const search = (window.location.search || '').toLowerCase();
+  const isLoggedIn = !!localStorage.getItem('arabiya_logged_member_id');
+
+  let tab = 'dashboard';
+  let showLogin = !isLoggedIn;
+  let showSignup = false;
+
+  if (path.includes('login') || hash.includes('login') || search.includes('login')) {
+    showLogin = true;
+    showSignup = false;
+  } else if (path.includes('signup') || path.includes('register') || hash.includes('signup') || search.includes('signup')) {
+    showSignup = true;
+    showLogin = false;
+  } else if (path.includes('auth') || hash.includes('auth') || search.includes('auth')) {
+    showLogin = true;
+    showSignup = false;
+  } else if (path.includes('members') || hash.includes('members') || search.includes('members')) {
+    tab = 'members';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('attendance') || hash.includes('attendance') || search.includes('attendance')) {
+    tab = 'attendance';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('syllabus') || hash.includes('syllabus') || search.includes('syllabus')) {
+    tab = 'syllabus';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('events') || hash.includes('events') || search.includes('events')) {
+    tab = 'events';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('minutes') || hash.includes('minutes') || search.includes('minutes')) {
+    tab = 'minutes';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('policy') || hash.includes('policy') || search.includes('policy')) {
+    tab = 'policy';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('disciplinary') || hash.includes('disciplinary') || search.includes('disciplinary')) {
+    tab = 'disciplinary';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('portfolio') || hash.includes('portfolio') || search.includes('portfolio')) {
+    tab = 'portfolio';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('settings') || hash.includes('settings') || search.includes('settings')) {
+    tab = 'settings';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('superadmin') || hash.includes('superadmin') || search.includes('superadmin')) {
+    tab = 'superadmin';
+    if (isLoggedIn) showLogin = false;
+  }
+
+  return { tab, showLogin, showSignup };
+}
+
 export default function App() {
   const { toastSuccess, toastInfo, toastWarning, toastError, toastSync } = useToast();
+
+  const initialRoute = getURLRouteState();
 
   // Master State
   const [organisations, setOrganisations] = useState<Organisation[]>(INITIAL_ORGANISATIONS);
@@ -85,14 +141,12 @@ export default function App() {
   const isInitialSyncRef = React.useRef<boolean>(true);
 
   // Active Tab & Current Logged-In Persona Switcher
-  const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [activeTab, setActiveTab] = useState<string>(initialRoute.tab);
   const [currentMemberId, setCurrentMemberId] = useState<string | null>(() => {
     return localStorage.getItem('arabiya_logged_member_id') || null;
   });
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(() => {
-    return !localStorage.getItem('arabiya_logged_member_id');
-  });
-  const [isOrgSignupOpen, setIsOrgSignupOpen] = useState<boolean>(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(initialRoute.showLogin);
+  const [isOrgSignupOpen, setIsOrgSignupOpen] = useState<boolean>(initialRoute.showSignup);
   const [activeOrgContext, setActiveOrgContext] = useState<string>('all');
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -142,6 +196,37 @@ export default function App() {
       document.body.classList.remove('light-mode');
     }
   }, [theme]);
+
+  // Sync URL state and handle popstate browser back/forward
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = getURLRouteState();
+      setActiveTab(route.tab);
+      setIsLoginModalOpen(route.showLogin);
+      setIsOrgSignupOpen(route.showSignup);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  useEffect(() => {
+    try {
+      let targetFile = `${activeTab}.html`;
+      if (!currentMemberId) {
+        targetFile = isOrgSignupOpen ? 'signup.html' : 'login.html';
+      } else if (isOrgSignupOpen) {
+        targetFile = 'signup.html';
+      } else if (isLoginModalOpen) {
+        targetFile = 'login.html';
+      }
+      const currentPath = window.location.pathname;
+      if (!currentPath.endsWith(targetFile)) {
+        window.history.replaceState(null, '', `./${targetFile}`);
+      }
+    } catch {
+      // Ignore security/origin constraints if running in restricted context
+    }
+  }, [activeTab, isLoginModalOpen, isOrgSignupOpen, currentMemberId]);
 
   // Initialize Firestore and real-time synchronization
   useEffect(() => {
@@ -934,6 +1019,10 @@ export default function App() {
         isOpen={isOrgSignupOpen}
         onClose={() => setIsOrgSignupOpen(false)}
         onSignupSubmit={handleOrgSignupSubmit}
+        onOpenLogin={() => {
+          setIsOrgSignupOpen(false);
+          setIsLoginModalOpen(true);
+        }}
       />
     </div>
   );
