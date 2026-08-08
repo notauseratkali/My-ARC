@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, googleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, User } from '../lib/firebase';
+import { safeOnAuthStateChanged, safeSignInWithPopup, safeSignOut, type User } from '../lib/firebase';
 import { Member } from '../types';
 import { Shield, Lock, LogIn, LogOut, CheckCircle2, AlertOctagon, UserCheck, Mail, ArrowRight } from 'lucide-react';
 
@@ -21,7 +21,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
 
   // Listen to Firebase Auth state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = safeOnAuthStateChanged((user) => {
       setAuthUser(user);
       if (user && user.email) {
         // Validate user email against members roster
@@ -35,7 +35,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
           onSelectMember(matchedMember);
         } else {
           // Access Denied! Unlisted user attempting to sign in.
-          signOut(auth);
+          safeSignOut();
           setAuthUser(null);
           setAuthError(
             `Access Denied: The Google account (${user.email}) is NOT in the authorized crew roster. Self-registration is strictly disabled — new members must be pre-added by the Crew Leader or Chairperson.`
@@ -51,7 +51,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
     try {
       setIsSigningIn(true);
       setAuthError(null);
-      await signInWithPopup(auth, googleAuthProvider);
+      await safeSignInWithPopup();
     } catch (err: any) {
       console.error('Firebase Auth error:', err);
       if (err?.code !== 'auth/popup-closed-by-user') {
@@ -63,7 +63,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
   };
 
   const handleSignOut = async () => {
-    await signOut(auth);
+    await safeSignOut();
     setAuthUser(null);
     setAuthError(null);
   };

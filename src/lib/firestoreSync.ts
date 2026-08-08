@@ -6,7 +6,7 @@ import {
   onSnapshot,
   writeBatch,
 } from 'firebase/firestore';
-import { db, auth } from './firebase';
+import { db, safeSignOut } from './firebase';
 import {
   Member,
   CrewEvent,
@@ -39,37 +39,15 @@ export interface FirestoreErrorInfo {
   error: string;
   operationType: OperationType;
   path: string | null;
-  authInfo: {
-    userId?: string | null;
-    email?: string | null;
-    emailVerified?: boolean | null;
-    isAnonymous?: boolean | null;
-    tenantId?: string | null;
-    providerInfo?: {
-      providerId?: string | null;
-      email?: string | null;
-    }[];
-  };
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
   const errInfo: FirestoreErrorInfo = {
     error: error instanceof Error ? error.message : String(error),
-    authInfo: {
-      userId: auth.currentUser?.uid,
-      email: auth.currentUser?.email,
-      emailVerified: auth.currentUser?.emailVerified,
-      isAnonymous: auth.currentUser?.isAnonymous,
-      tenantId: auth.currentUser?.tenantId,
-      providerInfo: auth.currentUser?.providerData?.map(provider => ({
-        providerId: provider.providerId,
-        email: provider.email,
-      })) || []
-    },
     operationType,
     path
   };
-  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  console.warn('Firestore Notice:', JSON.stringify(errInfo));
 }
 
 // Helper to seed initial data if collection is empty
@@ -77,6 +55,7 @@ async function seedCollectionIfEmpty<T extends { id: string }>(
   collectionName: string,
   initialData: T[]
 ) {
+  if (!db) return;
   try {
     const colRef = collection(db, collectionName);
     const snapshot = await getDocs(colRef);
@@ -95,6 +74,7 @@ async function seedCollectionIfEmpty<T extends { id: string }>(
 }
 
 async function seedSettingsIfEmpty(initialSettings: PortalSettings) {
+  if (!db) return;
   try {
     const docRef = doc(db, 'settings', 'portal');
     const snapshot = await getDocs(collection(db, 'settings'));
@@ -108,6 +88,7 @@ async function seedSettingsIfEmpty(initialSettings: PortalSettings) {
 }
 
 export function initializeFirestoreDatabase() {
+  if (!db) return;
   seedCollectionIfEmpty('members', INITIAL_MEMBERS);
   seedCollectionIfEmpty('events', INITIAL_EVENTS);
   seedCollectionIfEmpty('attendance', INITIAL_ATTENDANCE);
@@ -120,6 +101,11 @@ export function initializeFirestoreDatabase() {
 export type SyncStatus = 'synced' | 'syncing' | 'offline' | 'error';
 
 export function subscribeToSyncStatus(callback: (status: SyncStatus, lastSyncedAt?: Date) => void) {
+  if (!db) {
+    callback('offline');
+    return () => {};
+  }
+
   let isOnline = typeof navigator !== 'undefined' ? navigator.onLine : true;
 
   const handleOnline = () => {
@@ -137,36 +123,37 @@ export function subscribeToSyncStatus(callback: (status: SyncStatus, lastSyncedA
     window.addEventListener('offline', handleOffline);
   }
 
-  const colRef = collection(db, 'settings');
-  const unsubscribe = onSnapshot(
-    colRef,
-    { includeMetadataChanges: true },
-    (snapshot) => {
-      if (typeof navigator !== 'undefined' && !navigator.onLine) {
+  try {
+    const colRef = collection(db, 'settings');
+    const unsubscribe = onSnapshot(
+      colRef,
+      { includeMetadataChanges: true },
+      (snapshot) => {
+        if (typeof navigator !== 'undefined' && !navigator.onLine) {
+          callback('offline');
+        } else if (snapshot.metadata.hasPendingWrites) {
+          callback('syncing');
+        } else {
+          callback('synced', new Date());
+        }
+      },
+      (error) => {
+        console.warn('Firestore sync status notice:', error);
         callback('offline');
-      } else if (snapshot.metadata.hasPendingWrites) {
-        callback('syncing');
-      } else {
-        callback('synced', new Date());
       }
-    },
-    (error) => {
-      console.warn('Firestore sync status notice:', error);
-      if (typeof navigator !== 'undefined' && !navigator.onLine) {
-        callback('offline');
-      } else {
-        callback('error');
-      }
-    }
-  );
+    );
 
-  return () => {
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    }
-    unsubscribe();
-  };
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      }
+      unsubscribe();
+    };
+  } catch (err) {
+    callback('offline');
+    return () => {};
+  }
 }
 
 // Subscribe to real-time updates for a collection
@@ -174,20 +161,29 @@ export function subscribeToCollection<T>(
   collectionName: string,
   callback: (data: T[]) => void
 ) {
-  const colRef = collection(db, collectionName);
-  return onSnapshot(
-    colRef,
-    (snapshot) => {
-      const items: T[] = [];
-      snapshot.forEach((docSnap) => {
-        items.push(docSnap.data() as T);
-      });
-      callback(items);
-    },
-    (error) => {
-      handleFirestoreError(error, OperationType.GET, collectionName);
-    }
-  );
+  if (!db) {
+    return () => {};
+  }
+
+  try {
+    const colRef = collection(db, collectionName);
+    return onSnapshot(
+      colRef,
+      (snapshot) => {
+        const items: T[] = [];
+        snapshot.forEach((docSnap) => {
+          items.push(docSnap.data() as T);
+        });
+        callback(items);
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, collectionName);
+      }
+    );
+  } catch (err) {
+    handleFirestoreError(err, OperationType.GET, collectionName);
+    return () => {};
+  }
 }
 
 // Generic saver for single or list items
@@ -195,6 +191,7 @@ export async function saveDocumentToFirestore<T extends { id: string }>(
   collectionName: string,
   item: T
 ) {
+  if (!db) return;
   try {
     const docRef = doc(db, collectionName, item.id);
     await setDoc(docRef, item, { merge: true });
@@ -207,6 +204,7 @@ export async function deleteDocumentFromFirestore(
   collectionName: string,
   id: string
 ) {
+  if (!db) return;
   try {
     const docRef = doc(db, collectionName, id);
     const { deleteDoc } = await import('firebase/firestore');
@@ -220,6 +218,7 @@ export async function saveBatchToFirestore<T extends { id: string }>(
   collectionName: string,
   items: T[]
 ) {
+  if (!db) return;
   try {
     const batch = writeBatch(db);
     items.forEach((item) => {
@@ -233,6 +232,7 @@ export async function saveBatchToFirestore<T extends { id: string }>(
 }
 
 export async function saveSettingsToFirestore(settings: PortalSettings) {
+  if (!db) return;
   try {
     const docRef = doc(db, 'settings', 'portal');
     await setDoc(docRef, settings, { merge: true });
@@ -240,4 +240,3 @@ export async function saveSettingsToFirestore(settings: PortalSettings) {
     handleFirestoreError(err, OperationType.WRITE, 'settings/portal');
   }
 }
-
