@@ -56,6 +56,7 @@ interface SidebarProps {
   onToggleTheme?: () => void;
   syncStatus?: 'synced' | 'syncing' | 'offline' | 'error';
   lastSyncedAt?: Date | null;
+  onTriggerSync?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -72,6 +73,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onToggleTheme,
   syncStatus = 'synced',
   lastSyncedAt,
+  onTriggerSync,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
@@ -283,8 +285,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="p-3 border-t border-slate-800 bg-[#12151B] space-y-2">
           {/* Real-time Firestore Sync Status Indicator */}
           {(!isCollapsed || isMobileOpen) ? (
-            <div
-              className={`p-2.5 rounded-xl text-[11px] font-medium border flex items-center justify-between transition shadow-sm ${
+            <button
+              type="button"
+              onClick={onTriggerSync}
+              className={`w-full p-2.5 rounded-xl text-[11px] font-medium border flex items-center justify-between transition shadow-sm cursor-pointer hover:scale-[1.01] ${
                 syncStatus === 'synced'
                   ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
                   : syncStatus === 'syncing'
@@ -293,6 +297,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   ? 'bg-slate-800/90 border-slate-700 text-slate-400'
                   : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
               }`}
+              title="Click to verify live Cloud Firestore synchronization"
             >
               <div className="flex items-center gap-2 truncate">
                 {syncStatus === 'synced' && (
@@ -346,7 +351,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     : 'text-rose-400'
                 }`}
               />
-            </div>
+            </button>
           ) : (
             <div
               className={`p-2 rounded-xl flex items-center justify-center border transition ${

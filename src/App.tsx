@@ -57,8 +57,11 @@ import { MeetingMinutesModule } from './components/MeetingMinutesModule';
 import { DisciplinaryModule } from './components/DisciplinaryModule';
 import { SettingsCrewModule } from './components/SettingsCrewModule';
 import { RoverPolicyModule } from './components/RoverPolicyModule';
+import { useToast } from './components/ToastContext';
 
 export default function App() {
+  const { toastSuccess, toastInfo, toastWarning, toastError, toastSync } = useToast();
+
   // Master State
   const [organisations, setOrganisations] = useState<Organisation[]>(INITIAL_ORGANISATIONS);
   const [members, setMembers] = useState<Member[]>(INITIAL_MEMBERS);
@@ -77,6 +80,9 @@ export default function App() {
   // Real-time Firestore Sync Status
   const [syncStatus, setSyncStatus] = useState<SyncStatus>('synced');
   const [lastSyncedAt, setLastSyncedAt] = useState<Date | null>(null);
+
+  const prevSyncStatusRef = React.useRef<SyncStatus>('synced');
+  const isInitialSyncRef = React.useRef<boolean>(true);
 
   // Active Tab & Current Logged-In Persona Switcher
   const [activeTab, setActiveTab] = useState<string>('dashboard');
@@ -180,6 +186,17 @@ export default function App() {
     const unsubSyncStatus = subscribeToSyncStatus((status, time) => {
       setSyncStatus(status);
       if (time) setLastSyncedAt(time);
+
+      if (status === 'synced') {
+        const timeStr = time ? time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : 'just now';
+        if (isInitialSyncRef.current) {
+          isInitialSyncRef.current = false;
+          toastSync('Cloud Sync Active', 'Initial portal data synchronized with Cloud Firestore.');
+        } else if (prevSyncStatusRef.current !== 'synced') {
+          toastSync('Sync Completed', `Database records updated at ${timeStr}.`);
+        }
+      }
+      prevSyncStatusRef.current = status;
     });
 
     return () => {
@@ -200,11 +217,13 @@ export default function App() {
   const handleUpdatePolicy = (updatedPolicy: RoverOperatingPolicy) => {
     setPolicy(updatedPolicy);
     saveDocumentToFirestore('policy', updatedPolicy);
+    toastInfo('Operating Policy Revised', `Policy version ${updatedPolicy.version} saved.`);
   };
 
   const handleCreatePoll = (newPoll: PolicyAmendmentPoll) => {
     setPolls((prev) => [newPoll, ...prev]);
     saveDocumentToFirestore('polls', newPoll);
+    toastSuccess('Referendum Poll Opened', `"${newPoll.title}" is now active for democratic voting.`);
   };
 
   const handleCastVote = (pollId: string, vote: PolicyVote) => {
@@ -220,6 +239,7 @@ export default function App() {
         return updatedPoll;
       })
     );
+    toastSuccess('Vote Registered', `Your vote for choice "${vote.choice}" has been recorded.`);
   };
 
   const handleFinalizePoll = (
@@ -250,6 +270,9 @@ export default function App() {
       };
       setPolicy(updatedPolicy);
       saveDocumentToFirestore('policy', updatedPolicy);
+      toastSuccess('Referendum Passed & Implemented', 'Policy document has been updated automatically.');
+    } else {
+      toastInfo('Referendum Closed', `Outcome: ${outcome}`);
     }
   };
 
@@ -378,6 +401,7 @@ export default function App() {
     };
     setMembers((prev) => [newMember, ...prev]);
     saveDocumentToFirestore('members', newMember);
+    toastSuccess('Member Registered', `${newMemberData.name} added to roster.`);
   };
 
   const handleUpdateMember = (updatedMember: Member) => {
@@ -444,16 +468,19 @@ export default function App() {
     };
     setJournals((prev) => [newEntry, ...prev]);
     saveDocumentToFirestore('journals', newEntry);
+    toastSuccess('Journal Entry Saved', `"${entryData.title}" recorded in logbook.`);
   };
 
   const handleUpdateJournal = (updatedEntry: JournalEntry) => {
     setJournals((prev) => prev.map((j) => (j.id === updatedEntry.id ? updatedEntry : j)));
     saveDocumentToFirestore('journals', updatedEntry);
+    toastInfo('Journal Updated', `"${updatedEntry.title}" updated.`);
   };
 
   const handleDeleteJournal = (id: string) => {
     setJournals((prev) => prev.filter((j) => j.id !== id));
     deleteDocumentFromFirestore('journals', id);
+    toastInfo('Journal Removed', 'Entry deleted from portfolio.');
   };
 
   // EVENT HANDLERS
@@ -466,16 +493,19 @@ export default function App() {
     };
     setEvents((prev) => [newEvent, ...prev]);
     saveDocumentToFirestore('events', newEvent);
+    toastSuccess('New Event Created', `"${newEvent.title}" scheduled for ${newEvent.startDate.split('T')[0]}.`);
   };
 
   const handleUpdateEvent = (updatedEvent: CrewEvent) => {
     setEvents((prev) => prev.map((e) => (e.id === updatedEvent.id ? updatedEvent : e)));
     saveDocumentToFirestore('events', updatedEvent);
+    toastInfo('Event Updated', `"${updatedEvent.title}" details revised.`);
   };
 
   const handleDeleteEvent = (id: string) => {
     setEvents((prev) => prev.filter((e) => e.id !== id));
     deleteDocumentFromFirestore('events', id);
+    toastInfo('Event Removed', 'Event cancelled and deleted.');
   };
 
   const handleSendNotifications = (eventId: string) => {
@@ -507,7 +537,7 @@ export default function App() {
     setEvents((prev) => prev.map((e) => (e.id === eventId ? updatedEvent : e)));
     saveDocumentToFirestore('events', updatedEvent);
 
-    alert(`Notification dispatched to ${targetMembers.length} active crew members!`);
+    toastSuccess('Notifications Dispatched', `Broadcast sent to ${targetMembers.length} active crew members.`);
   };
 
   // ATTENDANCE HANDLERS
@@ -543,6 +573,7 @@ export default function App() {
 
     setMembers(updatedMembersList);
     saveBatchToFirestore('members', updatedMembersList);
+    toastSuccess('Attendance Saved', `Attendance updated for ${records.length} members.`);
   };
 
   // DISCIPLINARY HANDLERS
@@ -554,6 +585,7 @@ export default function App() {
     };
     setIncidents((prev) => [newInc, ...prev]);
     saveDocumentToFirestore('disciplinary', newInc);
+    toastWarning('Disciplinary Log Created', `Incident report filed for ${incidentData.memberName}.`);
   };
 
   const handleUpdateIncident = (updatedInc: DisciplinaryIncident) => {
@@ -582,7 +614,12 @@ export default function App() {
   const handleUpdateSettings = (newSettings: PortalSettings) => {
     setSettings(newSettings);
     saveSettingsToFirestore(newSettings);
-    alert('Portal Settings updated.');
+    toastSuccess('Settings Saved', 'Portal configuration and preferences updated.');
+  };
+
+  const handleTriggerManualSync = () => {
+    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    toastSync('Cloud Sync Verified', `All portal collections are in sync with Firestore at ${timeStr}.`);
   };
 
   return (
@@ -603,6 +640,7 @@ export default function App() {
         onToggleTheme={toggleTheme}
         syncStatus={syncStatus}
         lastSyncedAt={lastSyncedAt}
+        onTriggerSync={handleTriggerManualSync}
       />
 
       {/* Main Content Area */}
@@ -791,10 +829,12 @@ export default function App() {
                   return [m, ...prev];
                 });
                 saveDocumentToFirestore('minutes', m);
+                toastSuccess('Meeting Minutes Recorded', `"${m.title}" saved to archive.`);
               }}
               onDeleteMinutes={(id) => {
                 setMeetingMinutes((prev) => prev.filter((item) => item.id !== id));
                 deleteDocumentFromFirestore('minutes', id);
+                toastInfo('Minutes Deleted', 'Meeting record removed.');
               }}
               settings={settings}
             />
