@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, LogOut, LogIn, Shield, Building2 } from 'lucide-react';
+import { Crown, LogOut, LogIn, Shield, Building2, RefreshCw } from 'lucide-react';
 import {
   INITIAL_ORGANISATIONS,
   INITIAL_MEMBERS,
@@ -62,6 +62,7 @@ import { DisciplinaryModule } from './components/DisciplinaryModule';
 import { SettingsCrewModule } from './components/SettingsCrewModule';
 import { RoverPolicyModule } from './components/RoverPolicyModule';
 import { PaymentsModule } from './components/PaymentsModule';
+import { PlanRenewalModal } from './components/PlanRenewalModal';
 import { useToast } from './components/ToastContext';
 
 function getURLRouteState() {
@@ -157,6 +158,7 @@ export default function App() {
   });
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(initialRoute.showLogin);
   const [isOrgSignupOpen, setIsOrgSignupOpen] = useState<boolean>(initialRoute.showSignup);
+  const [isRenewalModalOpen, setIsRenewalModalOpen] = useState<boolean>(false);
   const [activeOrgContext, setActiveOrgContext] = useState<string>('all');
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -185,6 +187,18 @@ export default function App() {
     setCurrentMemberId(member.id);
     localStorage.setItem('arabiya_logged_member_id', member.id);
     setIsLoginModalOpen(false);
+
+    // Update members list & sync to Firestore if member details (e.g. password) were updated during login
+    setMembers((prev) =>
+      prev.map((m) => {
+        if (m.id === member.id) {
+          saveDocumentToFirestore('members', member);
+          return member;
+        }
+        return m;
+      })
+    );
+
     if (member.isSuperAdmin || member.councilRole === 'Superadmin') {
       setActiveTab('superadmin');
     }
@@ -446,6 +460,84 @@ export default function App() {
 
   const handleRejectOrg = (orgId: string) => {
     setOrganisations((prev) => prev.map((o) => (o.id === orgId ? { ...o, status: 'Rejected' } : o)));
+  };
+
+  const handleUpdateOrgValidity = (orgId: string, newValidity: string) => {
+    setOrganisations((prev) =>
+      prev.map((o) => {
+        if (o.id === orgId) {
+          const updated: Organisation = {
+            ...o,
+            planValidUntil: newValidity,
+            renewalStatus: 'Approved',
+          };
+          saveDocumentToFirestore('organisations', updated);
+          return updated;
+        }
+        return o;
+      })
+    );
+    toastSuccess('Plan Extended', `Organisation validity updated to ${newValidity}.`);
+  };
+
+  const handleUploadOrgRenewalReceipt = (
+    orgId: string,
+    receiptUrl: string,
+    receiptName: string,
+    requestedTerm: string,
+    notes?: string
+  ) => {
+    setOrganisations((prev) =>
+      prev.map((o) => {
+        if (o.id === orgId) {
+          const updated: Organisation = {
+            ...o,
+            renewalStatus: 'Pending Verification',
+            renewalReceiptUrl: receiptUrl,
+            renewalReceiptName: receiptName,
+            renewalRequestedTerm: requestedTerm,
+            renewalNotes: notes || '',
+            renewalSubmittedAt: new Date().toISOString().split('T')[0],
+          };
+          saveDocumentToFirestore('organisations', updated);
+          return updated;
+        }
+        return o;
+      })
+    );
+    toastSuccess('Renewal Submitted', 'Receipt uploaded and submitted to Superadmin for verification.');
+  };
+
+  const handleRejectOrgRenewal = (orgId: string) => {
+    setOrganisations((prev) =>
+      prev.map((o) => {
+        if (o.id === orgId) {
+          const updated: Organisation = {
+            ...o,
+            renewalStatus: 'Rejected',
+          };
+          saveDocumentToFirestore('organisations', updated);
+          return updated;
+        }
+        return o;
+      })
+    );
+    toastWarning('Renewal Rejected', 'Organisation renewal request was rejected.');
+  };
+
+  const handleUpdateOrg = (updatedOrg: Organisation) => {
+    setOrganisations((prev) =>
+      prev.map((o) => (o.id === updatedOrg.id ? updatedOrg : o))
+    );
+    saveDocumentToFirestore('organisations', updatedOrg);
+    toastSuccess('Organisation Updated', `Organisation "${updatedOrg.name}" details saved successfully.`);
+  };
+
+  const handleDeleteOrg = (orgId: string) => {
+    const target = organisations.find((o) => o.id === orgId);
+    setOrganisations((prev) => prev.filter((o) => o.id !== orgId));
+    deleteDocumentFromFirestore('organisations', orgId);
+    toastWarning('Organisation Deleted', `Organisation "${target?.name || orgId}" was removed.`);
   };
 
   const handleAddDirectOrg = (newOrgData: Omit<Organisation, 'id' | 'createdAt' | 'approvedAt'>) => {
@@ -817,6 +909,24 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-3 text-xs">
+            {activeOrgObj && activeOrgObj.plan !== 'Free' && (
+              <button
+                onClick={() => setIsRenewalModalOpen(true)}
+                className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition flex items-center gap-1.5 cursor-pointer ${
+                  activeOrgObj.renewalStatus === 'Pending Verification'
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
+                    : (activeOrgObj.planValidUntil && activeOrgObj.planValidUntil !== 'Indefinite' && activeOrgObj.planValidUntil < new Date().toISOString().split('T')[0])
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
+                    : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                }`}
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>
+                  Plan Valid: <strong>{activeOrgObj.planValidUntil || 'Pending'}</strong>
+                </span>
+              </button>
+            )}
+
             <button
               onClick={() => setIsOrgSignupOpen(true)}
               className="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
@@ -849,6 +959,10 @@ export default function App() {
               activeOrgContext={activeOrgContext}
               settings={settings}
               onUpdateSettings={handleUpdateSettings}
+              onUpdateOrgValidity={handleUpdateOrgValidity}
+              onRejectOrgRenewal={handleRejectOrgRenewal}
+              onUpdateOrg={handleUpdateOrg}
+              onDeleteOrg={handleDeleteOrg}
             />
           )}
 
@@ -1070,6 +1184,16 @@ export default function App() {
           setIsLoginModalOpen(true);
         }}
       />
+
+      {/* Plan Renewal & Validity Modal */}
+      {activeOrgObj && (
+        <PlanRenewalModal
+          isOpen={isRenewalModalOpen}
+          onClose={() => setIsRenewalModalOpen(false)}
+          organisation={activeOrgObj}
+          onSubmitRenewal={handleUploadOrgRenewalReceipt}
+        />
+      )}
     </div>
   );
 }

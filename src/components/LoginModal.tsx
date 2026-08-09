@@ -161,9 +161,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       return;
     }
 
-    // Check if initial login with default password "123456" or mustChangePassword flag
-    const isFirstTimeDefault =
-      cleanPassword === '123456' && (foundMember.mustChangePassword !== false || !foundMember.password);
+    // Force password change on first-time login if password is the default "123456" or mustChangePassword flag is true
+    const isFirstTimeDefault = cleanPassword === '123456';
 
     if (isFirstTimeDefault || foundMember.mustChangePassword) {
       setPendingMember(foundMember);
@@ -308,7 +307,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 </span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Rusul-us-salaam • Scout Association Portal
+                Kushafah Portal • Owned & Managed by Nazih
               </p>
             </div>
           </div>
@@ -670,7 +669,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
           <span className="flex items-center gap-1">
             <Shield className="w-3.5 h-3.5 text-emerald-400" /> Encrypted Organisation Session
           </span>
-          <span>Kushafah Portal • Rusul-us-salaam</span>
+          <span>Kushafah Portal • Owned by Nazih</span>
         </div>
       </div>
     </div>

@@ -89,6 +89,17 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
       return;
     }
 
+    let initialValidity = 'Indefinite';
+    if (plan === 'Monthly') {
+      const d = new Date();
+      d.setMonth(d.getMonth() + 1);
+      initialValidity = d.toISOString().split('T')[0];
+    } else if (plan === 'Annual') {
+      const d = new Date();
+      d.setFullYear(d.getFullYear() + 1);
+      initialValidity = d.toISOString().split('T')[0];
+    }
+
     onSignupSubmit({
       name: orgName.trim(),
       code: orgCode.trim().toUpperCase(),
@@ -101,6 +112,8 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
       paymentReceiptUrl,
       paymentReceiptName,
       paymentNotes: paymentNotes.trim(),
+      planValidUntil: initialValidity,
+      renewalStatus: 'None',
     });
 
     setIsSubmitted(true);
@@ -159,7 +172,7 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                 <div className="flex justify-between border-b border-slate-800 pb-1.5">
                   <span className="text-slate-400">Plan Selected:</span>
                   <span className="text-amber-400 font-bold">
-                    {plan === 'Free' ? 'Free Plan (Superadmin Exemption)' : plan === 'Monthly' ? 'Monthly Plan (MVR 20/mo)' : 'Annual Plan (MVR 200/yr)'}
+                    {plan === 'Free' ? 'Free Plan (Superadmin Exemption)' : plan === 'Monthly' ? 'Monthly Plan (MVR 40/mo)' : 'Annual Plan (MVR 400/yr)'}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -335,7 +348,7 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-sm text-slate-100">Monthly Plan</span>
                       <span className="bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded">
-                        MVR 20 / mo
+                        MVR 40 / mo
                       </span>
                     </div>
                     <p className="text-[10px] text-slate-400 mt-1">
@@ -360,11 +373,11 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-sm text-slate-100">Annual Plan</span>
                       <span className="bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold px-1.5 py-0.5 rounded">
-                        MVR 200 / yr
+                        MVR 400 / yr
                       </span>
                     </div>
                     <p className="text-[10px] text-slate-400 mt-1">
-                      Save MVR 40 annually with a full-year subscription. Payment receipt required.
+                      Save MVR 80 annually with a full-year subscription. Payment receipt required.
                     </p>
                   </div>
                   <div className="mt-3 text-[10px] font-semibold text-emerald-300">
@@ -383,12 +396,12 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                     <span>4. Upload Payment Receipt *</span>
                   </h3>
                   <span className="text-[10px] text-amber-400 font-mono">
-                    {plan === 'Monthly' ? 'MVR 20 Required' : 'MVR 200 Required'}
+                    {plan === 'Monthly' ? 'MVR 40 Required' : 'MVR 400 Required'}
                   </span>
                 </div>
 
                 <p className="text-[11px] text-slate-400">
-                  Please transfer payment to BML Scout Association Account (Account No: <strong className="text-slate-200 font-mono">7701122334401</strong>) and upload the transfer receipt below.
+                  Please transfer payment to BML Kushafah Portal Account (Account No: <strong className="text-slate-200 font-mono">7701122334401</strong>) and upload the transfer receipt below.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

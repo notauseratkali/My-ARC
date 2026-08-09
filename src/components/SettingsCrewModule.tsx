@@ -766,7 +766,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                     },
                     {
                       name: 'Islamic Green',
-                      role: 'Scout Association Flag',
+                      role: 'Portal Brand Flag',
                       hex: '#006B3F',
                       bg: 'bg-[#006B3F]',
                       border: 'border-[#006B3F]',

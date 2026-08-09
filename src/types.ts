@@ -16,6 +16,7 @@ export type CouncilRole =
 
 export type PlanType = 'Free' | 'Monthly' | 'Annual';
 export type OrgStatus = 'Active' | 'Pending Approval' | 'Suspended' | 'Rejected';
+export type RenewalStatus = 'None' | 'Pending Verification' | 'Approved' | 'Rejected';
 
 export interface Organisation {
   id: string;
@@ -33,7 +34,15 @@ export interface Organisation {
   paymentReceiptUrl?: string; // photo / base64 preview
   paymentReceiptName?: string;
   paymentNotes?: string;
-  subscriptionRenewalDate?: string;
+  
+  // Plan Validity & Renewal Verification
+  planValidUntil?: string; // e.g. "Indefinite", "2026-09-30", "2026-2027 Term"
+  renewalStatus?: RenewalStatus;
+  renewalReceiptUrl?: string;
+  renewalReceiptName?: string;
+  renewalNotes?: string;
+  renewalRequestedTerm?: string; // e.g., "+1 Month", "+1 Year", "2026-2027 Term"
+  renewalSubmittedAt?: string;
 }
 
 export type MemberStatus = 
