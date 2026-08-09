@@ -96,25 +96,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
     restricted?: boolean;
   }
 
-  const navItems: NavItem[] = [
-    ...(isSuperAdmin
-      ? [{ id: 'superadmin' as TabType, label: 'Superadmin Console', icon: <ShieldCheck className="w-5 h-5 text-purple-400" />, category: 'Main' as const, badge: 'Portal Admin' }]
-      : []),
-    { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" />, category: 'Main' },
-    { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5" />, category: 'Main' },
-    { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-5 h-5" />, category: 'Main' },
-    { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-5 h-5" />, category: 'Main', badge: settings?.aiEnabled ? 'AI' : undefined },
-    { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5" />, category: 'Operations' },
-    { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
-    { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
-    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-400" />, category: 'Operations' },
-    { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' },
-    ...(isCouncil ? [
-      { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true },
-      { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-indigo-400" />, category: 'Operations' as const },
-    ] : []),
-    { id: 'settings', label: isCouncil ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
-  ];
+  const navItems: NavItem[] = isSuperAdmin
+    ? [
+        { id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-purple-400" />, category: 'Main' as const, badge: 'Portal Admin' },
+        { id: 'payments' as TabType, label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' as const },
+        { id: 'audit' as TabType, label: 'Audit Trails & Logs', icon: <History className="w-5 h-5 text-indigo-400" />, category: 'Operations' as const },
+      ]
+    : [
+        { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" />, category: 'Main' },
+        { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5" />, category: 'Main' },
+        { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-5 h-5" />, category: 'Main' },
+        { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-5 h-5" />, category: 'Main', badge: settings?.aiEnabled ? 'AI' : undefined },
+        { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5" />, category: 'Operations' },
+        { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
+        { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
+        { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-400" />, category: 'Operations' },
+        { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' },
+        ...(isCouncil ? [
+          { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true },
+          { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-indigo-400" />, category: 'Operations' as const },
+        ] : []),
+        { id: 'settings', label: isCouncil ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
+      ];
 
   const categories = ['Main', 'Operations', 'System'] as const;
 

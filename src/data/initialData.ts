@@ -486,4 +486,55 @@ export const INITIAL_FEE_REQUESTS: FeeRequest[] = [
 
 export const INITIAL_PAYMENT_TRANSACTIONS: CrewPaymentTransaction[] = [];
 
+export const INITIAL_AUDIT_LOGS = [
+  {
+    id: 'log-1',
+    organisationId: 'org-kushafah',
+    action: 'Organisation Subscription Approved',
+    category: 'System' as const,
+    performedByMemberId: 'superadmin-1',
+    performedByMemberName: 'National Superadmin',
+    performedByRole: 'Superadmin',
+    targetName: 'Ameeniyya Rover Scout Organisation',
+    details: 'Approved Monthly Plan (MVR 40) registration after verifying BML bank transfer receipt.',
+    timestamp: '2026-02-11 10:15',
+  },
+  {
+    id: 'log-2',
+    organisationId: 'org-kushafah',
+    action: 'Rover Advisor Assigned',
+    category: 'Council Governance' as const,
+    performedByMemberId: 'superadmin-1',
+    performedByMemberName: 'National Superadmin',
+    performedByRole: 'Superadmin',
+    targetName: 'Nazih Nafiz',
+    details: 'Assigned as Rover Advisor and Lead Administrator for Ameeniyya Rover Crew.',
+    timestamp: '2026-02-11 10:20',
+  },
+  {
+    id: 'log-3',
+    organisationId: 'org-kushafah',
+    action: 'Annual Fee Drive Opened',
+    category: 'Finance' as const,
+    performedByMemberId: 'm-1',
+    performedByMemberName: 'Nazih Nafiz',
+    performedByRole: 'Rover Advisor',
+    targetName: '2026 Annual Member Dues',
+    details: 'Opened fee drive for MVR 150 per member.',
+    timestamp: '2026-02-12 14:00',
+  },
+  {
+    id: 'log-4',
+    organisationId: 'org-chse',
+    action: 'Plan Extension Processed',
+    category: 'System' as const,
+    performedByMemberId: 'superadmin-1',
+    performedByMemberName: 'National Superadmin',
+    performedByRole: 'Superadmin',
+    targetName: 'CHSE Rover Crew',
+    details: 'Verified MVR 40 bank receipt for 1-Month Term Extension.',
+    timestamp: '2026-08-01 09:30',
+  },
+];
+
 

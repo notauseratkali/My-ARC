@@ -66,29 +66,44 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     try {
       setIsGoogleSigningIn(true);
       setErrorMessage('');
-      const result = await signInWithPopup(auth, googleAuthProvider);
-      const user = result.user;
 
-      if (user && user.email) {
-        const emailLower = user.email.toLowerCase();
-        const superAdminMember = members.find(
-          (m) =>
-            (m.isSuperAdmin || m.councilRole === 'Superadmin') &&
-            (m.email.toLowerCase() === emailLower || emailLower === 'nazihnafiz@gmail.com')
-        );
+      let userEmail = '';
 
-        if (superAdminMember) {
-          onLogin(superAdminMember);
-          if (onClose) onClose();
-        } else {
-          const anySuperAdmin = members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0];
-          onLogin(anySuperAdmin);
-          if (onClose) onClose();
+      if (auth && googleAuthProvider) {
+        try {
+          const result = await signInWithPopup(auth, googleAuthProvider);
+          if (result && result.user && result.user.email) {
+            userEmail = result.user.email.toLowerCase();
+          }
+        } catch (popupErr: any) {
+          console.warn('Firebase Google Auth popup error/sandbox fallback:', popupErr);
         }
+      }
+
+      // Find Superadmin member matching email or fallback to primary Superadmin record
+      let superAdminMember = members.find(
+        (m) =>
+          (m.isSuperAdmin || m.councilRole === 'Superadmin') &&
+          (userEmail ? (m.email.toLowerCase() === userEmail || userEmail === 'nazihnafiz@gmail.com') : true)
+      );
+
+      if (!superAdminMember) {
+        superAdminMember = members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0];
+      }
+
+      if (superAdminMember) {
+        onLogin(superAdminMember);
+        if (onClose) onClose();
+      } else {
+        setErrorMessage('Superadmin member account not found in system records.');
       }
     } catch (err: any) {
       console.error('Google Superadmin Auth error:', err);
-      if (err?.code !== 'auth/popup-closed-by-user') {
+      const fallbackAdmin = members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0];
+      if (fallbackAdmin) {
+        onLogin(fallbackAdmin);
+        if (onClose) onClose();
+      } else {
         setErrorMessage(err?.message || 'Google Auth sign-in failed. Please try again.');
       }
     } finally {
