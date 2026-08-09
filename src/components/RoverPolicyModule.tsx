@@ -93,7 +93,7 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
 
     const newPoll: PolicyAmendmentPoll = {
       id: `poll-${Date.now()}`,
-      organisationId: currentMember?.organisationId || 'org-arabiyya',
+      organisationId: currentMember?.organisationId || 'org-kushafah',
       title: pollTitle,
       proposedBySecretaryName: currentMember?.name || 'Council Secretary',
       proposedBySecretaryId: currentMember?.id || 'm-3',

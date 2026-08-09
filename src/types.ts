@@ -20,11 +20,12 @@ export type OrgStatus = 'Active' | 'Pending Approval' | 'Suspended' | 'Rejected'
 export interface Organisation {
   id: string;
   name: string;
-  code: string; // e.g. "ARABIYYA", "AMINIYA", "CHSE"
+  code: string; // e.g. "KUSHAFAH", "AMINIYA", "CHSE" (Organisation Username)
   roverAdvisorName: string;
   roverAdvisorEmail: string;
   roverAdvisorNid: string;
   roverAdvisorPhone: string;
+  roverAdvisorPassword?: string;
   plan: PlanType;
   status: OrgStatus;
   createdAt: string;
@@ -74,6 +75,8 @@ export interface Member {
   attendanceExcused: number;
   avatar?: string;
   photoUrl?: string;
+  password?: string;
+  mustChangePassword?: boolean;
 }
 
 export type AwardType = "President's Scout Award" | 'Baden-Powell (BP) Award' | 'Auxiliary Badge';
@@ -336,6 +339,39 @@ export interface PaymentDetails {
   bankName: string;
 }
 
+export type PaymentStatus = 'Pending Verification' | 'Verified / Paid' | 'Rejected';
+
+export interface FeeRequest {
+  id: string;
+  organisationId?: string;
+  title: string;
+  category: 'Annual Dues' | 'Event Fee' | 'Uniform & Badges' | 'Equipment Fund' | 'Other';
+  amountMvr: number;
+  dueDate: string;
+  description: string;
+  createdBy: string;
+  createdAt: string;
+}
+
+export interface CrewPaymentTransaction {
+  id: string;
+  organisationId?: string;
+  feeRequestId?: string;
+  feeTitle: string;
+  memberId: string;
+  memberName: string;
+  amountMvr: number;
+  paymentMethod: 'Bank Transfer' | 'Cash / Offline';
+  referenceNumber?: string;
+  receiptUrl?: string; // photo / base64
+  receiptFileName?: string;
+  status: PaymentStatus;
+  submittedAt: string;
+  verifiedAt?: string;
+  verifiedBy?: string;
+  notes?: string;
+}
+
 export interface PortalSettings {
   aiEnabled: boolean;
   smsNotificationsEnabled: boolean;
@@ -346,5 +382,28 @@ export interface PortalSettings {
   councilPositions?: string[];
   rolePermissions?: Record<string, CouncilPermissionKey[]>;
   paymentDetails?: PaymentDetails;
+}
+
+export type AuditLogCategory =
+  | 'Member Management'
+  | 'Council Governance'
+  | 'Finance'
+  | 'Policy & Referendums'
+  | 'Disciplinary'
+  | 'Events & Attendance'
+  | 'System';
+
+export interface AuditLogEntry {
+  id: string;
+  organisationId?: string;
+  action: string;
+  category: AuditLogCategory;
+  performedByMemberId: string;
+  performedByMemberName: string;
+  performedByRole: string;
+  targetId?: string;
+  targetName?: string;
+  details: string;
+  timestamp: string;
 }
 

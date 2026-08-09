@@ -200,11 +200,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </h2>
             <p className="text-slate-400 text-sm mt-1 max-w-2xl">
               {isAdvisor ? (
-                <>Operating with supreme authority over <span className="text-purple-300 font-semibold">{settings?.networkName || 'Arabiyya Rover Network'}</span>. Administering crew/network decisions, executive council governance, and overall Scout Group operations across {crews.length} decentralized crews.</>
+                <>Operating with supreme authority over <span className="text-purple-300 font-semibold">{settings?.networkName || 'Kushafah Rover Network'}</span>. Administering crew/network decisions, executive council governance, and overall Scout Group operations across {crews.length} decentralized crews.</>
               ) : isCouncil ? (
-                <>Operating as <span className="text-emerald-400 font-semibold">{settings?.networkName || 'Arabiyya Rover Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating as <span className="text-emerald-400 font-semibold">{settings?.networkName || 'Kushafah Rover Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               ) : (
-                <>Operating as <span className="text-emerald-400 font-semibold">{currentMember?.crewName || settings?.crewName || 'Arabiyya Rover Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating as <span className="text-emerald-400 font-semibold">{currentMember?.crewName || settings?.crewName || 'Kushafah Rover Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               )}
             </p>
           </div>

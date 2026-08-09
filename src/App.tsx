@@ -14,6 +14,8 @@ import {
   INITIAL_SETTINGS,
   INITIAL_ROVER_POLICY,
   INITIAL_POLICY_POLLS,
+  INITIAL_FEE_REQUESTS,
+  INITIAL_PAYMENT_TRANSACTIONS,
 } from './data/initialData';
 import {
   Organisation,
@@ -30,6 +32,8 @@ import {
   RoverOperatingPolicy,
   PolicyAmendmentPoll,
   PolicyVote,
+  FeeRequest,
+  CrewPaymentTransaction,
 } from './types';
 import {
   initializeFirestoreDatabase,
@@ -57,6 +61,7 @@ import { MeetingMinutesModule } from './components/MeetingMinutesModule';
 import { DisciplinaryModule } from './components/DisciplinaryModule';
 import { SettingsCrewModule } from './components/SettingsCrewModule';
 import { RoverPolicyModule } from './components/RoverPolicyModule';
+import { PaymentsModule } from './components/PaymentsModule';
 import { useToast } from './components/ToastContext';
 
 function getURLRouteState() {
@@ -96,6 +101,9 @@ function getURLRouteState() {
   } else if (path.includes('policy') || hash.includes('policy') || search.includes('policy')) {
     tab = 'policy';
     if (isLoggedIn) showLogin = false;
+  } else if (path.includes('payment') || hash.includes('payment') || search.includes('payment')) {
+    tab = 'payments';
+    if (isLoggedIn) showLogin = false;
   } else if (path.includes('disciplinary') || hash.includes('disciplinary') || search.includes('disciplinary')) {
     tab = 'disciplinary';
     if (isLoggedIn) showLogin = false;
@@ -131,6 +139,8 @@ export default function App() {
   const [meetingMinutes, setMeetingMinutes] = useState<MeetingMinutes[]>(INITIAL_MEETING_MINUTES);
   const [policy, setPolicy] = useState<RoverOperatingPolicy>(INITIAL_ROVER_POLICY);
   const [polls, setPolls] = useState<PolicyAmendmentPoll[]>(INITIAL_POLICY_POLLS);
+  const [feeRequests, setFeeRequests] = useState<FeeRequest[]>(INITIAL_FEE_REQUESTS);
+  const [paymentTransactions, setPaymentTransactions] = useState<CrewPaymentTransaction[]>(INITIAL_PAYMENT_TRANSACTIONS);
   const [settings, setSettings] = useState<PortalSettings>(INITIAL_SETTINGS);
 
   // Real-time Firestore Sync Status
@@ -268,6 +278,14 @@ export default function App() {
       if (data.length > 0) setPolls(data);
     });
 
+    const unsubFeeRequests = subscribeToCollection<FeeRequest>('fee_requests', (data) => {
+      if (data.length > 0) setFeeRequests(data);
+    });
+
+    const unsubTransactions = subscribeToCollection<CrewPaymentTransaction>('payment_transactions', (data) => {
+      if (data.length > 0) setPaymentTransactions(data);
+    });
+
     const unsubSyncStatus = subscribeToSyncStatus((status, time) => {
       setSyncStatus(status);
       if (time) setLastSyncedAt(time);
@@ -294,6 +312,8 @@ export default function App() {
       unsubMinutes();
       unsubPolicy();
       unsubPolls();
+      unsubFeeRequests();
+      unsubTransactions();
       unsubSyncStatus();
     };
   }, []);
@@ -479,7 +499,7 @@ export default function App() {
     const newMember: Member = {
       ...newMemberData,
       id: newId,
-      organisationId: currentMember?.organisationId || 'org-arabiyya',
+      organisationId: currentMember?.organisationId || 'org-kushafah',
       crewName: crewObj ? crewObj.name : 'Unassigned Crew',
       attendanceUnexcused: 0,
       attendanceExcused: 0,
@@ -707,6 +727,50 @@ export default function App() {
     toastSync('Cloud Sync Verified', `All portal collections are in sync with Firestore at ${timeStr}.`);
   };
 
+  // PAYMENTS & DUES HANDLERS
+  const handleCreateFeeRequest = (newFee: FeeRequest) => {
+    setFeeRequests((prev) => [newFee, ...prev]);
+    saveDocumentToFirestore('fee_requests', newFee);
+    toastSuccess('Fee Drive Created', `"${newFee.title}" (MVR ${newFee.amountMvr}) opened for collection.`);
+  };
+
+  const handleSubmitPayment = (newTx: CrewPaymentTransaction) => {
+    setPaymentTransactions((prev) => [newTx, ...prev]);
+    saveDocumentToFirestore('payment_transactions', newTx);
+    toastSuccess('Payment Submitted', `Payment receipt for MVR ${newTx.amountMvr} submitted for verification.`);
+  };
+
+  const handleVerifyPayment = (txId: string, status: 'Verified' | 'Rejected', notes?: string) => {
+    setPaymentTransactions((prev) =>
+      prev.map((tx) => {
+        if (tx.id !== txId) return tx;
+        const updated: CrewPaymentTransaction = {
+          ...tx,
+          status,
+          verifiedBy: currentMember?.name || 'Council Member',
+          verifiedAt: new Date().toISOString().split('T')[0],
+          notes: notes ? `${tx.notes || ''} [Verification Note: ${notes}]` : tx.notes,
+        };
+        saveDocumentToFirestore('payment_transactions', updated);
+        return updated;
+      })
+    );
+    if (status === 'Verified') {
+      toastSuccess('Payment Verified', 'Payment status updated to Verified.');
+    } else {
+      toastWarning('Payment Rejected', 'Payment transaction marked as Rejected.');
+    }
+  };
+
+  const handleClearLocalData = () => {
+    if (window.confirm('Are you sure you want to clear all local saved data, session tokens, and member information? Cloud Firestore records will remain safe.')) {
+      localStorage.clear();
+      setCurrentMemberId(null);
+      setIsLoginModalOpen(true);
+      toastInfo('Local Storage Cleared', 'All local cached data and member session tokens have been cleared.');
+    }
+  };
+
   return (
     <div className={`min-h-screen bg-[#0F1115] text-slate-200 flex flex-col lg:flex-row font-sans selection:bg-emerald-500 selection:text-slate-950 ${theme === 'light' ? 'light-mode' : ''}`}>
       {/* Left Collapsible Sidebar */}
@@ -743,62 +807,32 @@ export default function App() {
               {activeTab === 'attendance' && 'Attendance & Absentee Reports'}
               {activeTab === 'minutes' && 'Secretary Meeting Minutes'}
               {activeTab === 'policy' && 'Rover Operating Policy & Democratic Referendums'}
+              {activeTab === 'payments' && 'Payments & Crew Dues Management'}
               {activeTab === 'disciplinary' && 'Disciplinary Incident Log'}
               {activeTab === 'settings' && (isCouncil ? 'Crew Settings & Council Permissions' : 'Personal Profile Settings')}
             </h2>
             <span className="text-xs text-slate-500 font-mono">
-              | {activeOrgObj ? activeOrgObj.name : 'Arabiyya Rovers Portal'}
+              | {activeOrgObj ? activeOrgObj.name : 'Kushafah Portal'}
             </span>
           </div>
 
           <div className="flex items-center gap-3 text-xs">
             <button
               onClick={() => setIsOrgSignupOpen(true)}
-              className="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
+              className="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
             >
               <Building2 className="w-3.5 h-3.5" />
               <span>Sign Up Organisation</span>
             </button>
 
-            {currentMemberId ? (
-              <>
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <span>Active Persona:</span>
-                  <strong className="text-slate-100 font-semibold">{currentMember.name}</strong>
-                </span>
-                {isSuperAdmin ? (
-                  <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded font-mono text-[10px] font-bold flex items-center gap-1">
-                    <Shield className="w-3 h-3 text-purple-300" />
-                    <span>Superadmin</span>
-                  </span>
-                ) : currentMember.councilRole === 'Rover Advisor' ? (
-                  <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded font-mono text-[10px] font-bold flex items-center gap-1">
-                    <Crown className="w-3 h-3 text-purple-300" />
-                    <span>Rover Advisor</span>
-                  </span>
-                ) : (
-                  <span className="bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2 py-0.5 rounded font-mono text-[10px] font-bold">
-                    {currentMember.councilRole}
-                  </span>
-                )}
-                <button
-                  onClick={handleLogout}
-                  className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2.5 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1 ml-1 cursor-pointer"
-                  title="Log out of current portal session"
-                >
-                  <LogOut className="w-3.5 h-3.5 text-rose-400" />
-                  <span>Log Out</span>
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setIsLoginModalOpen(true)}
-                className="bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3 py-1.5 rounded-xl transition text-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <LogIn className="w-3.5 h-3.5" />
-                <span>Log In Portal</span>
-              </button>
-            )}
+            <UserSwitcher
+              currentMember={currentMemberId ? currentMember : null}
+              allMembers={filteredMembers}
+              onSelectMember={(m) => handleLogin(m)}
+              onLogout={handleLogout}
+              onOpenLoginModal={() => setIsLoginModalOpen(true)}
+              onClearLocalData={handleClearLocalData}
+            />
           </div>
         </header>
 
@@ -938,6 +972,18 @@ export default function App() {
             />
           )}
 
+          {activeTab === 'payments' && (
+            <PaymentsModule
+              currentMember={currentMember}
+              members={filteredMembers}
+              feeRequests={feeRequests}
+              transactions={paymentTransactions}
+              onCreateFeeRequest={handleCreateFeeRequest}
+              onSubmitPayment={handleSubmitPayment}
+              onVerifyPayment={handleVerifyPayment}
+            />
+          )}
+
           {activeTab === 'disciplinary' && (
             isCouncil ? (
               <DisciplinaryModule
@@ -986,7 +1032,7 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-200">
-                {activeOrgObj ? activeOrgObj.name : 'Arabiyya Rover Crew'}
+                {activeOrgObj ? activeOrgObj.name : 'Kushafah Rover Crew'}
               </span>
               <span className="text-slate-500">• Governed by Rover Operating Policy</span>
             </div>

@@ -23,6 +23,8 @@ import {
   Lock,
   FileText,
   MapPin,
+  CreditCard,
+  History,
 } from 'lucide-react';
 import { hasPermission } from '../utils/permissions';
 
@@ -38,7 +40,9 @@ export type TabType =
   | 'attendance'
   | 'minutes'
   | 'policy'
+  | 'payments'
   | 'disciplinary'
+  | 'audit'
   | 'settings';
 
 interface SidebarProps {
@@ -104,7 +108,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
     { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
     { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-400" />, category: 'Operations' },
-    ...(isCouncil ? [{ id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true }] : []),
+    { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' },
+    ...(isCouncil ? [
+      { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true },
+      { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-indigo-400" />, category: 'Operations' as const },
+    ] : []),
     { id: 'settings', label: isCouncil ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
   ];
 
@@ -133,7 +141,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
           <div className="flex items-center gap-2">
             <Compass className="w-5 h-5 text-emerald-400" />
-            <span className="font-bold text-sm text-emerald-400">Arabiyya Rovers</span>
+            <span className="font-bold text-sm text-emerald-400">Kushafah Portal</span>
           </div>
         </div>
 
@@ -171,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {(!isCollapsed || isMobileOpen) && (
               <div className="min-w-0">
                 <h1 className="font-bold text-sm bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent truncate leading-tight">
-                  My Rovers
+                  Kushafah Portal
                 </h1>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className="text-[10px] text-amber-300/80 font-mono">ASG • Term {settings?.activeTerm || '1'}</span>

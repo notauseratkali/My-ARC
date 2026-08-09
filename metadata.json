@@ -1,6 +1,6 @@
 {
-  "name": "My Rovers",
-  "description": "Complete management portal for My Rovers crew, progression awards, personal portfolios, events, attendance, and disciplinary records.",
+  "name": "Kushafah Portal",
+  "description": "Kushafah Portal - Rusul-us-salaam complete management portal for Rover crews, progression awards, personal portfolios, events, attendance, and governance.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

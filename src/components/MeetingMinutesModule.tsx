@@ -74,7 +74,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
   const [formType, setFormType] = useState<MeetingType>('Council Executive Meeting');
   const [formDate, setFormDate] = useState(new Date().toISOString().split('T')[0]);
   const [formTime, setFormTime] = useState('20:00 - 21:30 MVT');
-  const [formLocation, setFormLocation] = useState("Arabiyya Scout HQ Conference Room");
+  const [formLocation, setFormLocation] = useState("Kushafah Scout HQ Conference Room");
   const [formChairperson, setFormChairperson] = useState(currentMember.name);
   const [formSecretary, setFormSecretary] = useState('Ibrahim Rizwan (Secretary)');
   const [formAttendees, setFormAttendees] = useState<string[]>([]);
@@ -145,7 +145,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
       setFormType('Council Executive Meeting');
       setFormDate(new Date().toISOString().split('T')[0]);
       setFormTime('20:00 - 21:30 MVT');
-      setFormLocation("Arabiyya Scout HQ Conference Room");
+      setFormLocation("Kushafah Scout HQ Conference Room");
       setFormChairperson('Zayd Ahmed (Chairperson)');
       setFormSecretary(`${currentMember.name} (Secretary)`);
       setFormAttendees(members.slice(0, 5).map((m) => m.name));

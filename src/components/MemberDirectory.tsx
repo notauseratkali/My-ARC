@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CertificateModal } from './CertificateModal';
 import { AdvisorGovernanceModal } from './AdvisorGovernanceModal';
-import { Member, Section, MemberStatus, Gender, SubCrew, MemberRequirementProgress, SyllabusRequirement, PortalSettings } from '../types';
+import { Member, Section, MemberStatus, Gender, SubCrew, MemberRequirementProgress, SyllabusRequirement, PortalSettings, AuditLogCategory } from '../types';
 import { PRESET_AVATARS, getPlaceholderAvatar } from '../utils/avatarUtils';
 import {
   Users,
@@ -47,6 +47,7 @@ interface MemberDirectoryProps {
   onAddMember: (newMember: Omit<Member, 'id'>) => void;
   onUpdateMember: (updatedMember: Member) => void;
   onDeleteMember?: (id: string) => void;
+  onLogAudit?: (action: string, category: AuditLogCategory, details: string, targetId?: string, targetName?: string) => void;
 }
 
 export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
@@ -60,6 +61,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
   onAddMember,
   onUpdateMember,
   onDeleteMember,
+  onLogAudit,
 }) => {
   const [isAdvisorModalOpen, setIsAdvisorModalOpen] = useState(false);
   const [sectionFilter, setSectionFilter] = useState<Section | 'All'>('All');
@@ -129,6 +131,80 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
     avatar: '',
     photoUrl: '',
   });
+
+  // Modal State for Council Editing Member Details
+  const [isEditMemberModalOpen, setIsEditMemberModalOpen] = useState(false);
+  const [editMemberData, setEditMemberData] = useState<Member | null>(null);
+
+  const handleOpenEditMember = (memberToEdit: Member) => {
+    setEditMemberData({ ...memberToEdit });
+    setIsEditMemberModalOpen(true);
+  };
+
+  const handleSaveEditMember = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editMemberData) return;
+
+    if (!editMemberData.name || !editMemberData.idCard || !editMemberData.dob) {
+      alert('Name, ID Card Number, and Date of Birth are required fields.');
+      return;
+    }
+
+    // Recalculate age from DOB
+    const birthDate = new Date(editMemberData.dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    const crewObj = crews.find((c) => c.id === editMemberData.crewId);
+    const updated: Member = {
+      ...editMemberData,
+      age,
+      crewName: crewObj ? crewObj.name : editMemberData.crewName,
+    };
+
+    // Find original member to produce diff for audit log
+    const oldMember = members.find((m) => m.id === updated.id);
+    const diffs: string[] = [];
+    if (oldMember) {
+      if (oldMember.name !== updated.name) diffs.push(`Name ("${oldMember.name}" → "${updated.name}")`);
+      if (oldMember.idCard !== updated.idCard) diffs.push(`ID Card ("${oldMember.idCard}" → "${updated.idCard}")`);
+      if (oldMember.dob !== updated.dob) diffs.push(`DOB ("${oldMember.dob}" → "${updated.dob}")`);
+      if (oldMember.section !== updated.section) diffs.push(`Section ("${oldMember.section}" → "${updated.section}")`);
+      if (oldMember.councilRole !== updated.councilRole) diffs.push(`Council Role ("${oldMember.councilRole}" → "${updated.councilRole}")`);
+      if (oldMember.crewId !== updated.crewId) diffs.push(`Sub-Crew ("${oldMember.crewName}" → "${updated.crewName}")`);
+      if (oldMember.status !== updated.status) diffs.push(`Status ("${oldMember.status}" → "${updated.status}")`);
+      if (oldMember.mobile !== updated.mobile) diffs.push(`Mobile ("${oldMember.mobile}" → "${updated.mobile}")`);
+      if (oldMember.email !== updated.email) diffs.push(`Email ("${oldMember.email}" → "${updated.email}")`);
+      if (oldMember.permAddress !== updated.permAddress) diffs.push(`Perm Address ("${oldMember.permAddress}" → "${updated.permAddress}")`);
+      if (oldMember.currAddress !== updated.currAddress) diffs.push(`Current Address ("${oldMember.currAddress}" → "${updated.currAddress}")`);
+      if (oldMember.emergencyContactName !== updated.emergencyContactName) diffs.push(`Emergency Contact ("${oldMember.emergencyContactName}" → "${updated.emergencyContactName}")`);
+      if (oldMember.emergencyContactNumber !== updated.emergencyContactNumber) diffs.push(`Emergency Phone ("${oldMember.emergencyContactNumber}" → "${updated.emergencyContactNumber}")`);
+    }
+
+    const diffSummary = diffs.length > 0 ? diffs.join(', ') : 'Updated profile photo or minor details';
+
+    onUpdateMember(updated);
+    if (selectedMember && selectedMember.id === updated.id) {
+      setSelectedMember(updated);
+    }
+
+    if (onLogAudit) {
+      onLogAudit(
+        'Updated Member Profile Details',
+        'Member Management',
+        `Edited member record for ${updated.name} (${updated.councilRole}): ${diffSummary}`,
+        updated.id,
+        updated.name
+      );
+    }
+
+    setIsEditMemberModalOpen(false);
+    alert(`Member details for "${updated.name}" updated successfully and logged to council audit trail.`);
+  };
 
   const isCouncil = currentMember.councilRole !== 'Member';
 
@@ -965,22 +1041,36 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
               );
             })()}
 
-            <div className="flex justify-between items-center pt-2 border-t border-slate-800">
-              {onDeleteMember ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (confirm(`Are you sure you want to delete member "${selectedMember.name}"?`)) {
-                      onDeleteMember(selectedMember.id);
-                      setSelectedMember(null);
-                    }
-                  }}
-                  className="bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500/20 text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center gap-1.5"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  <span>Delete Member Record</span>
-                </button>
-              ) : <div />}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-800">
+              <div className="flex items-center gap-2">
+                {onDeleteMember && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (confirm(`Are you sure you want to delete member "${selectedMember.name}"?`)) {
+                        onDeleteMember(selectedMember.id);
+                        setSelectedMember(null);
+                      }
+                    }}
+                    className="bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500/20 text-xs font-semibold px-3.5 py-2 rounded-xl transition flex items-center gap-1.5"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Delete Record</span>
+                  </button>
+                )}
+
+                {isCouncil && (
+                  <button
+                    type="button"
+                    onClick={() => handleOpenEditMember(selectedMember)}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition shadow flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    <span>Edit Member Details</span>
+                  </button>
+                )}
+              </div>
+
               <button
                 onClick={() => setSelectedMember(null)}
                 className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-5 py-2 rounded-xl transition"
@@ -1290,6 +1380,295 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
         settings={settings}
         onUpdateSettings={onUpdateSettings}
       />
+
+      {/* Council Edit Member Details Modal */}
+      {isEditMemberModalOpen && editMemberData && (
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <form
+            onSubmit={handleSaveEditMember}
+            className="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl p-6 text-slate-100 space-y-5 animate-fadeIn my-auto"
+          >
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-lg font-bold font-serif text-slate-100">
+                  Council Control: Edit Member Profile Details
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsEditMemberModalOpen(false)}
+                className="text-slate-400 hover:text-white p-1"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs p-3 rounded-xl flex items-center gap-2">
+              <Shield className="w-4 h-4 text-amber-400 flex-shrink-0" />
+              <span>
+                <strong>Audit Compliance:</strong> All changes made to this member's profile will be recorded automatically in the Council Audit Log with your timestamp and member ID.
+              </span>
+            </div>
+
+            {/* 1. Identity & Section */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-emerald-400 uppercase tracking-wider font-mono border-b border-slate-800 pb-1">
+                1. Personal Identity & Scouting Section
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editMemberData.name}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, name: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">National ID Card Number *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editMemberData.idCard}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, idCard: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Date of Birth *</label>
+                  <input
+                    type="date"
+                    required
+                    value={editMemberData.dob}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, dob: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Gender</label>
+                  <select
+                    value={editMemberData.gender}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, gender: e.target.value as Gender })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Scouting Section</label>
+                  <select
+                    value={editMemberData.section}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, section: e.target.value as Section })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-emerald-400 font-bold focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="Explorer">Explorer Section (&lt;18)</option>
+                    <option value="Rover">Rover Section (18-26)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Assigned Sub-Crew</label>
+                  <select
+                    value={editMemberData.crewId}
+                    onChange={(e) => {
+                      const selectedCrew = crews.find((c) => c.id === e.target.value);
+                      setEditMemberData({
+                        ...editMemberData,
+                        crewId: e.target.value,
+                        crewName: selectedCrew ? selectedCrew.name : editMemberData.crewName,
+                      });
+                    }}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  >
+                    {crews.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name} ({c.location})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* 2. Governance Role & Status */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-amber-400 uppercase tracking-wider font-mono border-b border-slate-800 pb-1">
+                2. Governance Role & Lifecycle Status
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Council Role / Position</label>
+                  <select
+                    value={editMemberData.councilRole}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, councilRole: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-amber-300 font-bold focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="Member">Member (General)</option>
+                    <option value="Chairperson">Chairperson</option>
+                    <option value="Vice Chairperson">Vice Chairperson</option>
+                    <option value="Secretary">Secretary</option>
+                    <option value="Treasurer">Treasurer</option>
+                    <option value="Event Coordinator">Event Coordinator</option>
+                    <option value="Progress Coordinator">Progress Coordinator</option>
+                    <option value="Media Coordinator">Media Coordinator</option>
+                    <option value="Rover Advisor">Rover Advisor</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Lifecycle Status</label>
+                  <select
+                    value={editMemberData.status}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, status: e.target.value as MemberStatus })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-semibold focus:outline-none focus:border-emerald-500"
+                  >
+                    <option value="Onboarding">Onboarding</option>
+                    <option value="Active">Active</option>
+                    <option value="Suspended">Suspended</option>
+                    <option value="Terminated">Terminated</option>
+                    <option value="Resigned">Resigned</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Active Term / Year</label>
+                  <input
+                    type="text"
+                    value={editMemberData.term}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, term: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 font-mono"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Contact Details */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-sky-400 uppercase tracking-wider font-mono border-b border-slate-800 pb-1">
+                3. Contact Information & Addresses
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Email Address</label>
+                  <input
+                    type="email"
+                    value={editMemberData.email}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, email: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Mobile Phone Number</label>
+                  <input
+                    type="text"
+                    value={editMemberData.mobile}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, mobile: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Permanent Address</label>
+                  <input
+                    type="text"
+                    value={editMemberData.permAddress}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, permAddress: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Current Residence Address</label>
+                  <input
+                    type="text"
+                    value={editMemberData.currAddress}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, currAddress: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* 4. Emergency Contacts & Socials */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold text-rose-400 uppercase tracking-wider font-mono border-b border-slate-800 pb-1">
+                4. Emergency Contacts & Messaging Accounts
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Emergency Contact Person Name</label>
+                  <input
+                    type="text"
+                    value={editMemberData.emergencyContactName}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, emergencyContactName: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Emergency Contact Phone Number</label>
+                  <input
+                    type="text"
+                    value={editMemberData.emergencyContactNumber}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, emergencyContactNumber: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-mono focus:outline-none focus:border-emerald-500 text-amber-300"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">Telegram Username</label>
+                  <input
+                    type="text"
+                    placeholder="@username"
+                    value={editMemberData.telegram || ''}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, telegram: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-slate-300 font-medium mb-1">WhatsApp Mobile Number</label>
+                  <input
+                    type="text"
+                    placeholder="+960..."
+                    value={editMemberData.whatsapp || ''}
+                    onChange={(e) => setEditMemberData({ ...editMemberData, whatsapp: e.target.value })}
+                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={() => setIsEditMemberModalOpen(false)}
+                className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl transition"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-5 py-2 rounded-xl shadow-lg transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                <span>Save Member Profile Updates</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 };

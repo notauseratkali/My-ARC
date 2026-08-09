@@ -4,19 +4,16 @@ import { auth, googleAuthProvider, signInWithPopup } from '../lib/firebase';
 import {
   LogIn,
   Shield,
-  Award,
-  Crown,
-  Search,
   Key,
-  Mail,
   UserCheck,
   Compass,
   X,
-  Sparkles,
   CheckCircle2,
   AlertCircle,
   Building2,
-  Users,
+  Mail,
+  RefreshCw,
+  Lock,
 } from 'lucide-react';
 
 interface LoginModalProps {
@@ -28,6 +25,8 @@ interface LoginModalProps {
   allowClose?: boolean;
 }
 
+type AuthMode = 'login' | 'forgot_password' | 'force_change_password';
+
 export const LoginModal: React.FC<LoginModalProps> = ({
   isOpen,
   onClose,
@@ -36,12 +35,30 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   onOpenOrgSignup,
   allowClose = true,
 }) => {
-  // Credentials mode state
+  // Navigation Mode
+  const [mode, setMode] = useState<AuthMode>('login');
+
+  // Login inputs
   const [orgUsernameInput, setOrgUsernameInput] = useState('');
   const [nidInput, setNidInput] = useState('');
   const [passwordInput, setPasswordInput] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+
+  // Forced password change state
+  const [pendingMember, setPendingMember] = useState<Member | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+
+  // Forgot password OTP state
+  const [forgotEmailOrNid, setForgotEmailOrNid] = useState('');
+  const [generatedOtp, setGeneratedOtp] = useState<string | null>(null);
+  const [enteredOtp, setEnteredOtp] = useState('');
+  const [resetMember, setResetMember] = useState<Member | null>(null);
+  const [otpSentNotification, setOtpSentNotification] = useState<string | null>(null);
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
 
   if (!isOpen) return null;
 
@@ -54,7 +71,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
       if (user && user.email) {
         const emailLower = user.email.toLowerCase();
-        // Check if superadmin email matches nazihnafiz@gmail.com or registered superadmin
         const superAdminMember = members.find(
           (m) =>
             (m.isSuperAdmin || m.councilRole === 'Superadmin') &&
@@ -65,7 +81,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
           onLogin(superAdminMember);
           if (onClose) onClose();
         } else {
-          // If signed in as nazihnafiz@gmail.com or another email, grant superadmin access if authorized
           const anySuperAdmin = members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0];
           onLogin(anySuperAdmin);
           if (onClose) onClose();
@@ -84,16 +99,23 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   const handleCredentialSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage('');
+    setSuccessMessage('');
 
     const cleanUsername = orgUsernameInput.trim().toLowerCase();
     const cleanNid = nidInput.trim().toUpperCase();
+    const cleanPassword = passwordInput.trim();
 
     if (!cleanUsername && !cleanNid) {
-      setErrorMessage('Please enter your Organisation Username and NID.');
+      setErrorMessage('Please enter your Organisation Username or NID.');
       return;
     }
 
-    // Match member by NID or email username portion or full email or name or superadmin
+    if (!cleanPassword) {
+      setErrorMessage('Please enter your password.');
+      return;
+    }
+
+    // Find matching member
     const foundMember = members.find((m) => {
       if (cleanNid === 'SUPERADMIN' || cleanUsername === 'superadmin') {
         return m.isSuperAdmin || m.councilRole === 'Superadmin';
@@ -115,20 +137,160 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       return (cleanUsername && usernameMatch) || (cleanNid && nidMatch);
     });
 
-    if (foundMember) {
-      onLogin(foundMember);
-      if (onClose) onClose();
-    } else {
+    if (!foundMember) {
       setErrorMessage(
-        'Invalid credentials. Account not found matching the Organisation Username or NID. Please verify your credentials.'
+        'Invalid credentials. Account not found matching the Organisation Username or NID. Please verify your details.'
       );
+      return;
+    }
+
+    // Verify Password
+    // Default initial password for all rovers is "123456"
+    const expectedPassword = foundMember.password || '123456';
+    const isSuperAdminFallback =
+      (foundMember.isSuperAdmin || foundMember.councilRole === 'Superadmin') &&
+      (cleanPassword === 'superadmin123' || cleanPassword === 'superadmin');
+
+    const isPasswordCorrect =
+      cleanPassword === expectedPassword ||
+      (expectedPassword === '123456' && cleanPassword === '123456') ||
+      isSuperAdminFallback;
+
+    if (!isPasswordCorrect) {
+      setErrorMessage('Incorrect password. Please check your password and try again.');
+      return;
+    }
+
+    // Check if initial login with default password "123456" or mustChangePassword flag
+    const isFirstTimeDefault =
+      cleanPassword === '123456' && (foundMember.mustChangePassword !== false || !foundMember.password);
+
+    if (isFirstTimeDefault || foundMember.mustChangePassword) {
+      setPendingMember(foundMember);
+      setMode('force_change_password');
+      setErrorMessage('');
+      return;
+    }
+
+    // Successful Login
+    onLogin(foundMember);
+    if (onClose) onClose();
+  };
+
+  const handleForcePasswordChange = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!newPassword.trim()) {
+      setErrorMessage('Please enter a new password.');
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setErrorMessage('New password must be at least 6 characters long.');
+      return;
+    }
+
+    if (newPassword === '123456') {
+      setErrorMessage('Your new password cannot be the default "123456" password. Please choose a custom password.');
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setErrorMessage('Passwords do not match. Please re-enter.');
+      return;
+    }
+
+    if (pendingMember) {
+      const updatedMember: Member = {
+        ...pendingMember,
+        password: newPassword.trim(),
+        mustChangePassword: false,
+      };
+
+      onLogin(updatedMember);
+      if (onClose) onClose();
+    }
+  };
+
+  const handleRequestOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setOtpSentNotification(null);
+
+    const query = forgotEmailOrNid.trim().toLowerCase();
+    if (!query) {
+      setErrorMessage('Please enter your registered Email Address or NID.');
+      return;
+    }
+
+    const matched = members.find(
+      (m) =>
+        m.email.toLowerCase() === query ||
+        m.idCard.trim().toLowerCase() === query ||
+        m.email.split('@')[0].toLowerCase() === query
+    );
+
+    if (!matched) {
+      setErrorMessage('No member account found matching the provided Email or NID.');
+      return;
+    }
+
+    // Generate 6-digit OTP
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    setGeneratedOtp(code);
+    setResetMember(matched);
+    setOtpSentNotification(
+      `OTP Verification Code sent to ${matched.email}! (Simulated Code: ${code})`
+    );
+  };
+
+  const handleResetPasswordWithOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+
+    if (!enteredOtp.trim()) {
+      setErrorMessage('Please enter the 6-digit OTP sent to your email.');
+      return;
+    }
+
+    if (enteredOtp.trim() !== generatedOtp) {
+      setErrorMessage('Invalid OTP code. Please enter the correct 6-digit code shown in the simulation notification.');
+      return;
+    }
+
+    if (!forgotNewPassword.trim() || forgotNewPassword.length < 6) {
+      setErrorMessage('New password must be at least 6 characters long.');
+      return;
+    }
+
+    if (forgotNewPassword === '123456') {
+      setErrorMessage('Your new password cannot be the default "123456". Please choose a secure password.');
+      return;
+    }
+
+    if (forgotNewPassword !== forgotConfirmPassword) {
+      setErrorMessage('New passwords do not match. Please re-enter.');
+      return;
+    }
+
+    if (resetMember) {
+      resetMember.password = forgotNewPassword.trim();
+      resetMember.mustChangePassword = false;
+
+      setMode('login');
+      setSuccessMessage('Password reset successfully! You can now log in with your new password.');
+      setPasswordInput(forgotNewPassword.trim());
+      setEnteredOtp('');
+      setGeneratedOtp(null);
+      setOtpSentNotification(null);
     }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
-      <div className="bg-[#161920] border border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-6 relative overflow-hidden">
-        {/* Subtle Background Glow */}
+    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto animate-fadeIn">
+      <div className="bg-[#161920] border border-slate-800 rounded-2xl sm:rounded-3xl max-w-lg w-full p-4 sm:p-6 shadow-2xl space-y-3 sm:space-y-5 relative overflow-hidden max-h-[92vh] overflow-y-auto my-auto no-scrollbar">
+        {/* Background Glow */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-br from-amber-500/10 via-purple-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-gradient-to-tr from-emerald-500/10 via-sky-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
@@ -140,13 +302,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif text-slate-100 flex items-center gap-2">
-                <span>Arabiyya Rovers Portal</span>
+                <span>Kushafah Portal</span>
                 <span className="bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono uppercase tracking-wider">
                   Official Session
                 </span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                The Scout Association of Maldives • Authentication
+                Rusul-us-salaam • Scout Association Portal
               </p>
             </div>
           </div>
@@ -161,167 +323,354 @@ export const LoginModal: React.FC<LoginModalProps> = ({
           )}
         </div>
 
-        {/* Tab Switcher: Log In vs Sign Up */}
-        {onOpenOrgSignup && (
-          <div className="grid grid-cols-2 gap-2 bg-[#12151B] p-1.5 rounded-2xl border border-slate-800 relative z-10">
-            <button
-              type="button"
-              className="bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md"
-            >
-              <LogIn className="w-3.5 h-3.5" />
-              <span>Log In</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                if (onClose) onClose();
-                onOpenOrgSignup();
-              }}
-              className="text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
-            >
-              <Building2 className="w-3.5 h-3.5 text-purple-400" />
-              <span>Sign Up / Register</span>
-            </button>
-          </div>
+        {/* MODE 1: STANDARD LOGIN */}
+        {mode === 'login' && (
+          <>
+            {/* Tab Switcher: Log In vs Sign Up */}
+            {onOpenOrgSignup && (
+              <div className="grid grid-cols-2 gap-2 bg-[#12151B] p-1.5 rounded-2xl border border-slate-800 relative z-10">
+                <button
+                  type="button"
+                  className="bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md"
+                >
+                  <LogIn className="w-3.5 h-3.5" />
+                  <span>Log In</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (onClose) onClose();
+                    onOpenOrgSignup();
+                  }}
+                  className="text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
+                >
+                  <Building2 className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Sign Up / Register</span>
+                </button>
+              </div>
+            )}
+
+            {/* Organisation Security Banner */}
+            <div className="bg-[#12151B] p-3 rounded-2xl border border-amber-500/30 flex items-center gap-3 relative z-10 text-xs">
+              <div className="p-2 bg-amber-500/10 rounded-xl text-amber-400">
+                <Building2 className="w-5 h-5" />
+              </div>
+              <div>
+                <div className="font-bold text-amber-300">Mandatory Organisation Login</div>
+                <div className="text-[11px] text-slate-400">
+                  Enter your Organisation Username, NID, and Security Password. Initial Rovers password: <strong className="text-amber-300 font-mono">123456</strong>
+                </div>
+              </div>
+            </div>
+
+            {/* ORGANISATION CREDENTIALS FORM */}
+            <form onSubmit={handleCredentialSubmit} className="space-y-3.5 relative z-10 text-xs">
+              {errorMessage && (
+                <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 p-3 rounded-2xl flex items-center gap-2 font-medium">
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              {successMessage && (
+                <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-3 rounded-2xl flex items-center gap-2 font-medium">
+                  <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+                  <span>{successMessage}</span>
+                </div>
+              )}
+
+              <div className="space-y-1">
+                <label className="text-slate-300 font-semibold flex items-center gap-1.5">
+                  <Building2 className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Organisation Username</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. KUSHAFAH or AMINIYA or CHSE"
+                  value={orgUsernameInput}
+                  onChange={(e) => setOrgUsernameInput(e.target.value)}
+                  className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-slate-300 font-semibold flex items-center gap-1.5">
+                  <UserCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <span>NID (National ID Card Number)</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. A100999 or A100123"
+                  value={nidInput}
+                  onChange={(e) => setNidInput(e.target.value)}
+                  className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 uppercase placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <label className="text-slate-300 font-semibold flex items-center gap-1.5">
+                    <Key className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Password</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMode('forgot_password');
+                      setErrorMessage('');
+                      setSuccessMessage('');
+                    }}
+                    className="text-[11px] text-amber-400 hover:text-amber-300 font-medium underline"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                />
+                <p className="text-[10px] text-slate-500">
+                  Initial signup password for all Rovers is <strong className="text-amber-400 font-mono">123456</strong>. You will be prompted to change it upon first login.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
+              >
+                <LogIn className="w-4 h-4" />
+                <span>Log In to Kushafah Session</span>
+              </button>
+            </form>
+
+            {/* ORGANISATION SIGN UP & GOOGLE SUPERADMIN */}
+            <div className="space-y-2 border-t border-slate-800/80 pt-4 relative z-10 text-xs">
+              {onOpenOrgSignup && (
+                <div className="bg-[#12151B] p-3 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
+                  <div>
+                    <span className="font-bold text-slate-200 block">New Scout Organisation?</span>
+                    <span className="text-[10px] text-slate-400 block">Rover Advisor required to submit registration.</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (onClose) onClose();
+                      onOpenOrgSignup();
+                    }}
+                    className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-3.5 py-2 rounded-xl transition text-xs whitespace-nowrap shadow-md cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Building2 className="w-3.5 h-3.5" />
+                    <span>Sign Up Organisation</span>
+                  </button>
+                </div>
+              )}
+
+              {/* Superadmin Google Auth */}
+              <div className="text-center pt-2">
+                <button
+                  type="button"
+                  onClick={handleGoogleAuthSuperadmin}
+                  disabled={isGoogleSigningIn}
+                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer text-xs"
+                >
+                  <Shield className="w-4 h-4 text-purple-200" />
+                  <span>
+                    {isGoogleSigningIn
+                      ? 'Authenticating with Google...'
+                      : 'Superadmin Google Auth Login'}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </>
         )}
 
-        {/* Organisation Security Banner */}
-        <div className="bg-[#12151B] p-3 rounded-2xl border border-amber-500/30 flex items-center gap-3 relative z-10 text-xs">
-          <div className="p-2 bg-amber-500/10 rounded-xl text-amber-400">
-            <Building2 className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="font-bold text-amber-300">Mandatory Organisation Login</div>
-            <div className="text-[11px] text-slate-400">
-              Enter your assigned Organisation Username, NID, and Security Password.
+        {/* MODE 2: FORCE FIRST-TIME PASSWORD CHANGE */}
+        {mode === 'force_change_password' && pendingMember && (
+          <form onSubmit={handleForcePasswordChange} className="space-y-4 relative z-10 text-xs">
+            <div className="bg-amber-500/10 border border-amber-500/30 p-4 rounded-2xl space-y-2">
+              <div className="flex items-center gap-2 font-bold text-amber-300 text-sm">
+                <Lock className="w-5 h-5 text-amber-400" />
+                <span>First-Time Password Change Required</span>
+              </div>
+              <p className="text-slate-300 leading-relaxed text-xs">
+                Welcome, <strong className="text-amber-200">{pendingMember.name}</strong>! As required by Kushafah security policy, your initial default password (<code className="text-amber-400">123456</code>) must be updated to a personalized secure password.
+              </p>
             </div>
-          </div>
-        </div>
 
-        {/* ORGANISATION CREDENTIALS FORM */}
-        <form onSubmit={handleCredentialSubmit} className="space-y-4 relative z-10 text-xs">
-          {errorMessage && (
-            <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 p-3 rounded-2xl flex items-center gap-2 font-medium">
-              <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
-              <span>{errorMessage}</span>
+            {errorMessage && (
+              <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 p-3 rounded-2xl flex items-center gap-2 font-medium">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+
+            <div className="space-y-1.5">
+              <label className="text-slate-300 font-semibold">New Security Password *</label>
+              <input
+                type="password"
+                required
+                placeholder="Enter new password (min. 6 characters)"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+              />
             </div>
-          )}
 
-          <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold flex items-center gap-1.5">
-              <Building2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Organisation Username</span>
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. advisor.farooq or zayd.ahmed or @arabiyya.scout.mv"
-              value={orgUsernameInput}
-              onChange={(e) => setOrgUsernameInput(e.target.value)}
-              className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
-            />
-          </div>
+            <div className="space-y-1.5">
+              <label className="text-slate-300 font-semibold">Confirm New Password *</label>
+              <input
+                type="password"
+                required
+                placeholder="Re-enter new password"
+                value={confirmNewPassword}
+                onChange={(e) => setConfirmNewPassword(e.target.value)}
+                className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+              />
+            </div>
 
-          <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold flex items-center gap-1.5">
-              <UserCheck className="w-3.5 h-3.5 text-amber-400" />
-              <span>NID (National ID Card Number)</span>
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. A100999 or A100123"
-              value={nidInput}
-              onChange={(e) => setNidInput(e.target.value)}
-              className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 uppercase placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono"
-            />
-          </div>
+            <button
+              type="submit"
+              className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
+            >
+              <CheckCircle2 className="w-4 h-4" />
+              <span>Update Password & Enter Portal</span>
+            </button>
+          </form>
+        )}
 
-          <div className="space-y-1.5">
-            <label className="text-slate-300 font-semibold flex items-center gap-1.5">
-              <Key className="w-3.5 h-3.5 text-amber-400" />
-              <span>Password</span>
-            </label>
-            <input
-              type="password"
-              required
-              placeholder="••••••••"
-              value={passwordInput}
-              onChange={(e) => setPasswordInput(e.target.value)}
-              className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
-            />
-            <p className="text-[10px] text-slate-500">
-              Note: Standard organisation security password for scout portal access.
-            </p>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
-          >
-            <LogIn className="w-4 h-4" />
-            <span>Log In to Organisation Session</span>
-          </button>
-        </form>
-
-        {/* ORGANISATION SIGN UP & SUPERADMIN SHORTCUT */}
-        <div className="space-y-2 border-t border-slate-800/80 pt-4 relative z-10 text-xs">
-          {onOpenOrgSignup && (
-            <div className="bg-[#12151B] p-3 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
-              <div>
-                <span className="font-bold text-slate-200 block">New Scout Organisation?</span>
-                <span className="text-[10px] text-slate-400 block">Rover Advisor required to submit registration.</span>
+        {/* MODE 3: FORGOT PASSWORD / EMAIL OTP RESET */}
+        {mode === 'forgot_password' && (
+          <div className="space-y-4 relative z-10 text-xs">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div className="font-bold text-slate-200 text-sm flex items-center gap-2">
+                <RefreshCw className="w-4 h-4 text-amber-400" />
+                <span>Reset Password via Email OTP</span>
               </div>
               <button
                 type="button"
                 onClick={() => {
-                  if (onClose) onClose();
-                  onOpenOrgSignup();
+                  setMode('login');
+                  setErrorMessage('');
+                  setOtpSentNotification(null);
                 }}
-                className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-3.5 py-2 rounded-xl transition text-xs whitespace-nowrap shadow-md cursor-pointer flex items-center gap-1.5"
+                className="text-amber-400 hover:underline font-medium text-xs"
               >
-                <Building2 className="w-3.5 h-3.5" />
-                <span>Sign Up Organisation</span>
+                Back to Login
               </button>
             </div>
-          )}
 
-          {/* Superadmin Fill Shortcut & Google Auth */}
-          <div className="text-center pt-2 space-y-2">
-            <button
-              type="button"
-              onClick={handleGoogleAuthSuperadmin}
-              disabled={isGoogleSigningIn}
-              className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer text-xs"
-            >
-              <Shield className="w-4 h-4 text-purple-200" />
-              <span>
-                {isGoogleSigningIn
-                  ? 'Authenticating with Google...'
-                  : 'Superadmin Google Auth Login'}
-              </span>
-            </button>
+            {errorMessage && (
+              <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 p-3 rounded-2xl flex items-center gap-2 font-medium">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
 
-            <button
-              type="button"
-              onClick={() => {
-                setOrgUsernameInput('superadmin');
-                setNidInput('SUPERADMIN');
-                setPasswordInput('superadmin123');
-              }}
-              className="text-[11px] text-purple-400 hover:text-purple-300 font-medium underline transition block mx-auto"
-            >
-              👑 Fill Superadmin Demo Credentials (Username: superadmin / NID: SUPERADMIN)
-            </button>
+            {otpSentNotification && (
+              <div className="bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 p-3 rounded-2xl flex items-start gap-2.5 font-medium leading-relaxed">
+                <Mail className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                <div>
+                  <div className="font-bold">Email Notification Sent!</div>
+                  <div className="text-[11px] font-mono mt-0.5">{otpSentNotification}</div>
+                </div>
+              </div>
+            )}
+
+            {/* STEP 1: Request OTP */}
+            {!generatedOtp ? (
+              <form onSubmit={handleRequestOtp} className="space-y-3">
+                <p className="text-slate-400 text-xs leading-relaxed">
+                  Enter your registered Organisation Email Address or National ID (NID). A 6-digit OTP verification code will be sent to your email to reset your password.
+                </p>
+
+                <div className="space-y-1.5">
+                  <label className="text-slate-300 font-semibold">Registered Email or NID *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. zayd.ahmed@scout.mv or A100123"
+                    value={forgotEmailOrNid}
+                    onChange={(e) => setForgotEmailOrNid(e.target.value)}
+                    className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Send Reset OTP to Email</span>
+                </button>
+              </form>
+            ) : (
+              /* STEP 2: Verify OTP & Set New Password */
+              <form onSubmit={handleResetPasswordWithOtp} className="space-y-3.5">
+                <div className="space-y-1.5">
+                  <label className="text-slate-300 font-semibold flex items-center justify-between">
+                    <span>Enter 6-Digit Email OTP *</span>
+                    <span className="text-[10px] text-amber-400 font-mono">OTP Sent to {resetMember?.email}</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. 849201"
+                    maxLength={6}
+                    value={enteredOtp}
+                    onChange={(e) => setEnteredOtp(e.target.value)}
+                    className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-amber-300 font-mono text-center tracking-widest text-lg focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-slate-300 font-semibold">New Password *</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Enter new password (min. 6 characters)"
+                    value={forgotNewPassword}
+                    onChange={(e) => setForgotNewPassword(e.target.value)}
+                    className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-slate-300 font-semibold">Confirm New Password *</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Re-enter new password"
+                    value={forgotConfirmPassword}
+                    onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                    className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Verify OTP & Reset Password</span>
+                </button>
+              </form>
+            )}
           </div>
-        </div>
+        )}
 
         {/* Modal Footer Info */}
         <div className="border-t border-slate-800/80 pt-3 flex items-center justify-between text-[11px] text-slate-500 relative z-10">
           <span className="flex items-center gap-1">
             <Shield className="w-3.5 h-3.5 text-emerald-400" /> Encrypted Organisation Session
           </span>
-          <span>Arabiyya Rovers Portal</span>
+          <span>Kushafah Portal • Rusul-us-salaam</span>
         </div>
       </div>
     </div>

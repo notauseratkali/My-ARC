@@ -37,6 +37,8 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
   const [advisorEmail, setAdvisorEmail] = useState('');
   const [advisorNid, setAdvisorNid] = useState('');
   const [advisorPhone, setAdvisorPhone] = useState('');
+  const [advisorPassword, setAdvisorPassword] = useState('');
+  const [advisorPasswordConfirm, setAdvisorPasswordConfirm] = useState('');
   
   // Subscription Plan selection
   const [plan, setPlan] = useState<PlanType>('Monthly');
@@ -67,8 +69,18 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
     e.preventDefault();
     setErrorMessage('');
 
-    if (!orgName.trim() || !advisorName.trim() || !advisorEmail.trim() || !advisorNid.trim()) {
-      setErrorMessage('Please fill in all required organisation and Rover Advisor fields.');
+    if (!orgName.trim() || !orgCode.trim() || !advisorName.trim() || !advisorEmail.trim() || !advisorNid.trim() || !advisorPassword.trim()) {
+      setErrorMessage('Please fill in all required organisation fields, shortcode, Advisor details, and password.');
+      return;
+    }
+
+    if (advisorPassword.length < 6) {
+      setErrorMessage('Advisor Security Password must be at least 6 characters long.');
+      return;
+    }
+
+    if (advisorPassword !== advisorPasswordConfirm) {
+      setErrorMessage('Advisor passwords do not match. Please re-enter your password.');
       return;
     }
 
@@ -79,11 +91,12 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
 
     onSignupSubmit({
       name: orgName.trim(),
-      code: orgCode.trim().toUpperCase() || orgName.substring(0, 6).toUpperCase(),
+      code: orgCode.trim().toUpperCase(),
       roverAdvisorName: advisorName.trim(),
       roverAdvisorEmail: advisorEmail.trim(),
       roverAdvisorNid: advisorNid.trim().toUpperCase(),
       roverAdvisorPhone: advisorPhone.trim(),
+      roverAdvisorPassword: advisorPassword.trim(),
       plan,
       paymentReceiptUrl,
       paymentReceiptName,
@@ -94,8 +107,8 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
-      <div className="bg-[#161920] border border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden my-8">
+    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto animate-fadeIn">
+      <div className="bg-[#161920] border border-slate-800 rounded-2xl sm:rounded-3xl max-w-2xl w-full p-4 sm:p-6 shadow-2xl space-y-4 sm:space-y-5 relative overflow-hidden max-h-[92vh] overflow-y-auto my-auto no-scrollbar">
         {/* Ambient background glow */}
         <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -194,24 +207,28 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-slate-300 font-semibold">Org Code / Short Code</label>
+                  <label className="text-slate-300 font-semibold">Organisation Username (Shortcode) *</label>
                   <input
                     type="text"
-                    placeholder="e.g. AMINIYA"
+                    required
+                    placeholder="e.g. AMINIYA, CHSE, KUSHAFAH"
                     value={orgCode}
                     onChange={(e) => setOrgCode(e.target.value)}
                     className="w-full bg-[#1A1E26] border border-slate-700 rounded-xl px-3.5 py-2 text-slate-100 uppercase font-mono placeholder-slate-500 focus:outline-none focus:border-amber-500"
                   />
+                  <p className="text-[10px] text-slate-500">
+                    Same as Organisation Username used by members to log in.
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* STEP 2: Designated Rover Advisor */}
+            {/* STEP 2: Designated Rover Advisor & Password */}
             <div className="bg-[#12151B] p-4 rounded-2xl border border-slate-800 space-y-3">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                 <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
                   <Crown className="w-4 h-4 text-purple-400" />
-                  <span>2. Designated Rover Advisor</span>
+                  <span>2. Designated Rover Advisor & Credentials</span>
                 </h3>
                 <span className="text-[10px] text-purple-300 bg-purple-500/20 border border-purple-500/30 px-2 py-0.5 rounded font-mono">
                   Forms & Leads Crew
@@ -244,7 +261,7 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-slate-300 font-semibold">Email (Organisation Login Username) *</label>
+                  <label className="text-slate-300 font-semibold">Email Address *</label>
                   <input
                     type="email"
                     required
@@ -265,42 +282,46 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                     className="w-full bg-[#1A1E26] border border-slate-700 rounded-xl px-3.5 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
                   />
                 </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold">Advisor Security Password *</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Set advisor account password"
+                    value={advisorPassword}
+                    onChange={(e) => setAdvisorPassword(e.target.value)}
+                    className="w-full bg-[#1A1E26] border border-slate-700 rounded-xl px-3.5 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-300 font-semibold">Confirm Password *</label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Re-enter advisor password"
+                    value={advisorPasswordConfirm}
+                    onChange={(e) => setAdvisorPasswordConfirm(e.target.value)}
+                    className="w-full bg-[#1A1E26] border border-slate-700 rounded-xl px-3.5 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
               </div>
             </div>
 
-            {/* STEP 3: Plan Selection */}
+            {/* STEP 3: Plan Selection (Free Plan option removed for public signup) */}
             <div className="bg-[#12151B] p-4 rounded-2xl border border-slate-800 space-y-3">
-              <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-2">
-                <CreditCard className="w-4 h-4 text-emerald-400" />
-                <span>3. Select Portal Subscription Plan</span>
-              </h3>
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <h3 className="text-xs font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
+                  <CreditCard className="w-4 h-4 text-emerald-400" />
+                  <span>3. Select Portal Subscription Plan</span>
+                </h3>
+                <span className="text-[10px] text-slate-400">
+                  Free Plan available only via Superadmin creation
+                </span>
+              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {/* Free Option */}
-                <div
-                  onClick={() => setPlan('Free')}
-                  className={`p-3 rounded-2xl border cursor-pointer transition flex flex-col justify-between ${
-                    plan === 'Free'
-                      ? 'bg-purple-950/40 border-purple-500 text-purple-200 shadow-lg'
-                      : 'bg-[#1A1E26] border-slate-800 text-slate-400 hover:border-slate-700'
-                  }`}
-                >
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="font-bold text-sm text-slate-100">Free Plan</span>
-                      <span className="bg-purple-500/20 text-purple-300 text-[9px] font-mono font-bold px-1.5 py-0.5 rounded">
-                        MVR 0
-                      </span>
-                    </div>
-                    <p className="text-[10px] text-slate-400 mt-1">
-                      For Superadmin allowed organisations only. Requires special exemption approval.
-                    </p>
-                  </div>
-                  <div className="mt-3 text-[10px] font-semibold text-purple-300">
-                    {plan === 'Free' ? '✓ Selected' : 'Select Free'}
-                  </div>
-                </div>
-
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {/* Monthly Option */}
                 <div
                   onClick={() => setPlan('Monthly')}
@@ -318,7 +339,7 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                       </span>
                     </div>
                     <p className="text-[10px] text-slate-400 mt-1">
-                      Standard monthly portal subscription. Requires monthly payment transfer receipt.
+                      Standard monthly portal subscription. Requires payment transfer receipt.
                     </p>
                   </div>
                   <div className="mt-3 text-[10px] font-semibold text-amber-300">

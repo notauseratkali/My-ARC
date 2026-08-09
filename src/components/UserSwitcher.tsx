@@ -1,6 +1,6 @@
 import React from 'react';
 import { Member } from '../types';
-import { UserCheck, Shield, ChevronDown, LogOut, Crown, LogIn } from 'lucide-react';
+import { UserCheck, Shield, ChevronDown, LogOut, Crown, LogIn, Trash2 } from 'lucide-react';
 
 interface UserSwitcherProps {
   currentMember: Member | null;
@@ -8,6 +8,7 @@ interface UserSwitcherProps {
   onSelectMember?: (member: Member) => void;
   onLogout?: () => void;
   onOpenLoginModal?: () => void;
+  onClearLocalData?: () => void;
 }
 
 export const UserSwitcher: React.FC<UserSwitcherProps> = ({
@@ -16,6 +17,7 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
   onSelectMember = (_m: Member) => {},
   onLogout,
   onOpenLoginModal,
+  onClearLocalData,
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
@@ -136,21 +138,35 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
             </div>
 
             {/* Logout Action Bar */}
-            {onLogout && (
-              <div className="p-2 bg-[#12151B]">
+            <div className="p-2 bg-[#12151B] space-y-1.5">
+              {onLogout && (
                 <button
                   type="button"
                   onClick={() => {
                     setIsOpen(false);
                     onLogout();
                   }}
-                  className="w-full text-center px-3 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition flex items-center justify-center gap-2 shadow-md"
+                  className="w-full text-center px-3 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold transition flex items-center justify-center gap-2 shadow-md"
                 >
                   <LogOut className="w-4 h-4" />
                   <span>Log Out to Switch Account ID</span>
                 </button>
-              </div>
-            )}
+              )}
+
+              {onClearLocalData && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    onClearLocalData();
+                  }}
+                  className="w-full text-center px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-semibold transition flex items-center justify-center gap-2 border border-slate-700/60 text-[11px]"
+                >
+                  <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                  <span>Clear Local Storage & Session</span>
+                </button>
+              )}
+            </div>
           </div>
         </>
       )}

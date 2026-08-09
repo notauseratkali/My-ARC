@@ -42,6 +42,7 @@ interface HeaderProps {
   onSelectMember?: (member: Member) => void;
   onLogout?: () => void;
   onOpenLoginModal?: () => void;
+  onClearLocalData?: () => void;
   settings?: PortalSettings;
   unresolvedIncidentsCount?: number;
   theme?: 'dark' | 'light';
@@ -56,6 +57,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectMember = (_m: Member) => {},
   onLogout,
   onOpenLoginModal,
+  onClearLocalData,
   settings = { aiEnabled: true, smsNotificationsEnabled: true, emailNotificationsEnabled: true, activeTerm: '1' },
   theme = 'dark',
   onToggleTheme,

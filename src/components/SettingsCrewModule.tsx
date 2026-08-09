@@ -572,7 +572,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Arabiyya Rover Crew Official"
+                    placeholder="e.g. Kushafah Rover Crew Official"
                     value={paymentForm.accountName}
                     onChange={(e) => setPaymentForm({ ...paymentForm, accountName: e.target.value })}
                     className="w-full bg-[#161920] border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-medium focus:outline-none focus:border-amber-500 transition"
@@ -721,7 +721,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 </div>
               </div>
 
-              {/* Arabiyya Scout Group Official Brand Color Palette Widget */}
+              {/* Kushafah Scout Group Official Brand Color Palette Widget */}
               <div className="bg-[#1A1E26] border border-amber-500/20 rounded-2xl p-5 shadow-lg space-y-3.5">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
                   <div className="flex items-center gap-2">
@@ -729,19 +729,19 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                       <Palette className="w-3.5 h-3.5" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-100">Arabiyya Scout Group Official Brand Palette</h4>
+                      <h4 className="text-xs font-bold text-slate-100">Kushafah Scout Group Official Brand Palette</h4>
                       <p className="text-[10px] text-slate-400">Click any color card to copy exact HEX code</p>
                     </div>
                   </div>
                   <span className="bg-[#002B7F]/40 text-amber-300 border border-[#FFC72C]/40 text-[9px] font-bold px-2 py-0.5 rounded font-mono">
-                    ASG Branding
+                    Branding
                   </span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
                     {
-                      name: 'Arabiyya Maroon',
+                      name: 'Kushafah Maroon',
                       role: 'School & Emblem Trim',
                       hex: '#800020',
                       bg: 'bg-[#800020]',
