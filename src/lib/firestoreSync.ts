@@ -4,6 +4,7 @@ import {
   getDoc,
   getDocs,
   setDoc,
+  deleteDoc,
   onSnapshot,
   writeBatch,
 } from 'firebase/firestore';
@@ -108,11 +109,13 @@ export async function initializeFirestoreDatabase() {
       return;
     }
 
+    // Set initial_seed flag immediately to prevent race conditions on reloads
+    await setDoc(seedRef, { seeded: true, timestamp: new Date().toISOString() });
+
     // Check if system was already seeded before this flag existed
     const portalRef = doc(db, 'settings', 'portal');
     const portalSnap = await getDoc(portalRef);
     if (portalSnap.exists()) {
-      await setDoc(seedRef, { seeded: true, timestamp: new Date().toISOString() });
       return;
     }
 
@@ -133,9 +136,6 @@ export async function initializeFirestoreDatabase() {
     await seedCollectionIfEmpty('payment_transactions', INITIAL_PAYMENT_TRANSACTIONS);
     await seedCollectionIfEmpty('audit_logs', INITIAL_AUDIT_LOGS);
     await seedSettingsIfEmpty(INITIAL_SETTINGS);
-
-    // Mark as seeded
-    await setDoc(seedRef, { seeded: true, timestamp: new Date().toISOString() });
   } catch (err) {
     console.warn('initializeFirestoreDatabase error:', err);
   }
@@ -280,7 +280,6 @@ export async function deleteDocumentFromFirestore(
   if (!db) return;
   try {
     const docRef = doc(db, collectionName, id);
-    const { deleteDoc } = await import('firebase/firestore');
     await deleteDoc(docRef);
   } catch (err) {
     handleFirestoreError(err, OperationType.DELETE, `${collectionName}/${id}`);
