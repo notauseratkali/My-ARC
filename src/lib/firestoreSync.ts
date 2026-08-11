@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   setDoc,
   onSnapshot,
@@ -96,24 +97,48 @@ async function seedSettingsIfEmpty(initialSettings: PortalSettings) {
   }
 }
 
-export function initializeFirestoreDatabase() {
+export async function initializeFirestoreDatabase() {
   if (!db) return;
-  seedCollectionIfEmpty('organisations', INITIAL_ORGANISATIONS);
-  seedCollectionIfEmpty('members', INITIAL_MEMBERS);
-  seedCollectionIfEmpty('crews', INITIAL_CREWS);
-  seedCollectionIfEmpty('syllabus', INITIAL_SYLLABUS);
-  seedCollectionIfEmpty('progress', INITIAL_PROGRESS);
-  seedCollectionIfEmpty('journals', INITIAL_JOURNALS);
-  seedCollectionIfEmpty('events', INITIAL_EVENTS);
-  seedCollectionIfEmpty('attendance', INITIAL_ATTENDANCE);
-  seedCollectionIfEmpty('disciplinary', INITIAL_DISCIPLINARY);
-  seedCollectionIfEmpty('minutes', INITIAL_MEETING_MINUTES);
-  seedCollectionIfEmpty('policy', [INITIAL_ROVER_POLICY]);
-  seedCollectionIfEmpty('polls', INITIAL_POLICY_POLLS);
-  seedCollectionIfEmpty('fee_requests', INITIAL_FEE_REQUESTS);
-  seedCollectionIfEmpty('payment_transactions', INITIAL_PAYMENT_TRANSACTIONS);
-  seedCollectionIfEmpty('audit_logs', INITIAL_AUDIT_LOGS);
-  seedSettingsIfEmpty(INITIAL_SETTINGS);
+  try {
+    const seedRef = doc(db, 'settings', 'initial_seed');
+    const seedSnap = await getDoc(seedRef);
+    if (seedSnap.exists()) {
+      // Database has already been initialized previously.
+      // Do NOT re-seed empty collections so user deletions persist permanently!
+      return;
+    }
+
+    // Check if system was already seeded before this flag existed
+    const portalRef = doc(db, 'settings', 'portal');
+    const portalSnap = await getDoc(portalRef);
+    if (portalSnap.exists()) {
+      await setDoc(seedRef, { seeded: true, timestamp: new Date().toISOString() });
+      return;
+    }
+
+    // Perform initial seed for a brand new Firestore instance
+    await seedCollectionIfEmpty('organisations', INITIAL_ORGANISATIONS);
+    await seedCollectionIfEmpty('members', INITIAL_MEMBERS);
+    await seedCollectionIfEmpty('crews', INITIAL_CREWS);
+    await seedCollectionIfEmpty('syllabus', INITIAL_SYLLABUS);
+    await seedCollectionIfEmpty('progress', INITIAL_PROGRESS);
+    await seedCollectionIfEmpty('journals', INITIAL_JOURNALS);
+    await seedCollectionIfEmpty('events', INITIAL_EVENTS);
+    await seedCollectionIfEmpty('attendance', INITIAL_ATTENDANCE);
+    await seedCollectionIfEmpty('disciplinary', INITIAL_DISCIPLINARY);
+    await seedCollectionIfEmpty('minutes', INITIAL_MEETING_MINUTES);
+    await seedCollectionIfEmpty('policy', [INITIAL_ROVER_POLICY]);
+    await seedCollectionIfEmpty('polls', INITIAL_POLICY_POLLS);
+    await seedCollectionIfEmpty('fee_requests', INITIAL_FEE_REQUESTS);
+    await seedCollectionIfEmpty('payment_transactions', INITIAL_PAYMENT_TRANSACTIONS);
+    await seedCollectionIfEmpty('audit_logs', INITIAL_AUDIT_LOGS);
+    await seedSettingsIfEmpty(INITIAL_SETTINGS);
+
+    // Mark as seeded
+    await setDoc(seedRef, { seeded: true, timestamp: new Date().toISOString() });
+  } catch (err) {
+    console.warn('initializeFirestoreDatabase error:', err);
+  }
 }
 
 // Subscribe to a single document
