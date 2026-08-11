@@ -40,6 +40,7 @@ import {
 import {
   initializeFirestoreDatabase,
   subscribeToCollection,
+  subscribeToDocument,
   subscribeToSyncStatus,
   type SyncStatus,
   saveDocumentToFirestore,
@@ -262,7 +263,7 @@ export default function App() {
     initializeFirestoreDatabase();
 
     const unsubOrgs = subscribeToCollection<Organisation>('organisations', (data) => {
-      if (data.length > 0) setOrganisations(data);
+      setOrganisations(data);
     });
 
     const unsubMembers = subscribeToCollection<Member>('members', (data) => {
@@ -284,27 +285,41 @@ export default function App() {
           return m;
         });
         setMembers(sanitized);
+      } else {
+        setMembers(data);
       }
     });
 
+    const unsubCrews = subscribeToCollection<SubCrew>('crews', (data) => {
+      setCrews(data);
+    });
+
+    const unsubSyllabus = subscribeToCollection<SyllabusRequirement>('syllabus', (data) => {
+      setSyllabus(data);
+    });
+
+    const unsubProgress = subscribeToCollection<MemberRequirementProgress>('progress', (data) => {
+      setProgressList(data);
+    });
+
     const unsubEvents = subscribeToCollection<CrewEvent>('events', (data) => {
-      if (data.length > 0) setEvents(data);
+      setEvents(data);
     });
 
     const unsubAttendance = subscribeToCollection<AttendanceRecord>('attendance', (data) => {
-      if (data.length > 0) setAttendance(data);
+      setAttendance(data);
     });
 
     const unsubJournals = subscribeToCollection<JournalEntry>('journals', (data) => {
-      if (data.length > 0) setJournals(data);
+      setJournals(data);
     });
 
     const unsubDisciplinary = subscribeToCollection<DisciplinaryIncident>('disciplinary', (data) => {
-      if (data.length > 0) setIncidents(data);
+      setIncidents(data);
     });
 
     const unsubMinutes = subscribeToCollection<MeetingMinutes>('minutes', (data) => {
-      if (data.length > 0) setMeetingMinutes(data);
+      setMeetingMinutes(data);
     });
 
     const unsubPolicy = subscribeToCollection<RoverOperatingPolicy>('policy', (data) => {
@@ -312,15 +327,23 @@ export default function App() {
     });
 
     const unsubPolls = subscribeToCollection<PolicyAmendmentPoll>('polls', (data) => {
-      if (data.length > 0) setPolls(data);
+      setPolls(data);
     });
 
     const unsubFeeRequests = subscribeToCollection<FeeRequest>('fee_requests', (data) => {
-      if (data.length > 0) setFeeRequests(data);
+      setFeeRequests(data);
     });
 
     const unsubTransactions = subscribeToCollection<CrewPaymentTransaction>('payment_transactions', (data) => {
-      if (data.length > 0) setPaymentTransactions(data);
+      setPaymentTransactions(data);
+    });
+
+    const unsubAuditLogs = subscribeToCollection<AuditLogEntry>('audit_logs', (data) => {
+      setAuditLogs(data);
+    });
+
+    const unsubSettings = subscribeToDocument<PortalSettings>('settings', 'portal', (data) => {
+      if (data) setSettings(data);
     });
 
     const unsubSyncStatus = subscribeToSyncStatus((status, time) => {
@@ -342,6 +365,9 @@ export default function App() {
     return () => {
       unsubOrgs();
       unsubMembers();
+      unsubCrews();
+      unsubSyllabus();
+      unsubProgress();
       unsubEvents();
       unsubAttendance();
       unsubJournals();
@@ -351,6 +377,8 @@ export default function App() {
       unsubPolls();
       unsubFeeRequests();
       unsubTransactions();
+      unsubAuditLogs();
+      unsubSettings();
       unsubSyncStatus();
     };
   }, []);
@@ -655,14 +683,20 @@ export default function App() {
       id: `syl-${Date.now()}`,
     };
     setSyllabus((prev) => [...prev, newReq]);
+    saveDocumentToFirestore('syllabus', newReq);
+    toastSuccess('Requirement Added', `Requirement "${newReq.title}" saved.`);
   };
 
   const handleUpdateRequirement = (updatedReq: SyllabusRequirement) => {
     setSyllabus((prev) => prev.map((s) => (s.id === updatedReq.id ? updatedReq : s)));
+    saveDocumentToFirestore('syllabus', updatedReq);
+    toastInfo('Requirement Updated', `Requirement "${updatedReq.title}" updated.`);
   };
 
   const handleDeleteRequirement = (id: string) => {
     setSyllabus((prev) => prev.filter((s) => s.id !== id));
+    deleteDocumentFromFirestore('syllabus', id);
+    toastInfo('Requirement Removed', 'Requirement deleted.');
   };
 
   const handleUpdateProgress = (prog: MemberRequirementProgress) => {
@@ -675,6 +709,7 @@ export default function App() {
       }
       return [...prev, prog];
     });
+    saveDocumentToFirestore('progress', prog);
   };
 
   // JOURNAL HANDLERS
@@ -825,10 +860,14 @@ export default function App() {
       id: `crew-${Date.now()}`,
     };
     setCrews((prev) => [...prev, newCrew]);
+    saveDocumentToFirestore('crews', newCrew);
+    toastSuccess('Sub-Crew Created', `Sub-crew "${newCrew.name}" saved.`);
   };
 
   const handleDeleteCrew = (id: string) => {
     setCrews((prev) => prev.filter((c) => c.id !== id));
+    deleteDocumentFromFirestore('crews', id);
+    toastInfo('Sub-Crew Deleted', 'Sub-crew removed.');
   };
 
   const handleUpdateSettings = (newSettings: PortalSettings) => {
@@ -1013,7 +1052,7 @@ export default function App() {
               crews={crews}
               currentMember={currentMember}
               settings={settings}
-              onUpdateSettings={setSettings}
+              onUpdateSettings={handleUpdateSettings}
               progressList={progressList}
               syllabus={syllabus}
               onAddMember={handleAddMember}

@@ -17,12 +17,21 @@ import {
   PortalSettings,
 } from '../types';
 import {
+  INITIAL_ORGANISATIONS,
   INITIAL_MEMBERS,
+  INITIAL_CREWS,
+  INITIAL_SYLLABUS,
+  INITIAL_PROGRESS,
   INITIAL_EVENTS,
   INITIAL_ATTENDANCE,
   INITIAL_JOURNALS,
   INITIAL_DISCIPLINARY,
   INITIAL_MEETING_MINUTES,
+  INITIAL_ROVER_POLICY,
+  INITIAL_POLICY_POLLS,
+  INITIAL_FEE_REQUESTS,
+  INITIAL_PAYMENT_TRANSACTIONS,
+  INITIAL_AUDIT_LOGS,
   INITIAL_SETTINGS,
 } from '../data/initialData';
 
@@ -89,13 +98,52 @@ async function seedSettingsIfEmpty(initialSettings: PortalSettings) {
 
 export function initializeFirestoreDatabase() {
   if (!db) return;
+  seedCollectionIfEmpty('organisations', INITIAL_ORGANISATIONS);
   seedCollectionIfEmpty('members', INITIAL_MEMBERS);
+  seedCollectionIfEmpty('crews', INITIAL_CREWS);
+  seedCollectionIfEmpty('syllabus', INITIAL_SYLLABUS);
+  seedCollectionIfEmpty('progress', INITIAL_PROGRESS);
+  seedCollectionIfEmpty('journals', INITIAL_JOURNALS);
   seedCollectionIfEmpty('events', INITIAL_EVENTS);
   seedCollectionIfEmpty('attendance', INITIAL_ATTENDANCE);
-  seedCollectionIfEmpty('journals', INITIAL_JOURNALS);
   seedCollectionIfEmpty('disciplinary', INITIAL_DISCIPLINARY);
   seedCollectionIfEmpty('minutes', INITIAL_MEETING_MINUTES);
+  seedCollectionIfEmpty('policy', [INITIAL_ROVER_POLICY]);
+  seedCollectionIfEmpty('polls', INITIAL_POLICY_POLLS);
+  seedCollectionIfEmpty('fee_requests', INITIAL_FEE_REQUESTS);
+  seedCollectionIfEmpty('payment_transactions', INITIAL_PAYMENT_TRANSACTIONS);
+  seedCollectionIfEmpty('audit_logs', INITIAL_AUDIT_LOGS);
   seedSettingsIfEmpty(INITIAL_SETTINGS);
+}
+
+// Subscribe to a single document
+export function subscribeToDocument<T>(
+  collectionName: string,
+  docId: string,
+  callback: (data: T | null) => void
+) {
+  if (!db) {
+    return () => {};
+  }
+  try {
+    const docRef = doc(db, collectionName, docId);
+    return onSnapshot(
+      docRef,
+      (docSnap) => {
+        if (docSnap.exists()) {
+          callback(docSnap.data() as T);
+        } else {
+          callback(null);
+        }
+      },
+      (error) => {
+        handleFirestoreError(error, OperationType.GET, `${collectionName}/${docId}`);
+      }
+    );
+  } catch (err) {
+    handleFirestoreError(err, OperationType.GET, `${collectionName}/${docId}`);
+    return () => {};
+  }
 }
 
 export type SyncStatus = 'synced' | 'syncing' | 'offline' | 'error';

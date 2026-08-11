@@ -1,5 +1,17 @@
 {
   "entities": {
+    "Organisation": {
+      "title": "Organisation",
+      "description": "Scout group or national scout association registration",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "code": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
     "Member": {
       "title": "Member",
       "description": "Scout crew member profile",
@@ -28,6 +40,41 @@
         "attendanceExcused": { "type": "number" }
       },
       "required": ["id", "name", "email", "status"]
+    },
+    "SubCrew": {
+      "title": "SubCrew",
+      "description": "Sub-crew / Patrol unit definition",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "leaderId": { "type": "string" }
+      },
+      "required": ["id", "name"]
+    },
+    "SyllabusRequirement": {
+      "title": "SyllabusRequirement",
+      "description": "Badge requirement standard item",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "badgeName": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title"]
+    },
+    "MemberRequirementProgress": {
+      "title": "MemberRequirementProgress",
+      "description": "Member requirement progression mark",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "memberId": { "type": "string" },
+        "requirementId": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "memberId", "requirementId", "status"]
     },
     "CrewEvent": {
       "title": "CrewEvent",
@@ -115,12 +162,96 @@
         "status": { "type": "string" }
       },
       "required": ["id", "title", "date"]
+    },
+    "RoverOperatingPolicy": {
+      "title": "RoverOperatingPolicy",
+      "description": "Crew bylaws and operating policy",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "version": { "type": "string" }
+      },
+      "required": ["id", "title"]
+    },
+    "PolicyAmendmentPoll": {
+      "title": "PolicyAmendmentPoll",
+      "description": "Policy amendment voting poll",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "title"]
+    },
+    "FeeRequest": {
+      "title": "FeeRequest",
+      "description": "Dues and fees collection request",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "amountMvr": { "type": "number" }
+      },
+      "required": ["id", "title", "amountMvr"]
+    },
+    "CrewPaymentTransaction": {
+      "title": "CrewPaymentTransaction",
+      "description": "Fee payment receipt or verification",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "memberId": { "type": "string" },
+        "feeRequestId": { "type": "string" },
+        "amountMvr": { "type": "number" },
+        "status": { "type": "string" }
+      },
+      "required": ["id", "memberId", "amountMvr", "status"]
+    },
+    "AuditLogEntry": {
+      "title": "AuditLogEntry",
+      "description": "System action audit log entry",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "action": { "type": "string" },
+        "timestamp": { "type": "string" }
+      },
+      "required": ["id", "action"]
+    },
+    "PortalSettings": {
+      "title": "PortalSettings",
+      "description": "Global application configuration settings",
+      "type": "object",
+      "properties": {
+        "activeTerm": { "type": "string" },
+        "aiEnabled": { "type": "boolean" },
+        "smsNotificationsEnabled": { "type": "boolean" },
+        "emailNotificationsEnabled": { "type": "boolean" }
+      }
     }
   },
   "firestore": {
+    "/organisations/{orgId}": {
+      "schema": { "$ref": "#/entities/Organisation" },
+      "description": "Collection of organisations"
+    },
     "/members/{memberId}": {
       "schema": { "$ref": "#/entities/Member" },
       "description": "Collection of crew members"
+    },
+    "/crews/{crewId}": {
+      "schema": { "$ref": "#/entities/SubCrew" },
+      "description": "Collection of sub-crews"
+    },
+    "/syllabus/{reqId}": {
+      "schema": { "$ref": "#/entities/SyllabusRequirement" },
+      "description": "Collection of syllabus requirements"
+    },
+    "/progress/{progressId}": {
+      "schema": { "$ref": "#/entities/MemberRequirementProgress" },
+      "description": "Collection of member badge requirement progress records"
     },
     "/events/{eventId}": {
       "schema": { "$ref": "#/entities/CrewEvent" },
@@ -141,6 +272,30 @@
     "/minutes/{minuteId}": {
       "schema": { "$ref": "#/entities/MeetingMinutes" },
       "description": "Collection of meeting minutes"
+    },
+    "/policy/{policyId}": {
+      "schema": { "$ref": "#/entities/RoverOperatingPolicy" },
+      "description": "Collection containing rover policy documents"
+    },
+    "/polls/{pollId}": {
+      "schema": { "$ref": "#/entities/PolicyAmendmentPoll" },
+      "description": "Collection of policy amendment polls"
+    },
+    "/fee_requests/{feeId}": {
+      "schema": { "$ref": "#/entities/FeeRequest" },
+      "description": "Collection of fee requests"
+    },
+    "/payment_transactions/{txId}": {
+      "schema": { "$ref": "#/entities/CrewPaymentTransaction" },
+      "description": "Collection of fee payment transactions"
+    },
+    "/audit_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AuditLogEntry" },
+      "description": "Collection of system audit logs"
+    },
+    "/settings/{settingId}": {
+      "schema": { "$ref": "#/entities/PortalSettings" },
+      "description": "Global application configuration document"
     }
   }
 }

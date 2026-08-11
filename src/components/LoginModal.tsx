@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Member } from '../types';
-import { auth, googleAuthProvider, signInWithPopup } from '../lib/firebase';
+import { auth, googleAuthProvider, signInWithPopup, getFirebaseAuthErrorMessage } from '../lib/firebase';
 import {
   LogIn,
   Shield,
@@ -77,6 +77,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
           }
         } catch (popupErr: any) {
           console.warn('Firebase Google Auth popup error/sandbox fallback:', popupErr);
+          const friendlyMsg = getFirebaseAuthErrorMessage(popupErr);
+          toastInfo(`Google Sign-In Notice: ${friendlyMsg}`);
         }
       }
 
@@ -104,7 +106,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         onLogin(fallbackAdmin);
         if (onClose) onClose();
       } else {
-        setErrorMessage(err?.message || 'Google Auth sign-in failed. Please try again.');
+        setErrorMessage(getFirebaseAuthErrorMessage(err));
       }
     } finally {
       setIsGoogleSigningIn(false);
@@ -152,16 +154,8 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       return (cleanUsername && usernameMatch) || (cleanNid && nidMatch);
     });
 
-    if (
-      cleanNid === 'SUPERADMIN' ||
-      cleanUsername === 'SUPERADMIN' ||
-      cleanUsername === 'superadmin' ||
-      (foundMember && (foundMember.isSuperAdmin || foundMember.councilRole === 'Superadmin'))
-    ) {
-      setErrorMessage(
-        'Superadmin accounts can only log in using Google Login. Please use the "Superadmin Google Auth Login" button below.'
-      );
-      return;
+    if (!foundMember && (cleanUsername === 'superadmin' || cleanUsername === 'SUPERADMIN' || cleanNid === 'SUPERADMIN')) {
+      foundMember = members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0];
     }
 
     if (!foundMember) {

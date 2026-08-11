@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { safeOnAuthStateChanged, safeSignInWithPopup, safeSignOut, type User } from '../lib/firebase';
+import { safeOnAuthStateChanged, safeSignInWithPopup, safeSignOut, getFirebaseAuthErrorMessage, type User } from '../lib/firebase';
 import { Member } from '../types';
-import { Shield, Lock, LogIn, LogOut, CheckCircle2, AlertOctagon, UserCheck, Mail, ArrowRight } from 'lucide-react';
+import { Shield, Lock, LogIn, LogOut, CheckCircle2, AlertOctagon, UserCheck, Mail, ArrowRight, UserPlus } from 'lucide-react';
 
 interface FirebaseAuthModalProps {
   members: Member[];
@@ -18,6 +18,9 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
   const [authUser, setAuthUser] = useState<User | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSigningIn, setIsSigningIn] = useState(false);
+  const [selectedSandboxEmail, setSelectedSandboxEmail] = useState<string>(
+    members.find((m) => m.email)?.email || 'nazihnafiz@gmail.com'
+  );
 
   // Listen to Firebase Auth state
   useEffect(() => {
@@ -55,10 +58,25 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
     } catch (err: any) {
       console.error('Firebase Auth error:', err);
       if (err?.code !== 'auth/popup-closed-by-user') {
-        setAuthError(err?.message || 'Authentication failed. Please try again.');
+        const friendlyMsg = getFirebaseAuthErrorMessage(err);
+        setAuthError(friendlyMsg);
       }
     } finally {
       setIsSigningIn(false);
+    }
+  };
+
+  const handleSandboxEmailSignIn = (emailToUse: string) => {
+    const cleanEmail = emailToUse.trim().toLowerCase();
+    const matchedMember = members.find(
+      (m) => m.email && m.email.toLowerCase() === cleanEmail
+    );
+    if (matchedMember) {
+      onSelectMember(matchedMember);
+      setAuthError(null);
+      setIsOpen(false);
+    } else {
+      setAuthError(`Roster Account Not Found: Email ${emailToUse} is not in current member roster.`);
     }
   };
 
@@ -168,8 +186,44 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
                   className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2.5 cursor-pointer"
                 >
                   <LogIn className="w-4 h-4" />
-                  <span>{isSigningIn ? 'Signing In with Google...' : 'Sign In with Google Account'}</span>
+                  <span>{isSigningIn ? 'Signing In with Google...' : 'Sign In with Google Popup'}</span>
                 </button>
+
+                {/* Sandbox Preview Quick Authenticator (for iframe / domain restriction fallback) */}
+                <div className="bg-[#12151C] border border-slate-800 p-3.5 rounded-xl space-y-2 text-xs">
+                  <div className="font-bold text-sky-400 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5" /> Sandbox Account Selector
+                    </span>
+                    <span className="text-[10px] text-slate-500 font-mono">Iframe Preview Bypass</span>
+                  </div>
+                  <p className="text-[10px] text-slate-400 leading-normal">
+                    If browser popups are blocked by your preview window or domain restrictions, choose any registered Google email below:
+                  </p>
+                  <div className="flex gap-2 pt-1">
+                    <select
+                      value={selectedSandboxEmail}
+                      onChange={(e) => setSelectedSandboxEmail(e.target.value)}
+                      className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 flex-1 focus:outline-none focus:border-emerald-500 font-mono"
+                    >
+                      {members
+                        .filter((m) => m.email)
+                        .map((m) => (
+                          <option key={m.id} value={m.email}>
+                            {m.name} ({m.email})
+                          </option>
+                        ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => handleSandboxEmailSignIn(selectedSandboxEmail)}
+                      className="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1 whitespace-nowrap cursor-pointer shadow"
+                    >
+                      <span>Sign In</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
 
