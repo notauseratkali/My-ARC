@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Member } from '../types';
 import { auth, googleAuthProvider, signInWithPopup, getFirebaseAuthErrorMessage } from '../lib/firebase';
+import { useToast } from './ToastContext';
 import {
   LogIn,
   Shield,
@@ -35,6 +36,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   onOpenOrgSignup,
   allowClose = true,
 }) => {
+  const { toastInfo } = useToast();
   // Navigation Mode
   const [mode, setMode] = useState<AuthMode>('login');
 
@@ -133,7 +135,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     }
 
     // Find matching member
-    const foundMember = members.find((m) => {
+    let foundMember = members.find((m) => {
       if (cleanNid === 'SUPERADMIN' || cleanUsername === 'superadmin') {
         return m.isSuperAdmin || m.councilRole === 'Superadmin';
       }
@@ -407,7 +409,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="e.g. KUSHAFAH or AMINIYA or CHSE"
+                  placeholder="e.g. AMINIYA, CHSE, MAJEEDHIYA"
                   value={orgUsernameInput}
                   onChange={(e) => setOrgUsernameInput(e.target.value)}
                   className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"

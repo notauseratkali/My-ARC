@@ -20,10 +20,10 @@ import { getPlaceholderAvatar } from '../utils/avatarUtils';
 export const INITIAL_ORGANISATIONS: Organisation[] = [
   {
     id: 'org-kushafah',
-    name: 'Kushafah Portal Crew Network',
+    name: 'Kushafah Portal National Network',
     code: 'KUSHAFAH',
     roverAdvisorName: 'Dr. Hussain Farooq',
-    roverAdvisorEmail: 'advisor.farooq@kushafah.scout.mv',
+    roverAdvisorEmail: 'advisor.farooq@scout.mv',
     roverAdvisorNid: 'A100999',
     roverAdvisorPhone: '+960 7700112',
     plan: 'Free',
@@ -281,7 +281,7 @@ export const INITIAL_SYLLABUS: SyllabusRequirement[] = [
     awardType: 'Baden-Powell (BP) Award',
     category: 'Scoutcraft',
     title: 'Scouting Heritage & World Scout Movement',
-    description: 'Demonstrate deep knowledge of BP heritage, Kushafah Rovers history, international Scouting, and WOSM governance.',
+    description: 'Demonstrate deep knowledge of BP heritage, national Scouting history, international Scouting, and WOSM governance.',
     tasks: [
       { id: 'bpt-10', text: 'Write a thesis or paper on the evolution of Rovering in the Maldives.' },
       { id: 'bpt-11', text: 'Participate in or organize an international Jamboree or JOTA-JOTI station.' },
@@ -330,7 +330,7 @@ export const INITIAL_EVENTS: CrewEvent[] = [
     type: 'Meeting',
     crewId: 'male-city',
     crewName: 'Male City Crew',
-    location: 'Kushafah Scout HQ Conference Room',
+    location: 'Scout HQ Conference Room',
     startDate: '2026-08-05T20:00',
     endDate: '2026-08-05T22:00',
     description: 'Monthly operational assembly for Male City Rovers. Reviewing President Scout Award submissions and financial statements.',
@@ -359,7 +359,7 @@ export const INITIAL_MEETING_MINUTES: MeetingMinutes[] = [
     meetingType: 'Council Executive Meeting',
     date: '2026-08-01',
     time: '20:00 - 22:15 MVT',
-    location: 'Kushafah Scout HQ Conference Room & Online Sync',
+    location: 'Scout HQ Conference Room & Online Sync',
     chairperson: 'Dr. Hussain Farooq (Rover Advisor)',
     secretary: 'Rover Council Secretary',
     attendees: [
@@ -406,8 +406,8 @@ export const INITIAL_SETTINGS: PortalSettings = {
   smsNotificationsEnabled: true,
   emailNotificationsEnabled: true,
   activeTerm: '2025-2026',
-  crewName: 'Kushafah Rover Crew',
-  networkName: 'Kushafah Rover Network',
+  crewName: 'Scout Group Crew',
+  networkName: 'Kushafah Communication Portal',
   councilPositions: [
     'Rover Advisor',
     'Chairperson',
@@ -420,7 +420,7 @@ export const INITIAL_SETTINGS: PortalSettings = {
     'Crew Leader',
   ],
   paymentDetails: {
-    accountName: 'Kushafah Crew Official Account',
+    accountName: 'Scout Group Official Account',
     accountNumber: '7730000123456',
     bankName: 'Bank of Maldives (BML)',
   },
@@ -430,10 +430,10 @@ export const INITIAL_ROVER_POLICY: RoverOperatingPolicy = {
   id: 'pol-1',
   organisationId: 'org-kushafah',
   version: 'v2.4 (2026 Revision)',
-  title: 'Kushafah Portal Crew Operating Policy & Bylaws',
+  title: 'Kushafah Portal Communication & Operating Guidelines',
   lastUpdated: '2026-07-01',
   updatedBy: 'Council Executive Committee',
-  content: `# Kushafah Portal Crew Operating Policy & Bylaws
+  content: `# Kushafah Portal Communication & Operating Guidelines
 
 ## Article I: Governance & Council Authority
 1. **Council Access & Amendments**: The Rover Council holds full authority to draft and propose amendments to the Operating Policy.

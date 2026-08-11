@@ -51,7 +51,7 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
   const isFreePlan = currentOrg.plan === 'Free' || currentOrg.planValidUntil === 'Indefinite';
 
   const bankDetails = settings?.paymentDetails || {
-    accountName: 'Kushafah Rover Crew Official Account',
+    accountName: 'Kushafah Portal Payment Account',
     accountNumber: '7730000123456',
     bankName: 'Bank of Maldives (BML)',
   };

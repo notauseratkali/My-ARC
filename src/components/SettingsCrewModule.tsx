@@ -689,7 +689,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                       <Palette className="w-3.5 h-3.5" />
                     </div>
                     <div>
-                      <h4 className="text-xs font-bold text-slate-100">Kushafah Scout Group Official Brand Palette</h4>
+                      <h4 className="text-xs font-bold text-slate-100">Scout Group Official Brand Palette</h4>
                       <p className="text-[10px] text-slate-400">Click any color card to copy exact HEX code</p>
                     </div>
                   </div>

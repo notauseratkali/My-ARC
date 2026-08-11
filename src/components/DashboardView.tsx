@@ -200,11 +200,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </h2>
             <p className="text-slate-400 text-sm mt-1 max-w-2xl">
               {isAdvisor ? (
-                <>Operating with supreme authority over <span className="text-purple-300 font-semibold">{settings?.networkName || 'Kushafah Rover Network'}</span>. Administering crew/network decisions, executive council governance, and overall Scout Group operations across {crews.length} decentralized crews.</>
+                <>Operating with supreme authority over <span className="text-purple-300 font-semibold">{settings?.networkName || 'Kushafah Scouting Network'}</span>. Administering scout group decisions, executive council governance, and overall Scout operations through Kushafah Portal across {crews.length} decentralized crews.</>
               ) : isCouncil ? (
-                <>Operating as <span className="text-emerald-400 font-semibold">{settings?.networkName || 'Kushafah Rover Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-emerald-400 font-semibold">Kushafah Portal</span> for <span className="text-emerald-300 font-semibold">{settings?.networkName || 'Scout Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               ) : (
-                <>Operating as <span className="text-emerald-400 font-semibold">{currentMember?.crewName || settings?.crewName || 'Kushafah Rover Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-emerald-400 font-semibold">Kushafah Portal</span> for <span className="text-emerald-300 font-semibold">{currentMember?.crewName || settings?.crewName || 'Scout Group Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               )}
             </p>
           </div>

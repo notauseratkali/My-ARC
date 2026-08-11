@@ -35,13 +35,13 @@ async function startServer() {
         // Fallback rule-based enhancement if key is missing in dev
         let simulatedText = text;
         if (action === "report") {
-          simulatedText = `[EXECUTIVE SUMMARY REPORT]\nTitle: ${title || "Journal Entry"}\n\nKey Highlights:\n- ${text.replace(/\n+/g, "\n- ")}\n\nStatus: Verified and Logged under Arabiyya Rovers Operating Policy.`;
+          simulatedText = `[EXECUTIVE SUMMARY REPORT]\nTitle: ${title || "Journal Entry"}\n\nKey Highlights:\n- ${text.replace(/\n+/g, "\n- ")}\n\nStatus: Verified and Logged under Kushafah Portal Operating Policy.`;
         } else if (action === "summarize") {
           simulatedText = `Summary: ${text.slice(0, 180)}...`;
         } else if (action === "proofread") {
           simulatedText = text.trim() + " (Grammar & Style Verified)";
         } else {
-          simulatedText = text.trim() + "\n\n[Polished & Structured for Rover Portfolio Log]";
+          simulatedText = text.trim() + "\n\n[Polished & Structured for Scout Portfolio Log]";
         }
         return res.json({ enhancedText: simulatedText });
       }
@@ -57,13 +57,13 @@ async function startServer() {
 
       let systemPrompt = "";
       if (action === "report") {
-        systemPrompt = "You are an assistant for the Arabiyya Rovers Crew. Reformat the following member journal entry into a structured, professional Scout Activity & Reflection Report. Do NOT add new unmentioned events, only polish, organize with clear headings (e.g. Activity Summary, Key Learnings, Scouting Values Applied), and correct grammar.";
+        systemPrompt = "You are an assistant for the Kushafah Portal scout management platform. Reformat the following member journal entry into a structured, professional Scout Activity & Reflection Report. Do NOT add new unmentioned events, only polish, organize with clear headings (e.g. Activity Summary, Key Learnings, Scouting Values Applied), and correct grammar.";
       } else if (action === "summarize") {
-        systemPrompt = "You are an assistant for the Arabiyya Rovers Crew. Provide a concise 2-3 sentence executive summary of the member's journal entry. Do NOT invent fake details.";
+        systemPrompt = "You are an assistant for the Kushafah Portal scout management platform. Provide a concise 2-3 sentence executive summary of the member's journal entry. Do NOT invent fake details.";
       } else if (action === "proofread") {
-        systemPrompt = "You are a proofreader for Scouting logs. Correct grammar, spelling, and sentence flow of the provided text while preserving the author's exact voice and factual details. Do NOT invent new facts.";
+        systemPrompt = "You are a proofreader for Scouting logs on the Kushafah Portal platform. Correct grammar, spelling, and sentence flow of the provided text while preserving the author's exact voice and factual details. Do NOT invent new facts.";
       } else {
-        systemPrompt = "You are an editor for Rover Scout portfolios. Refine, polish, and format the member's journal text to sound clear, professional, and inspiring while keeping every original fact intact. Do NOT invent fake stories.";
+        systemPrompt = "You are an editor for Scout portfolios on the Kushafah Portal platform. Refine, polish, and format the member's journal text to sound clear, professional, and inspiring while keeping every original fact intact. Do NOT invent fake stories.";
       }
 
       const prompt = `Title/Topic: ${title || "Journal Entry"}\n\nMember Entry:\n${text}`;
@@ -83,7 +83,7 @@ async function startServer() {
       } catch (geminiError: any) {
         console.warn("Gemini API call warning/error, applying fallback formatting:", geminiError?.message || geminiError);
         if (action === "report") {
-          enhancedText = `[EXECUTIVE SUMMARY REPORT]\nTitle: ${title || "Journal Entry"}\n\nKey Highlights:\n- ${text.replace(/\n+/g, "\n- ")}\n\nStatus: Logged under Arabiyya Rovers Operating Policy.`;
+          enhancedText = `[EXECUTIVE SUMMARY REPORT]\nTitle: ${title || "Journal Entry"}\n\nKey Highlights:\n- ${text.replace(/\n+/g, "\n- ")}\n\nStatus: Logged under Kushafah Portal Operating Policy.`;
         } else if (action === "summarize") {
           enhancedText = `Summary: ${text.slice(0, 180)}...`;
         } else if (action === "proofread") {
@@ -210,7 +210,7 @@ async function startServer() {
         },
       });
 
-      const systemPrompt = `You are a Scout Training & Curriculum Specialist for the Arabiyya Rovers Crew.
+      const systemPrompt = `You are a Scout Training & Curriculum Specialist for the Kushafah Portal platform.
 Analyze the user's prompt describing a Scouting requirement or syllabus task and return a JSON object with this EXACT structure:
 {
   "title": "Short title of requirement",
@@ -269,7 +269,7 @@ Return ONLY valid JSON without markdown formatting or backticks.`;
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Arabiyya Rovers Portal Server running on http://0.0.0.0:${PORT}`);
+    console.log(`Kushafah Portal Server running on http://0.0.0.0:${PORT}`);
   });
 }
 

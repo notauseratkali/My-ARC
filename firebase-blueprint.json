@@ -230,6 +230,19 @@
         "smsNotificationsEnabled": { "type": "boolean" },
         "emailNotificationsEnabled": { "type": "boolean" }
       }
+    },
+    "CouncilFlagRecord": {
+      "title": "CouncilFlagRecord",
+      "description": "Attendance low performance council flag record",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "flaggedAt": { "type": "string" },
+        "flaggedBy": { "type": "string" },
+        "status": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["memberId", "status"]
     }
   },
   "firestore": {
@@ -296,6 +309,10 @@
     "/settings/{settingId}": {
       "schema": { "$ref": "#/entities/PortalSettings" },
       "description": "Global application configuration document"
+    },
+    "/attendance_flags/{flagId}": {
+      "schema": { "$ref": "#/entities/CouncilFlagRecord" },
+      "description": "Collection of low attendance council review flags"
     }
   }
 }

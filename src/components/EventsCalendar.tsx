@@ -492,7 +492,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Kushafah Scout HQ / Uninhabited Island"
+                  placeholder="e.g. Scout HQ / Uninhabited Island"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"

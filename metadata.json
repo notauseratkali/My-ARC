@@ -1,6 +1,6 @@
 {
   "name": "Kushafah Portal",
-  "description": "Kushafah Portal - Owned & operated by Nazih for Rover crews management, progression awards, personal portfolios, events, attendance, and governance.",
+  "description": "Kushafah Portal - Central communication and operations portal used by scout groups for crew management, syllabus progression, events, attendance, and governance.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

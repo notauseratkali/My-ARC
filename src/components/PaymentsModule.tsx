@@ -98,7 +98,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
 
   // Bank Configuration Form
   const [bankForm, setBankForm] = useState<PaymentDetails>({
-    accountName: settings?.paymentDetails?.accountName || 'Kushafah Rover Scout Crew',
+    accountName: settings?.paymentDetails?.accountName || 'Scout Group Official Account',
     accountNumber: settings?.paymentDetails?.accountNumber || '7730000889900',
     bankName: settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)',
   });
@@ -262,7 +262,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
   const pendingVerificationCount = safeTransactions.filter((pt) => pt && pt.status === 'Pending Verification').length;
 
   const crewAccount = settings?.paymentDetails || {
-    accountName: 'Kushafah Rover Scout Crew',
+    accountName: 'Scout Group Official Account',
     accountNumber: '7730000889900',
     bankName: 'Bank of Maldives (BML)',
   };

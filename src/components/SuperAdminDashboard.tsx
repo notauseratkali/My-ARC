@@ -808,7 +808,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Kushafah Rover Network"
+                  placeholder="e.g. Aminiya Scout Network"
                   value={newOrgName}
                   onChange={(e) => setNewOrgName(e.target.value)}
                   className="w-full bg-[#12151B] border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
@@ -819,7 +819,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 <label className="text-slate-300 font-semibold">Org Code / Slug</label>
                 <input
                   type="text"
-                  placeholder="e.g. KUSHAFAH"
+                  placeholder="e.g. AMINIYA"
                   value={newOrgCode}
                   onChange={(e) => setNewOrgCode(e.target.value)}
                   className="w-full bg-[#12151B] border border-slate-700 rounded-xl px-3 py-2 text-slate-100 uppercase font-mono placeholder-slate-500 focus:outline-none focus:border-emerald-500"
@@ -855,7 +855,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 <input
                   type="email"
                   required
-                  placeholder="e.g. advisor.farooq@kushafah.scout.mv"
+                  placeholder="e.g. advisor.farooq@scout.mv"
                   value={newAdvisorEmail}
                   onChange={(e) => setNewAdvisorEmail(e.target.value)}
                   className="w-full bg-[#12151B] border border-slate-700 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-emerald-500"
@@ -920,7 +920,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
               <input
                 type="text"
                 required
-                placeholder="Account Name (e.g. Kushafah Rover Crew Official)"
+                placeholder="Account Name (e.g. Scout Group Official Account)"
                 value={paymentForm.accountName}
                 onChange={(e) => setPaymentForm({ ...paymentForm, accountName: e.target.value })}
                 className="w-full bg-[#1A1E26] border border-slate-800 rounded-xl px-4 py-2.5 text-slate-100 font-medium text-sm focus:outline-none focus:border-amber-500 transition"

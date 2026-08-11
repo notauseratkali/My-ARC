@@ -227,7 +227,7 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                   <input
                     type="text"
                     required
-                    placeholder="e.g. AMINIYA, CHSE, KUSHAFAH"
+                    placeholder="e.g. AMINIYA, CHSE, MAJEEDHIYA"
                     value={orgCode}
                     onChange={(e) => setOrgCode(e.target.value)}
                     className="w-full bg-[#1A1E26] border border-slate-700 rounded-xl px-3.5 py-2 text-slate-100 uppercase font-mono placeholder-slate-500 focus:outline-none focus:border-amber-500"

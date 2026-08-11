@@ -1,4 +1,9 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import {
+  subscribeToCollection,
+  saveDocumentToFirestore,
+  deleteDocumentFromFirestore,
+} from '../lib/firestoreSync';
 import {
   ResponsiveContainer,
   BarChart,
@@ -677,6 +682,20 @@ ${memberReportList
     return {};
   });
 
+  useEffect(() => {
+    const unsub = subscribeToCollection<CouncilFlagRecord & { id?: string }>('attendance_flags', (data) => {
+      if (data && data.length > 0) {
+        const map: Record<string, CouncilFlagRecord> = {};
+        data.forEach((item) => {
+          const key = item.id || item.memberId;
+          if (key) map[key] = item;
+        });
+        setFlaggedMap(map);
+      }
+    });
+    return () => unsub();
+  }, []);
+
   const saveFlaggedMap = (newMap: Record<string, CouncilFlagRecord>) => {
     setFlaggedMap(newMap);
     try {
@@ -684,6 +703,10 @@ ${memberReportList
     } catch (e) {
       console.error('Failed to save flagged attendance map', e);
     }
+
+    Object.keys(newMap).forEach((mId) => {
+      saveDocumentToFirestore('attendance_flags', { id: mId, ...newMap[mId] });
+    });
   };
 
   // Council Notice Modal State
@@ -768,6 +791,7 @@ ${memberReportList
     if (existing) {
       if (confirm(`Remove Council Review flag for ${item.member.name}?`)) {
         delete updated[item.member.id];
+        deleteDocumentFromFirestore('attendance_flags', item.member.id);
         saveFlaggedMap(updated);
       }
     } else {
@@ -824,7 +848,7 @@ ${memberReportList
   const handleCopyNoticeText = () => {
     if (!noticeMember) return;
     const text = `=====================================================
-KUSHAFAH ROVER CREW - COUNCIL ATTENDANCE REVIEW NOTICE
+KUSHAFAH PORTAL - SCOUT GROUP COUNCIL ATTENDANCE REVIEW NOTICE
 =====================================================
 Date Generated: ${new Date().toLocaleDateString()}
 Issued By: ${currentMember.name} (${currentMember.councilRole})
@@ -918,7 +942,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
     const reportLines = [
       `=====================================================`,
-      `KUSHAFAH ROVER CREW - LOW ATTENDANCE & COUNCIL REVIEW SUMMARY`,
+      `KUSHAFAH PORTAL - SCOUT GROUP LOW ATTENDANCE & COUNCIL REVIEW SUMMARY`,
       `Date: ${new Date().toLocaleDateString()}`,
       `Evaluated Threshold: <${attendanceThreshold}% Attendance`,
       `=====================================================`,

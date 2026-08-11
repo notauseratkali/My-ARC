@@ -93,7 +93,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   </span>
                 )}
               </h3>
-              <p className="text-xs text-slate-400">Official Kushafah Portal Scout Crew Certification</p>
+              <p className="text-xs text-slate-400">Official Kushafah Portal Scouting Certification</p>
             </div>
           </div>
 

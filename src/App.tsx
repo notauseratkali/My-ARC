@@ -519,7 +519,16 @@ export default function App() {
   };
 
   const handleRejectOrg = (orgId: string) => {
-    setOrganisations((prev) => prev.map((o) => (o.id === orgId ? { ...o, status: 'Rejected' } : o)));
+    setOrganisations((prev) =>
+      prev.map((o) => {
+        if (o.id === orgId) {
+          const updated: Organisation = { ...o, status: 'Rejected' };
+          saveDocumentToFirestore('organisations', updated);
+          return updated;
+        }
+        return o;
+      })
+    );
   };
 
   const handleUpdateOrgValidity = (orgId: string, newValidity: string) => {
@@ -1177,7 +1186,7 @@ export default function App() {
                 onVerifyPayment={handleVerifyPayment}
                 settings={settings}
                 onUpdateSettings={handleUpdateSettings}
-                activeOrgContext={selectedOrgId}
+                activeOrgContext={activeOrgContext}
               />
             )}
 
@@ -1241,7 +1250,7 @@ export default function App() {
                   ? 'National Scout Organisation Superadmin Portal'
                   : activeOrgObj
                   ? activeOrgObj.name
-                  : 'Kushafah Rover Crew'}
+                  : 'Kushafah Scouting Portal'}
               </span>
               <span className="text-slate-500">
                 {isSuperAdmin ? '• Global Portal Administration' : '• Governed by Rover Operating Policy'}
