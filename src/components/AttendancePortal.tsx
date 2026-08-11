@@ -379,6 +379,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
 
   // Filter members for attendance sheet
   const displayMembers = members.filter((m) => {
+    if (m.isSuperAdmin || m.councilRole === 'Superadmin') return false;
     if (m.status !== 'Active') return false;
     if (filterCrewId !== 'All' && m.crewId !== filterCrewId) return false;
     if (filterSection !== 'All' && m.section !== filterSection) return false;
@@ -428,6 +429,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
 
     // Filter members for report
     const targetMembers = members.filter((m) => {
+      if (m.isSuperAdmin || m.councilRole === 'Superadmin') return false;
       if (reportCrewId !== 'All' && m.crewId !== reportCrewId) return false;
       if (reportSection !== 'All' && m.section !== reportSection) return false;
       if (reportSearchQuery.trim()) {

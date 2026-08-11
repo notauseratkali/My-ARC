@@ -112,7 +112,7 @@ export const INITIAL_MEMBERS: Member[] = [
     gender: 'Male',
     section: 'National Portal',
     crewId: 'portal-admin',
-    crewName: '',
+    crewName: 'N/A (National Superadmin)',
     councilRole: 'Superadmin',
     investitureDate: '2005-01-01',
     status: 'Active',

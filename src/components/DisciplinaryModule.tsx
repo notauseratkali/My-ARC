@@ -388,11 +388,13 @@ export const DisciplinaryModule: React.FC<DisciplinaryModuleProps> = ({
                   onChange={(e) => setFormData({ ...formData, memberId: e.target.value })}
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
                 >
-                  {members.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name} ({m.idCard} - {m.section} - {m.crewName})
-                    </option>
-                  ))}
+                  {members
+                    .filter((m) => !m.isSuperAdmin && m.councilRole !== 'Superadmin')
+                    .map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} ({m.idCard} - {m.section} - {m.crewName})
+                      </option>
+                    ))}
                 </select>
               </div>
 

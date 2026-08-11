@@ -67,6 +67,7 @@ import { RoverPolicyModule } from './components/RoverPolicyModule';
 import { PaymentsModule } from './components/PaymentsModule';
 import { AuditLogModule } from './components/AuditLogModule';
 import { PlanRenewalModal } from './components/PlanRenewalModal';
+import { RequireAuth } from './components/RequireAuth';
 import { useToast } from './components/ToastContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
@@ -172,9 +173,14 @@ export default function App() {
     return saved === 'dark' || saved === 'light' ? saved : 'light';
   });
 
-  const currentMember = currentMemberId ? (members.find((m) => m.id === currentMemberId) || members[0]) : members[0];
-  const isSuperAdmin = currentMember?.isSuperAdmin || currentMember?.councilRole === 'Superadmin';
-  const isCouncil = currentMemberId ? (currentMember.councilRole !== 'Member' || isSuperAdmin) : false;
+  const verifiedMember = React.useMemo(() => {
+    if (!currentMemberId) return null;
+    return members.find((m) => m.id === currentMemberId) || null;
+  }, [currentMemberId, members]);
+
+  const currentMember = verifiedMember || members[0];
+  const isSuperAdmin = verifiedMember ? (verifiedMember.isSuperAdmin || verifiedMember.councilRole === 'Superadmin') : false;
+  const isCouncil = verifiedMember ? (verifiedMember.councilRole !== 'Member' || isSuperAdmin) : false;
 
   // Filter members by organisation context if set
   const filteredMembers = React.useMemo(() => {
@@ -272,12 +278,15 @@ export default function App() {
           if (m.isSuperAdmin || m.id === 'm-superadmin' || m.councilRole === 'Superadmin') {
             const updatedSuperadmin = {
               ...m,
+              isSuperAdmin: true,
+              councilRole: 'Superadmin' as const,
               name: 'Ahmed Nazih Nafiz',
               email: 'nazihnafiz@gmail.com',
-              crewName: '',
+              section: 'National Portal' as const,
+              crewName: 'N/A (National Superadmin)',
               crewId: 'portal-admin',
             };
-            if (m.name !== 'Ahmed Nazih Nafiz' || m.email !== 'nazihnafiz@gmail.com' || m.crewName !== '') {
+            if (m.name !== 'Ahmed Nazih Nafiz' || m.email !== 'nazihnafiz@gmail.com' || m.crewName !== 'N/A (National Superadmin)') {
               saveDocumentToFirestore('members', updatedSuperadmin);
             }
             return updatedSuperadmin;
@@ -932,7 +941,7 @@ export default function App() {
       <Sidebar
         activeTab={activeTab as any}
         setActiveTab={(tab) => setActiveTab(tab)}
-        currentMember={currentMemberId ? currentMember : null}
+        currentMember={currentMemberId ? verifiedMember : null}
         allMembers={filteredMembers}
         onSelectMember={(m) => handleLogin(m)}
         onLogout={handleLogout}
@@ -1000,7 +1009,7 @@ export default function App() {
             </button>
 
             <UserSwitcher
-              currentMember={currentMemberId ? currentMember : null}
+              currentMember={currentMemberId ? verifiedMember : null}
               allMembers={filteredMembers}
               onSelectMember={(m) => handleLogin(m)}
               onLogout={handleLogout}
@@ -1012,209 +1021,215 @@ export default function App() {
 
         {/* Primary View Content Container */}
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6">
-          {activeTab === 'superadmin' && isSuperAdmin && (
-            <SuperAdminDashboard
-              organisations={organisations}
-              members={members}
-              onApproveOrg={handleApproveOrg}
-              onRejectOrg={handleRejectOrg}
-              onAddDirectOrg={handleAddDirectOrg}
-              onSelectActiveOrgContext={(orgId) => setActiveOrgContext(orgId)}
-              activeOrgContext={activeOrgContext}
-              settings={settings}
-              onUpdateSettings={handleUpdateSettings}
-              onUpdateOrgValidity={handleUpdateOrgValidity}
-              onRejectOrgRenewal={handleRejectOrgRenewal}
-              onUpdateOrg={handleUpdateOrg}
-              onDeleteOrg={handleDeleteOrg}
-            />
-          )}
+          <RequireAuth
+            currentMemberId={currentMemberId}
+            members={members}
+            onRedirectToLogin={() => setIsLoginModalOpen(true)}
+          >
+            {activeTab === 'superadmin' && isSuperAdmin && (
+              <SuperAdminDashboard
+                organisations={organisations}
+                members={members}
+                onApproveOrg={handleApproveOrg}
+                onRejectOrg={handleRejectOrg}
+                onAddDirectOrg={handleAddDirectOrg}
+                onSelectActiveOrgContext={(orgId) => setActiveOrgContext(orgId)}
+                activeOrgContext={activeOrgContext}
+                settings={settings}
+                onUpdateSettings={handleUpdateSettings}
+                onUpdateOrgValidity={handleUpdateOrgValidity}
+                onRejectOrgRenewal={handleRejectOrgRenewal}
+                onUpdateOrg={handleUpdateOrg}
+                onDeleteOrg={handleDeleteOrg}
+              />
+            )}
 
-          {activeTab === 'dashboard' && (
-            <DashboardView
-              members={filteredMembers}
-              crews={crews}
-              events={events}
-              attendance={attendance}
-              journals={journals}
-              incidents={incidents}
-              syllabus={syllabus}
-              progressList={progressList}
-              currentMember={currentMember}
-              settings={settings}
-              setActiveTab={setActiveTab}
-            />
-          )}
-
-          {(activeTab === 'directory' || activeTab === 'members') && (
-            <MemberDirectory
-              members={filteredMembers}
-              crews={crews}
-              currentMember={currentMember}
-              settings={settings}
-              onUpdateSettings={handleUpdateSettings}
-              progressList={progressList}
-              syllabus={syllabus}
-              onAddMember={handleAddMember}
-              onUpdateMember={handleUpdateMember}
-              onDeleteMember={handleDeleteMember}
-            />
-          )}
-
-          {activeTab === 'syllabus' && (
-            <SyllabusEngine
-              syllabus={syllabus}
-              progressList={progressList}
-              members={filteredMembers}
-              currentMember={currentMember}
-              onAddRequirement={handleAddRequirement}
-              onUpdateRequirement={handleUpdateRequirement}
-              onDeleteRequirement={handleDeleteRequirement}
-              onUpdateProgress={handleUpdateProgress}
-            />
-          )}
-
-          {(activeTab === 'journal' || activeTab === 'journals') && (
-            <PortfolioJournal
-              journals={journals}
-              events={events}
-              currentMember={currentMember}
-              allMembers={filteredMembers}
-              settings={settings}
-              onAddJournal={handleAddJournal}
-              onUpdateJournal={handleUpdateJournal}
-              onDeleteJournal={handleDeleteJournal}
-            />
-          )}
-
-          {activeTab === 'events' && (
-            <EventsCalendar
-              events={events}
-              crews={crews}
-              members={filteredMembers}
-              currentMember={currentMember}
-              settings={settings}
-              onAddEvent={handleAddEvent}
-              onUpdateEvent={handleUpdateEvent}
-              onDeleteEvent={handleDeleteEvent}
-              onSendNotifications={handleSendNotifications}
-            />
-          )}
-
-          {activeTab === 'attendance' && (
-            <AttendancePortal
-              events={events}
-              attendance={attendance}
-              members={filteredMembers}
-              crews={crews}
-              currentMember={currentMember}
-              onSaveAttendance={handleSaveAttendance}
-            />
-          )}
-
-          {activeTab === 'minutes' && (
-            <MeetingMinutesModule
-              currentMember={currentMember}
-              members={filteredMembers}
-              minutesList={meetingMinutes}
-              onSaveMinutes={(m) => {
-                setMeetingMinutes((prev) => {
-                  const exists = prev.some((item) => item.id === m.id);
-                  if (exists) {
-                    return prev.map((item) => (item.id === m.id ? m : item));
-                  }
-                  return [m, ...prev];
-                });
-                saveDocumentToFirestore('minutes', m);
-                toastSuccess('Meeting Minutes Recorded', `"${m.title}" saved to archive.`);
-              }}
-              onDeleteMinutes={(id) => {
-                setMeetingMinutes((prev) => prev.filter((item) => item.id !== id));
-                deleteDocumentFromFirestore('minutes', id);
-                toastInfo('Minutes Deleted', 'Meeting record removed.');
-              }}
-              settings={settings}
-            />
-          )}
-
-          {activeTab === 'policy' && (
-            <RoverPolicyModule
-              policy={policy}
-              polls={polls}
-              currentMember={currentMember}
-              allMembers={filteredMembers}
-              onUpdatePolicy={handleUpdatePolicy}
-              onCreatePoll={handleCreatePoll}
-              onCastVote={handleCastVote}
-              onFinalizePoll={handleFinalizePoll}
-            />
-          )}
-
-          {activeTab === 'payments' && (
-            <PaymentsModule
-              currentMember={currentMember}
-              members={filteredMembers}
-              feeRequests={feeRequests}
-              paymentTransactions={paymentTransactions}
-              transactions={paymentTransactions}
-              onAddFeeRequest={handleCreateFeeRequest}
-              onCreateFeeRequest={handleCreateFeeRequest}
-              onSubmitPayment={handleSubmitPayment}
-              onVerifyPayment={handleVerifyPayment}
-              settings={settings}
-              onUpdateSettings={handleUpdateSettings}
-              activeOrgContext={selectedOrgId}
-            />
-          )}
-
-          {activeTab === 'disciplinary' && (
-            isCouncil ? (
-              <DisciplinaryModule
+            {activeTab === 'dashboard' && (
+              <DashboardView
+                members={filteredMembers}
+                crews={crews}
+                events={events}
+                attendance={attendance}
+                journals={journals}
                 incidents={incidents}
+                syllabus={syllabus}
+                progressList={progressList}
+                currentMember={currentMember}
+                settings={settings}
+                setActiveTab={setActiveTab}
+              />
+            )}
+
+            {(activeTab === 'directory' || activeTab === 'members') && (
+              <MemberDirectory
+                members={filteredMembers}
+                crews={crews}
+                currentMember={currentMember}
+                settings={settings}
+                onUpdateSettings={handleUpdateSettings}
+                progressList={progressList}
+                syllabus={syllabus}
+                onAddMember={handleAddMember}
+                onUpdateMember={handleUpdateMember}
+                onDeleteMember={handleDeleteMember}
+              />
+            )}
+
+            {activeTab === 'syllabus' && (
+              <SyllabusEngine
+                syllabus={syllabus}
+                progressList={progressList}
                 members={filteredMembers}
                 currentMember={currentMember}
-                onAddIncident={handleAddIncident}
-                onUpdateIncident={handleUpdateIncident}
-                onDeleteIncident={handleDeleteIncident}
+                onAddRequirement={handleAddRequirement}
+                onUpdateRequirement={handleUpdateRequirement}
+                onDeleteRequirement={handleDeleteRequirement}
+                onUpdateProgress={handleUpdateProgress}
               />
-            ) : (
-              <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-8 text-center space-y-4 max-w-xl mx-auto my-12 shadow-xl">
-                <div className="w-16 h-16 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-center mx-auto text-rose-400">
-                  <span className="font-bold text-2xl">🔒</span>
+            )}
+
+            {(activeTab === 'journal' || activeTab === 'journals') && (
+              <PortfolioJournal
+                journals={journals}
+                events={events}
+                currentMember={currentMember}
+                allMembers={filteredMembers}
+                settings={settings}
+                onAddJournal={handleAddJournal}
+                onUpdateJournal={handleUpdateJournal}
+                onDeleteJournal={handleDeleteJournal}
+              />
+            )}
+
+            {activeTab === 'events' && (
+              <EventsCalendar
+                events={events}
+                crews={crews}
+                members={filteredMembers}
+                currentMember={currentMember}
+                settings={settings}
+                onAddEvent={handleAddEvent}
+                onUpdateEvent={handleUpdateEvent}
+                onDeleteEvent={handleDeleteEvent}
+                onSendNotifications={handleSendNotifications}
+              />
+            )}
+
+            {activeTab === 'attendance' && (
+              <AttendancePortal
+                events={events}
+                attendance={attendance}
+                members={filteredMembers}
+                crews={crews}
+                currentMember={currentMember}
+                onSaveAttendance={handleSaveAttendance}
+              />
+            )}
+
+            {activeTab === 'minutes' && (
+              <MeetingMinutesModule
+                currentMember={currentMember}
+                members={filteredMembers}
+                minutesList={meetingMinutes}
+                onSaveMinutes={(m) => {
+                  setMeetingMinutes((prev) => {
+                    const exists = prev.some((item) => item.id === m.id);
+                    if (exists) {
+                      return prev.map((item) => (item.id === m.id ? m : item));
+                    }
+                    return [m, ...prev];
+                  });
+                  saveDocumentToFirestore('minutes', m);
+                  toastSuccess('Meeting Minutes Recorded', `"${m.title}" saved to archive.`);
+                }}
+                onDeleteMinutes={(id) => {
+                  setMeetingMinutes((prev) => prev.filter((item) => item.id !== id));
+                  deleteDocumentFromFirestore('minutes', id);
+                  toastInfo('Minutes Deleted', 'Meeting record removed.');
+                }}
+                settings={settings}
+              />
+            )}
+
+            {activeTab === 'policy' && (
+              <RoverPolicyModule
+                policy={policy}
+                polls={polls}
+                currentMember={currentMember}
+                allMembers={filteredMembers}
+                onUpdatePolicy={handleUpdatePolicy}
+                onCreatePoll={handleCreatePoll}
+                onCastVote={handleCastVote}
+                onFinalizePoll={handleFinalizePoll}
+              />
+            )}
+
+            {activeTab === 'payments' && (
+              <PaymentsModule
+                currentMember={currentMember}
+                members={filteredMembers}
+                feeRequests={feeRequests}
+                paymentTransactions={paymentTransactions}
+                transactions={paymentTransactions}
+                onAddFeeRequest={handleCreateFeeRequest}
+                onCreateFeeRequest={handleCreateFeeRequest}
+                onSubmitPayment={handleSubmitPayment}
+                onVerifyPayment={handleVerifyPayment}
+                settings={settings}
+                onUpdateSettings={handleUpdateSettings}
+                activeOrgContext={selectedOrgId}
+              />
+            )}
+
+            {activeTab === 'disciplinary' && (
+              isCouncil ? (
+                <DisciplinaryModule
+                  incidents={incidents}
+                  members={filteredMembers}
+                  currentMember={currentMember}
+                  onAddIncident={handleAddIncident}
+                  onUpdateIncident={handleUpdateIncident}
+                  onDeleteIncident={handleDeleteIncident}
+                />
+              ) : (
+                <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-8 text-center space-y-4 max-w-xl mx-auto my-12 shadow-xl">
+                  <div className="w-16 h-16 bg-rose-500/10 border border-rose-500/30 rounded-2xl flex items-center justify-center mx-auto text-rose-400">
+                    <span className="font-bold text-2xl">🔒</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-100">Disciplinary Module Restricted</h3>
+                  <p className="text-slate-400 text-xs leading-relaxed">
+                    Access to the Disciplinary Incident Log is confidential and strictly restricted to Executive Council Officers. Standard crew members do not have permission to view or manage disciplinary records.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition"
+                  >
+                    Return to Overview Dashboard
+                  </button>
                 </div>
-                <h3 className="text-xl font-bold text-slate-100">Disciplinary Module Restricted</h3>
-                <p className="text-slate-400 text-xs leading-relaxed">
-                  Access to the Disciplinary Incident Log is confidential and strictly restricted to Executive Council Officers. Standard crew members do not have permission to view or manage disciplinary records.
-                </p>
-                <button
-                  onClick={() => setActiveTab('dashboard')}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition"
-                >
-                  Return to Overview Dashboard
-                </button>
-              </div>
-            )
-          )}
+              )
+            )}
 
-          {activeTab === 'audit' && (
-            <AuditLogModule
-              currentMember={currentMember}
-              auditLogs={auditLogs}
-            />
-          )}
+            {activeTab === 'audit' && (
+              <AuditLogModule
+                currentMember={currentMember}
+                auditLogs={auditLogs}
+              />
+            )}
 
-          {activeTab === 'settings' && (
-            <SettingsCrewModule
-              crews={crews}
-              settings={settings}
-              members={filteredMembers}
-              currentMember={currentMember}
-              onAddCrew={handleAddCrew}
-              onDeleteCrew={handleDeleteCrew}
-              onUpdateSettings={handleUpdateSettings}
-              onUpdateMember={handleUpdateMember}
-            />
-          )}
+            {activeTab === 'settings' && (
+              <SettingsCrewModule
+                crews={crews}
+                settings={settings}
+                members={filteredMembers}
+                currentMember={currentMember}
+                onAddCrew={handleAddCrew}
+                onDeleteCrew={handleDeleteCrew}
+                onUpdateSettings={handleUpdateSettings}
+                onUpdateMember={handleUpdateMember}
+              />
+            )}
+          </RequireAuth>
         </main>
 
         {/* Footer */}

@@ -708,8 +708,8 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                     </div>
                     <div>
                       <span className="text-slate-500 text-[10px] block font-mono">Crew Sub-Group</span>
-                      <span className="font-semibold text-slate-200 truncate block" title={m.crewName}>
-                        {m.crewName}
+                      <span className="font-semibold text-slate-200 truncate block" title={m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'N/A (National Superadmin)' : (m.crewName || 'Unassigned Crew')}>
+                        {m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'N/A (Superadmin)' : (m.crewName || 'Unassigned Crew')}
                       </span>
                     </div>
                   </div>
@@ -798,7 +798,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                     <span>•</span>
                     <span className="text-emerald-400 font-semibold">{selectedMember.section} Section</span>
                     <span>•</span>
-                    <span>{selectedMember.crewName}</span>
+                    <span>{selectedMember.isSuperAdmin || selectedMember.councilRole === 'Superadmin' ? 'N/A (National Superadmin)' : (selectedMember.crewName || 'Unassigned Crew')}</span>
                   </div>
                   <button
                     type="button"
@@ -984,7 +984,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                       <span className="text-slate-400 text-[10px] block font-mono">Assigned Crew Sub-Group</span>
                       <span className="font-bold text-slate-100 flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-                        {selectedMember.crewName}
+                        {selectedMember.isSuperAdmin || selectedMember.councilRole === 'Superadmin' ? 'N/A (National Superadmin)' : (selectedMember.crewName || 'Unassigned Crew')}
                       </span>
                     </div>
 
@@ -1476,24 +1476,33 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
 
                 <div>
                   <label className="block text-slate-300 font-medium mb-1">Assigned Sub-Crew</label>
-                  <select
-                    value={editMemberData.crewId}
-                    onChange={(e) => {
-                      const selectedCrew = crews.find((c) => c.id === e.target.value);
-                      setEditMemberData({
-                        ...editMemberData,
-                        crewId: e.target.value,
-                        crewName: selectedCrew ? selectedCrew.name : editMemberData.crewName,
-                      });
-                    }}
-                    className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
-                  >
-                    {crews.map((c) => (
-                      <option key={c.id} value={c.id}>
-                        {c.name} ({c.location})
-                      </option>
-                    ))}
-                  </select>
+                  {editMemberData.isSuperAdmin || editMemberData.councilRole === 'Superadmin' ? (
+                    <input
+                      type="text"
+                      disabled
+                      value="N/A (National Superadmin)"
+                      className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-slate-400 cursor-not-allowed text-xs"
+                    />
+                  ) : (
+                    <select
+                      value={editMemberData.crewId}
+                      onChange={(e) => {
+                        const selectedCrew = crews.find((c) => c.id === e.target.value);
+                        setEditMemberData({
+                          ...editMemberData,
+                          crewId: e.target.value,
+                          crewName: selectedCrew ? selectedCrew.name : editMemberData.crewName,
+                        });
+                      }}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                    >
+                      {crews.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.name} ({c.location})
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
             </div>

@@ -372,9 +372,9 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 
     let finalMemberIds: string[] = [];
     if (assignTargetType === 'all') {
-      finalMemberIds = members.filter((m) => m.status === 'Active').map((m) => m.id);
+      finalMemberIds = members.filter((m) => m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin').map((m) => m.id);
     } else if (assignTargetType === 'crew') {
-      finalMemberIds = members.filter((m) => m.crewId === assignCrewId && m.status === 'Active').map((m) => m.id);
+      finalMemberIds = members.filter((m) => m.crewId === assignCrewId && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin').map((m) => m.id);
     } else {
       finalMemberIds = assignMemberIds;
     }
@@ -681,7 +681,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
   ];
 
   const analyticsCrewData = crewList.map((crew) => {
-    const crewMembers = members.filter((m) => m.crewId === crew.id && m.status === 'Active');
+    const crewMembers = members.filter((m) => m.crewId === crew.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin');
     const crewMemberIds = crewMembers.map((m) => m.id);
     const crewProgress = progressList.filter((p) => crewMemberIds.includes(p.memberId));
 

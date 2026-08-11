@@ -58,7 +58,7 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
     });
 
     members.forEach((m) => {
-      if (m.crewId && !allCrewMap.has(m.crewId)) {
+      if (!m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.crewId && m.crewId !== 'portal-admin' && !allCrewMap.has(m.crewId)) {
         allCrewMap.set(m.crewId, {
           id: m.crewId,
           name: m.crewName || 'Sub-Crew',
@@ -69,7 +69,7 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
 
     const result = Array.from(allCrewMap.values()).map((crew) => {
       const crewMembers = members.filter(
-        (m) => (m.crewId === crew.id || m.crewName === crew.name) && m.status === 'Active'
+        (m) => !m.isSuperAdmin && m.councilRole !== 'Superadmin' && (m.crewId === crew.id || m.crewName === crew.name) && m.status === 'Active'
       );
 
       const explorerMembers = crewMembers.filter((m) => m.section === 'Explorer');

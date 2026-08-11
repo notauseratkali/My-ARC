@@ -425,7 +425,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {crews.map((c) => {
-                  const crewMembers = members.filter((m) => m.crewId === c.id && m.status === 'Active');
+                  const crewMembers = members.filter((m) => m.crewId === c.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin');
                   return (
                     <div key={c.id} className="bg-slate-950/80 border border-slate-800 p-4 rounded-xl space-y-3">
                       <div className="flex items-start justify-between">
@@ -967,11 +967,13 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
                 >
                   <option value="">-- Assign Later --</option>
-                  {members.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.name} ({m.councilRole})
-                    </option>
-                  ))}
+                  {members
+                    .filter((m) => !m.isSuperAdmin && m.councilRole !== 'Superadmin')
+                    .map((m) => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} ({m.councilRole})
+                      </option>
+                    ))}
                 </select>
               </div>
 

@@ -78,9 +78,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const isAdvisor = currentMember?.councilRole === 'Rover Advisor';
   const isCouncil = !!currentMember && currentMember.councilRole !== 'Member';
 
-  const activeMembers = members.filter((m) => m.status === 'Active');
-  const explorers = members.filter((m) => m.section === 'Explorer' && m.status === 'Active');
-  const rovers = members.filter((m) => m.section === 'Rover' && m.status === 'Active');
+  const activeMembers = members.filter((m) => m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin');
+  const explorers = members.filter((m) => m.section === 'Explorer' && m.status === 'Active' && !m.isSuperAdmin);
+  const rovers = members.filter((m) => m.section === 'Rover' && m.status === 'Active' && !m.isSuperAdmin);
   const onboardingMembers = members.filter((m) => m.status === 'Onboarding');
 
   // Find members turning 18 or recently turned 18 for transition alert
@@ -721,7 +721,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <div className="space-y-2.5">
               {crews.map((c) => {
-                const crewMemberCount = members.filter((m) => m.crewId === c.id && m.status === 'Active').length;
+                const crewMemberCount = members.filter((m) => m.crewId === c.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin').length;
                 return (
                   <div key={c.id} className="bg-[#161920] border border-slate-800 p-3 rounded-xl flex items-center justify-between">
                     <div>
