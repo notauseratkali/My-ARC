@@ -50,12 +50,12 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       return (
-        log.action.toLowerCase().includes(q) ||
-        log.performedByMemberName.toLowerCase().includes(q) ||
-        log.performedByRole.toLowerCase().includes(q) ||
+        (log.action || '').toLowerCase().includes(q) ||
+        (log.performedByMemberName || '').toLowerCase().includes(q) ||
+        (log.performedByRole || '').toLowerCase().includes(q) ||
         (log.targetName && log.targetName.toLowerCase().includes(q)) ||
-        log.details.toLowerCase().includes(q) ||
-        log.timestamp.toLowerCase().includes(q)
+        (log.details || '').toLowerCase().includes(q) ||
+        (log.timestamp || '').toLowerCase().includes(q)
       );
     }
     return true;

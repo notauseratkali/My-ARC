@@ -223,7 +223,7 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
                   }`}
                 >
                   <div className="text-xs">+1 Month</div>
-                  <div className="text-[10px] font-mono opacity-80">MVR 40</div>
+                  <div className="text-[10px] font-mono opacity-80">MVR 20</div>
                 </button>
 
                 <button
@@ -236,7 +236,7 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
                   }`}
                 >
                   <div className="text-xs">+1 Year (Annual)</div>
-                  <div className="text-[10px] font-mono opacity-80">MVR 400</div>
+                  <div className="text-[10px] font-mono opacity-80">MVR 200</div>
                 </button>
 
                 <button
@@ -305,7 +305,7 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
               <label className="text-slate-300 font-semibold">Payment / Renewal Notes (Optional)</label>
               <textarea
                 rows={2}
-                placeholder="e.g. Paid MVR 40 via BML Mobile Banking transfer for Term 2 extension."
+                placeholder="e.g. Paid MVR 20 via BML Mobile Banking transfer for Term 2 extension."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 className="w-full bg-[#12151B] border border-slate-800 rounded-xl p-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"

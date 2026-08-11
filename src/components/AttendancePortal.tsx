@@ -37,7 +37,25 @@ import {
   Printer,
   Copy,
   Check,
+  Flag,
+  ShieldAlert,
+  ShieldCheck,
+  Sliders,
+  Zap,
+  Eye,
+  FileCheck,
+  X,
 } from 'lucide-react';
+
+export interface CouncilFlagRecord {
+  memberId: string;
+  flaggedAt: string;
+  flaggedBy: string;
+  status: 'Pending Council Review' | 'Formal Notice Issued' | 'Counseled & Resolved' | 'Exempted';
+  notes: string;
+  attendancePct: number;
+  unexcusedCount: number;
+}
 
 interface AttendancePortalProps {
   events: CrewEvent[];
@@ -296,7 +314,13 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
       if (existing) {
         initialMap[m.id] = { status: existing.status, reason: existing.exemptionReason };
       } else {
-        if (
+        const isExemptRole = Boolean(m.isSuperAdmin || m.councilRole === 'Superadmin' || m.councilRole === 'Rover Advisor');
+        if (isExemptRole) {
+          initialMap[m.id] = {
+            status: 'Exempt',
+            reason: m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Exempt: National Superadmin' : 'Exempt: Rover Advisor Governance',
+          };
+        } else if (
           selectedEvent &&
           selectedEvent.crewId !== 'all' &&
           selectedEvent.crewId !== m.crewId
@@ -408,9 +432,9 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
       if (reportSection !== 'All' && m.section !== reportSection) return false;
       if (reportSearchQuery.trim()) {
         const q = reportSearchQuery.toLowerCase();
-        const matchName = m.name.toLowerCase().includes(q);
-        const matchId = m.idCard.toLowerCase().includes(q);
-        const matchEmail = m.email.toLowerCase().includes(q);
+        const matchName = (m.name || '').toLowerCase().includes(q);
+        const matchId = (m.idCard || '').toLowerCase().includes(q);
+        const matchEmail = (m.email || '').toLowerCase().includes(q);
         if (!matchName && !matchId && !matchEmail) return false;
       }
       return true;
@@ -422,6 +446,8 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
     let globalExemptCount = 0;
 
     const list = targetMembers.map((m) => {
+      const isExemptRole = Boolean(m.isSuperAdmin || m.councilRole === 'Superadmin' || m.councilRole === 'Rover Advisor');
+
       // Find all records for this member in relEvents
       const mRecords = attendance.filter(
         (a) => a.memberId === m.id && relEventIds.has(a.eventId)
@@ -443,8 +469,13 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
           else if (rec.status === 'Unexcused') unexcusedCount++;
           else if (rec.status === 'Exempt') exemptCount++;
         } else {
-          // If unrecorded, default logic: if out of region exempt, else unexcused/default
-          if (ev.crewId !== 'all' && ev.crewId !== m.crewId) {
+          if (isExemptRole) {
+            recordMap[ev.id] = {
+              status: 'Exempt',
+              reason: m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Exempt: National Superadmin' : 'Exempt: Rover Advisor Governance',
+            };
+            exemptCount++;
+          } else if (ev.crewId !== 'all' && ev.crewId !== m.crewId) {
             recordMap[ev.id] = { status: 'Exempt', reason: 'Out-of-region default' };
             exemptCount++;
           } else {
@@ -459,10 +490,10 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
       const evaluatedAssemblies = totalAssemblies - exemptCount;
       const effectiveTotal = evaluatedAssemblies > 0 ? evaluatedAssemblies : 1;
 
-      const presentPct = totalAssemblies > 0 ? Math.round((presentCount / effectiveTotal) * 100) : 0;
-      const unexcusedPct = totalAssemblies > 0 ? Math.round((unexcusedCount / effectiveTotal) * 100) : 0;
-      const excusedPct = totalAssemblies > 0 ? Math.round((excusedCount / effectiveTotal) * 100) : 0;
-      const exemptPct = totalAssemblies > 0 ? Math.round((exemptCount / (totalAssemblies || 1)) * 100) : 0;
+      const presentPct = isExemptRole ? 100 : (totalAssemblies > 0 ? Math.round((presentCount / effectiveTotal) * 100) : 0);
+      const unexcusedPct = isExemptRole ? 0 : (totalAssemblies > 0 ? Math.round((unexcusedCount / effectiveTotal) * 100) : 0);
+      const excusedPct = isExemptRole ? 0 : (totalAssemblies > 0 ? Math.round((excusedCount / effectiveTotal) * 100) : 0);
+      const exemptPct = isExemptRole ? 100 : (totalAssemblies > 0 ? Math.round((exemptCount / (totalAssemblies || 1)) * 100) : 0);
 
       globalPresentCount += presentCount;
       globalUnexcusedCount += unexcusedCount;
@@ -470,7 +501,9 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
       globalExemptCount += exemptCount;
 
       let turnoutRating: 'Exemplary' | 'Satisfactory' | 'Needs Review' | 'At Risk' = 'Satisfactory';
-      if (unexcusedCount >= 3 || presentPct < 50) {
+      if (isExemptRole) {
+        turnoutRating = 'Exemplary';
+      } else if (unexcusedCount >= 3 || presentPct < 50) {
         turnoutRating = 'At Risk';
       } else if (presentPct >= 85) {
         turnoutRating = 'Exemplary';
@@ -482,6 +515,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
 
       return {
         member: m,
+        isExemptRole,
         totalAssemblies,
         presentCount,
         presentPct,
@@ -625,6 +659,286 @@ ${memberReportList
     navigator.clipboard.writeText(text);
     setCopiedReport(true);
     setTimeout(() => setCopiedReport(false), 2500);
+  };
+
+  // AUTOMATED LOW ATTENDANCE GENERATOR & COUNCIL REVIEW STATE
+  const [attendanceThreshold, setAttendanceThreshold] = useState<number>(50);
+  const [reportViewFilter, setReportViewFilter] = useState<'all' | 'low_attendance' | 'flagged_only' | 'pending_review'>('all');
+
+  const [flaggedMap, setFlaggedMap] = useState<Record<string, CouncilFlagRecord>>(() => {
+    try {
+      const saved = localStorage.getItem('kushafah_flagged_attendance');
+      if (saved) return JSON.parse(saved);
+    } catch (e) {
+      console.error('Failed to load flagged attendance map', e);
+    }
+    return {};
+  });
+
+  const saveFlaggedMap = (newMap: Record<string, CouncilFlagRecord>) => {
+    setFlaggedMap(newMap);
+    try {
+      localStorage.setItem('kushafah_flagged_attendance', JSON.stringify(newMap));
+    } catch (e) {
+      console.error('Failed to save flagged attendance map', e);
+    }
+  };
+
+  // Council Notice Modal State
+  const [noticeMember, setNoticeMember] = useState<{
+    member: Member;
+    presentPct: number;
+    unexcusedCount: number;
+    totalAssemblies: number;
+    presentCount: number;
+  } | null>(null);
+  const [noticeNotes, setNoticeNotes] = useState<string>('');
+  const [noticeStatus, setNoticeStatus] = useState<'Pending Council Review' | 'Formal Notice Issued' | 'Counseled & Resolved' | 'Exempted'>('Pending Council Review');
+  const [copiedNotice, setCopiedNotice] = useState(false);
+
+  // Filtered member report list based on low attendance view filter
+  const filteredReportList = useMemo(() => {
+    return memberReportList.filter((item) => {
+      const isLow = !item.isExemptRole && item.presentPct < attendanceThreshold;
+      const flag = flaggedMap[item.member.id];
+      const isFlagged = Boolean(flag);
+
+      if (reportViewFilter === 'low_attendance' && !isLow) return false;
+      if (reportViewFilter === 'flagged_only' && !isFlagged) return false;
+      if (reportViewFilter === 'pending_review' && flag?.status !== 'Pending Council Review') return false;
+
+      return true;
+    });
+  }, [memberReportList, attendanceThreshold, flaggedMap, reportViewFilter]);
+
+  // Low attendance & Council Governance Counts
+  const lowAttendanceCount = useMemo(() => {
+    return memberReportList.filter((m) => !m.isExemptRole && m.presentPct < attendanceThreshold).length;
+  }, [memberReportList, attendanceThreshold]);
+
+  const flaggedCount = useMemo(() => {
+    return Object.keys(flaggedMap).length;
+  }, [flaggedMap]);
+
+  const pendingActionCount = useMemo(() => {
+    return (Object.values(flaggedMap) as CouncilFlagRecord[]).filter((f) => f.status === 'Pending Council Review').length;
+  }, [flaggedMap]);
+
+  const counseledCount = useMemo(() => {
+    return (Object.values(flaggedMap) as CouncilFlagRecord[]).filter((f) => f.status === 'Counseled & Resolved' || f.status === 'Exempted').length;
+  }, [flaggedMap]);
+
+  // Automated Batch Flagging
+  const handleBatchFlagLowAttendance = () => {
+    const lowMembers = memberReportList.filter((m) => !m.isExemptRole && m.presentPct < attendanceThreshold);
+    if (lowMembers.length === 0) {
+      alert(`No members identified with attendance below ${attendanceThreshold}%.`);
+      return;
+    }
+
+    const updated = { ...flaggedMap };
+    let newFlagCount = 0;
+
+    lowMembers.forEach((item) => {
+      if (!updated[item.member.id]) {
+        updated[item.member.id] = {
+          memberId: item.member.id,
+          flaggedAt: new Date().toISOString().split('T')[0],
+          flaggedBy: currentMember.name,
+          status: 'Pending Council Review',
+          notes: `Automated Flag: Recorded ${item.presentPct}% turnout (<${attendanceThreshold}% cutoff) with ${item.unexcusedCount} unexcused absence(s).`,
+          attendancePct: item.presentPct,
+          unexcusedCount: item.unexcusedCount,
+        };
+        newFlagCount++;
+      }
+    });
+
+    saveFlaggedMap(updated);
+    alert(`Automated Generator flagged ${newFlagCount} member(s) for Council review!`);
+  };
+
+  // Toggle single member flag
+  const handleToggleFlagMember = (item: typeof memberReportList[0]) => {
+    const existing = flaggedMap[item.member.id];
+    const updated = { ...flaggedMap };
+
+    if (existing) {
+      if (confirm(`Remove Council Review flag for ${item.member.name}?`)) {
+        delete updated[item.member.id];
+        saveFlaggedMap(updated);
+      }
+    } else {
+      updated[item.member.id] = {
+        memberId: item.member.id,
+        flaggedAt: new Date().toISOString().split('T')[0],
+        flaggedBy: currentMember.name,
+        status: 'Pending Council Review',
+        notes: `Identified with low attendance (${item.presentPct}%) across ${item.totalAssemblies} assemblies.`,
+        attendancePct: item.presentPct,
+        unexcusedCount: item.unexcusedCount,
+      };
+      saveFlaggedMap(updated);
+    }
+  };
+
+  // Open Council Review Notice Modal
+  const handleOpenNoticeModal = (item: typeof memberReportList[0]) => {
+    const existingFlag = flaggedMap[item.member.id];
+    setNoticeMember({
+      member: item.member,
+      presentPct: item.presentPct,
+      unexcusedCount: item.unexcusedCount,
+      totalAssemblies: item.totalAssemblies,
+      presentCount: item.presentCount,
+    });
+    setNoticeStatus(existingFlag?.status || 'Pending Council Review');
+    setNoticeNotes(
+      existingFlag?.notes ||
+        `Automated Low Attendance Flag: ${item.member.name} recorded ${item.presentPct}% attendance across ${item.totalAssemblies} assemblies (<${attendanceThreshold}% threshold) with ${item.unexcusedCount} unexcused absence(s). Recommended for Council counseling and crew advisor review.`
+    );
+    setCopiedNotice(false);
+  };
+
+  // Save notice updates
+  const handleSaveNotice = () => {
+    if (!noticeMember) return;
+    const updated = { ...flaggedMap };
+    updated[noticeMember.member.id] = {
+      memberId: noticeMember.member.id,
+      flaggedAt: flaggedMap[noticeMember.member.id]?.flaggedAt || new Date().toISOString().split('T')[0],
+      flaggedBy: flaggedMap[noticeMember.member.id]?.flaggedBy || currentMember.name,
+      status: noticeStatus,
+      notes: noticeNotes,
+      attendancePct: noticeMember.presentPct,
+      unexcusedCount: noticeMember.unexcusedCount,
+    };
+    saveFlaggedMap(updated);
+    setNoticeMember(null);
+    alert(`Council review record saved for ${noticeMember.member.name}!`);
+  };
+
+  // Copy notice text to clipboard
+  const handleCopyNoticeText = () => {
+    if (!noticeMember) return;
+    const text = `=====================================================
+KUSHAFAH ROVER CREW - COUNCIL ATTENDANCE REVIEW NOTICE
+=====================================================
+Date Generated: ${new Date().toLocaleDateString()}
+Issued By: ${currentMember.name} (${currentMember.councilRole})
+
+MEMBER DETAILS:
+- Name: ${noticeMember.member.name}
+- ID Card: ${noticeMember.member.idCard}
+- Sub-Crew: ${noticeMember.member.crewName} (${noticeMember.member.section})
+- Council Role: ${noticeMember.member.councilRole}
+
+ATTENDANCE PERFORMANCE ANALYTICS:
+- Assemblies Evaluated: ${noticeMember.totalAssemblies}
+- Present Assemblies: ${noticeMember.presentCount}
+- Overall Turnout Rate: ${noticeMember.presentPct}% (Threshold Cutoff: <${attendanceThreshold}%)
+- Unexcused Absences: ${noticeMember.unexcusedCount}
+
+COUNCIL REVIEW STATUS: ${noticeStatus}
+
+COUNCIL NOTES & RECOMMENDATIONS:
+${noticeNotes}
+
+GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
+=====================================================`;
+
+    navigator.clipboard.writeText(text);
+    setCopiedNotice(true);
+    setTimeout(() => setCopiedNotice(false), 2500);
+  };
+
+  // Export Low Attendance & Council Review CSV
+  const handleExportLowAttendanceCSV = () => {
+    const lowOrFlagged = memberReportList.filter(
+      (item) => item.presentPct < attendanceThreshold || flaggedMap[item.member.id]
+    );
+
+    if (lowOrFlagged.length === 0) {
+      alert(`No members currently meet the low attendance (<${attendanceThreshold}%) or flagged criteria.`);
+      return;
+    }
+
+    const headers = [
+      'Member ID',
+      'Full Name',
+      'ID Card',
+      'Sub-Crew',
+      'Section',
+      'Attendance %',
+      'Evaluated Assemblies',
+      'Present Count',
+      'Unexcused Absences',
+      'Council Flagged Status',
+      'Flagged Date',
+      'Flagged By',
+      'Council Review Notes',
+    ];
+
+    const rows = lowOrFlagged.map((item) => {
+      const flag = flaggedMap[item.member.id];
+      return [
+        item.member.id,
+        `"${item.member.name.replace(/"/g, '""')}"`,
+        item.member.idCard,
+        `"${item.member.crewName.replace(/"/g, '""')}"`,
+        item.member.section,
+        `${item.presentPct}%`,
+        item.totalAssemblies,
+        item.presentCount,
+        item.unexcusedCount,
+        flag ? flag.status : 'Below Cutoff (Unflagged)',
+        flag ? flag.flaggedAt : '--',
+        flag ? `"${flag.flaggedBy.replace(/"/g, '""')}"` : '--',
+        flag ? `"${flag.notes.replace(/"/g, '""')}"` : '--',
+      ].join(',');
+    });
+
+    const csvContent = 'data:text/csv;charset=utf-8,' + [headers.join(','), ...rows].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `Kushafah_Low_Attendance_Council_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Copy Council Governance Summary
+  const handleCopyCouncilGovernanceReport = () => {
+    const lowAttendanceList = memberReportList.filter(
+      (m) => m.presentPct < attendanceThreshold || flaggedMap[m.member.id]
+    );
+
+    const reportLines = [
+      `=====================================================`,
+      `KUSHAFAH ROVER CREW - LOW ATTENDANCE & COUNCIL REVIEW SUMMARY`,
+      `Date: ${new Date().toLocaleDateString()}`,
+      `Evaluated Threshold: <${attendanceThreshold}% Attendance`,
+      `=====================================================`,
+      `Total Members Evaluated: ${memberReportList.length}`,
+      `Members Below Cutoff (<${attendanceThreshold}%): ${lowAttendanceCount}`,
+      `Total Members Flagged for Council Review: ${flaggedCount}`,
+      `Pending Council Actions: ${pendingActionCount}`,
+      `=====================================================`,
+      `LOW ATTENDANCE & FLAGGED ROSTER:`,
+      ...lowAttendanceList.map((item, idx) => {
+        const flag = flaggedMap[item.member.id];
+        return `${idx + 1}. ${item.member.name} (${item.member.crewName} - ${item.member.section})
+   - Turnout Rate: ${item.presentPct}% | Unexcused Absences: ${item.unexcusedCount}
+   - Council Flag Status: ${flag ? flag.status : 'Below Cutoff (Unflagged)'}
+   - Notes: ${flag?.notes || 'Requires initial review'}`;
+      }),
+      `=====================================================`,
+      `Report Generated via Attendance Governance Portal`,
+    ];
+
+    navigator.clipboard.writeText(reportLines.join('\n'));
+    alert('Council Low Attendance Summary copied to clipboard!');
   };
 
   // Drilldown event details for "Who Came vs Who Didn't"
@@ -1069,6 +1383,205 @@ ${memberReportList
          ========================================================================= */}
       {activePortalTab === 'reports' && (
         <div className="space-y-6">
+          {/* =========================================================================
+              AUTOMATED LOW ATTENDANCE GENERATOR & COUNCIL GOVERNANCE HUB
+             ========================================================================= */}
+          <div className="bg-[#181B22] border border-amber-500/30 rounded-2xl p-5 shadow-xl space-y-4 relative overflow-hidden">
+            {/* Subtle background glow */}
+            <div className="absolute -top-10 -right-10 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <Zap className="w-3 h-3" /> Automated Generator
+                  </span>
+                  <span className="bg-purple-500/10 text-purple-400 border border-purple-500/30 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <Shield className="w-3 h-3" /> Council Governance
+                  </span>
+                </div>
+                <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+                  <ShieldAlert className="w-5 h-5 text-amber-400" />
+                  Low Attendance Automated Flagging & Council Review Generator
+                </h3>
+                <p className="text-xs text-slate-400 max-w-2xl">
+                  Scans all assembly turnout records, automatically flags members whose attendance drops below the configurable threshold (<span className="text-amber-400 font-bold">&lt;{attendanceThreshold}%</span>), and routes them to the Council Review queue for counseling or formal notices.
+                </p>
+              </div>
+
+              {/* Quick Action Buttons */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  type="button"
+                  onClick={handleBatchFlagLowAttendance}
+                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-4 py-2 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+                >
+                  <Zap className="w-4 h-4" />
+                  <span>Batch Flag All (&lt;{attendanceThreshold}%)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleExportLowAttendanceCSV}
+                  className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-2 cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Export Low Attendance CSV</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopyCouncilGovernanceReport}
+                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-2 cursor-pointer"
+                >
+                  <Copy className="w-4 h-4 text-amber-400" />
+                  <span>Copy Council Summary</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Threshold Controls & View Filter Mode Tabs */}
+            <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-1">
+              {/* Cutoff Threshold Selector */}
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                  <Sliders className="w-4 h-4 text-emerald-400" />
+                  Attendance Cutoff Threshold:
+                </span>
+                <div className="flex items-center gap-1.5 bg-[#12151B] p-1 rounded-xl border border-slate-800">
+                  {[30, 50, 60, 75].map((val) => (
+                    <button
+                      key={val}
+                      type="button"
+                      onClick={() => setAttendanceThreshold(val)}
+                      className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition cursor-pointer ${
+                        attendanceThreshold === val
+                          ? 'bg-amber-500 text-slate-950 shadow'
+                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                      }`}
+                    >
+                      &lt;{val}%
+                    </button>
+                  ))}
+                </div>
+                <div className="flex items-center gap-1.5 text-xs">
+                  <label className="text-slate-400 font-mono text-[11px]">Custom %:</label>
+                  <input
+                    type="number"
+                    min="10"
+                    max="90"
+                    value={attendanceThreshold}
+                    onChange={(e) => setAttendanceThreshold(Math.max(10, Math.min(90, Number(e.target.value) || 50)))}
+                    className="w-16 bg-[#12151B] border border-slate-800 text-amber-400 font-mono font-bold text-center text-xs rounded-lg py-1 px-1 focus:outline-none focus:border-amber-500"
+                  />
+                </div>
+              </div>
+
+              {/* View Filter Mode Tabs */}
+              <div className="flex items-center gap-1 bg-[#12151B] p-1 rounded-xl border border-slate-800 text-xs font-medium">
+                <button
+                  type="button"
+                  onClick={() => setReportViewFilter('all')}
+                  className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                    reportViewFilter === 'all'
+                      ? 'bg-slate-800 text-slate-100 font-bold shadow'
+                      : 'text-slate-400 hover:text-slate-200'
+                  }`}
+                >
+                  All ({memberReportList.length})
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setReportViewFilter('low_attendance')}
+                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                    reportViewFilter === 'low_attendance'
+                      ? 'bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30'
+                      : 'text-slate-400 hover:text-rose-300'
+                  }`}
+                >
+                  <span>Low Attendance (&lt;{attendanceThreshold}%)</span>
+                  <span className="bg-rose-500/20 text-rose-300 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold">
+                    {lowAttendanceCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setReportViewFilter('flagged_only')}
+                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                    reportViewFilter === 'flagged_only'
+                      ? 'bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30'
+                      : 'text-slate-400 hover:text-purple-300'
+                  }`}
+                >
+                  <span>Flagged for Council</span>
+                  <span className="bg-purple-500/20 text-purple-300 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold">
+                    {flaggedCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setReportViewFilter('pending_review')}
+                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                    reportViewFilter === 'pending_review'
+                      ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30'
+                      : 'text-slate-400 hover:text-amber-300'
+                  }`}
+                >
+                  <span>Pending Action</span>
+                  <span className="bg-amber-500/20 text-amber-300 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold">
+                    {pendingActionCount}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* Governance Analytics Cards */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+              <div className="bg-[#12151B] border border-rose-900/40 p-3 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Below Cutoff (&lt;{attendanceThreshold}%)</span>
+                  <span className="text-xl font-bold text-rose-400 font-mono">{lowAttendanceCount}</span>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                  <AlertTriangle className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="bg-[#12151B] border border-purple-900/40 p-3 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Total Council Flagged</span>
+                  <span className="text-xl font-bold text-purple-400 font-mono">{flaggedCount}</span>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                  <Flag className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="bg-[#12151B] border border-amber-900/40 p-3 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Pending Action</span>
+                  <span className="text-xl font-bold text-amber-400 font-mono">{pendingActionCount}</span>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                  <Clock className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="bg-[#12151B] border border-emerald-900/40 p-3 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Resolved / Counseled</span>
+                  <span className="text-xl font-bold text-emerald-400 font-mono">{counseledCount}</span>
+                </div>
+                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Report Control Header & Export Actions */}
           <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -1241,7 +1754,7 @@ ${memberReportList
             <div className="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
               <h4 className="text-sm font-bold text-slate-200 flex items-center gap-2">
                 <Users className="w-4 h-4 text-emerald-400" />
-                Member Percentage & Absentee Breakdown Roster ({memberReportList.length} Members)
+                Member Percentage & Absentee Breakdown Roster ({filteredReportList.length} Members)
               </h4>
               <span className="text-[11px] text-slate-400 font-mono">
                 Showing percentages calculated against {reportScopeStats.totalEvents} assemblies
@@ -1259,13 +1772,16 @@ ${memberReportList
                     <th className="py-3.5 px-4 font-semibold text-center text-rose-400">Absent / Unexcused %</th>
                     <th className="py-3.5 px-4 font-semibold text-center text-blue-400">Excused %</th>
                     <th className="py-3.5 px-4 font-semibold text-center text-amber-400">Exempt</th>
-                    <th className="py-3.5 px-4 font-semibold text-center">Rating</th>
-                    <th className="py-3.5 px-4 font-semibold text-right">Breakdown</th>
+                    <th className="py-3.5 px-4 font-semibold text-center">Turnout Rating</th>
+                    <th className="py-3.5 px-4 font-semibold text-center text-purple-400">Council Flag / Status</th>
+                    <th className="py-3.5 px-4 font-semibold text-right">Actions & Notice</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-800/80">
-                  {memberReportList.map((item) => {
+                  {filteredReportList.map((item) => {
                     const isExpanded = expandedMemberId === item.member.id;
+                    const isLowAttendance = item.presentPct < attendanceThreshold;
+                    const flagData = flaggedMap[item.member.id];
 
                     return (
                       <React.Fragment key={item.member.id}>
@@ -1330,45 +1846,105 @@ ${memberReportList
 
                           {/* Rating Badge */}
                           <td className="py-3 px-4 text-center">
-                            {item.turnoutRating === 'Exemplary' && (
+                            {item.isExemptRole ? (
+                              <span className="bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 font-mono">
+                                <ShieldCheck className="w-3 h-3 text-purple-400" />
+                                Exempt ({item.member.isSuperAdmin || item.member.councilRole === 'Superadmin' ? 'Superadmin' : 'Rover Advisor'})
+                              </span>
+                            ) : item.turnoutRating === 'Exemplary' ? (
                               <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                 <CheckCircle2 className="w-3 h-3" /> Exemplary
                               </span>
-                            )}
-                            {item.turnoutRating === 'Satisfactory' && (
+                            ) : item.turnoutRating === 'Satisfactory' ? (
                               <span className="bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
                                 Satisfactory
                               </span>
-                            )}
-                            {item.turnoutRating === 'Needs Review' && (
+                            ) : item.turnoutRating === 'Needs Review' ? (
                               <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
                                 Needs Review
                               </span>
-                            )}
-                            {item.turnoutRating === 'At Risk' && (
+                            ) : (
                               <span className="bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                 <AlertTriangle className="w-3 h-3" /> At Risk
                               </span>
                             )}
                           </td>
 
-                          {/* Expand Details */}
+                          {/* Council Review Flag & Status */}
+                          <td className="py-3 px-4 text-center">
+                            {flagData ? (
+                              <div className="space-y-1">
+                                <span
+                                  className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 border ${
+                                    flagData.status === 'Pending Council Review'
+                                      ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                                      : flagData.status === 'Formal Notice Issued'
+                                      ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
+                                      : flagData.status === 'Counseled & Resolved'
+                                      ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                                      : 'bg-blue-500/10 text-blue-300 border-blue-500/30'
+                                  }`}
+                                >
+                                  <Flag className="w-3 h-3" />
+                                  {flagData.status}
+                                </span>
+                                <div className="text-[9px] text-slate-400 font-mono">
+                                  By {flagData.flaggedBy}
+                                </div>
+                              </div>
+                            ) : isLowAttendance && !item.isExemptRole ? (
+                              <span className="bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1 animate-pulse">
+                                <AlertTriangle className="w-3 h-3" /> Below Cutoff (&lt;{attendanceThreshold}%)
+                              </span>
+                            ) : item.isExemptRole ? (
+                              <span className="text-purple-300/70 font-mono text-[10px]">Exempt Overseer</span>
+                            ) : (
+                              <span className="text-slate-600 font-mono text-[10px]">--</span>
+                            )}
+                          </td>
+
+                          {/* Actions & Notice */}
                           <td className="py-3 px-4 text-right">
-                            <button
-                              type="button"
-                              onClick={() => setExpandedMemberId(isExpanded ? null : item.member.id)}
-                              className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-[11px] transition inline-flex items-center gap-1 cursor-pointer"
-                            >
-                              <span>{isExpanded ? 'Hide' : 'Timeline'}</span>
-                              {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-                            </button>
+                            <div className="flex items-center justify-end gap-1.5">
+                              <button
+                                type="button"
+                                onClick={() => handleOpenNoticeModal(item)}
+                                className="px-2.5 py-1 rounded bg-purple-900/40 hover:bg-purple-800/60 text-purple-200 border border-purple-700/50 font-semibold text-[11px] transition inline-flex items-center gap-1 cursor-pointer"
+                                title="Open Council Review Notice & Record"
+                              >
+                                <FileCheck className="w-3 h-3 text-purple-300" />
+                                <span>Notice</span>
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => handleToggleFlagMember(item)}
+                                className={`px-2 py-1 rounded text-[11px] font-semibold transition cursor-pointer border ${
+                                  flagData
+                                    ? 'bg-slate-800 hover:bg-rose-950/60 text-rose-300 border-rose-800/50'
+                                    : 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border-amber-500/30'
+                                }`}
+                                title={flagData ? 'Remove flag' : 'Flag for Council Review'}
+                              >
+                                <Flag className="w-3.5 h-3.5" />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setExpandedMemberId(isExpanded ? null : item.member.id)}
+                                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-[11px] transition inline-flex items-center gap-1 cursor-pointer"
+                                title="Toggle assembly timeline"
+                              >
+                                {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                              </button>
+                            </div>
                           </td>
                         </tr>
 
                         {/* Expanded Individual Member Timeline */}
                         {isExpanded && (
                           <tr className="bg-slate-950/80">
-                            <td colSpan={9} className="p-4 border-t border-slate-800">
+                            <td colSpan={10} className="p-4 border-t border-slate-800">
                               <div className="space-y-3">
                                 <h5 className="font-bold text-slate-200 text-xs flex items-center gap-2">
                                   <Clock className="w-3.5 h-3.5 text-emerald-400" />
@@ -1556,6 +2132,118 @@ ${memberReportList
                     <p className="text-slate-500 text-xs italic py-2">No official excuses recorded.</p>
                   )}
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================================
+          OFFICIAL COUNCIL REVIEW NOTICE MODAL
+         ========================================================================= */}
+      {noticeMember && (
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-[#161920] border border-purple-500/30 rounded-2xl p-6 max-w-2xl w-full space-y-5 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                  <ShieldAlert className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-100">
+                    Council Attendance Warning & Review Record
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Official governance record for low attendance counseling & notice issuance.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setNoticeMember(null)}
+                className="text-slate-400 hover:text-slate-200 p-1 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Member Profile Summary */}
+            <div className="bg-[#12151B] border border-slate-800 rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+              <div>
+                <span className="text-[10px] text-slate-400 block font-medium">Member Name:</span>
+                <span className="font-bold text-slate-100 text-sm">{noticeMember.member.name}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400 block font-medium">Sub-Crew:</span>
+                <span className="font-semibold text-emerald-400">{noticeMember.member.crewName} ({noticeMember.member.section})</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400 block font-medium">Turnout Rate:</span>
+                <span className={`font-mono font-bold ${noticeMember.presentPct < attendanceThreshold ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  {noticeMember.presentPct}% (&lt;{attendanceThreshold}% Cutoff)
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-400 block font-medium">Unexcused Absences:</span>
+                <span className="font-mono font-bold text-rose-400">{noticeMember.unexcusedCount}</span>
+              </div>
+            </div>
+
+            {/* Status Selector */}
+            <div className="space-y-1.5 text-xs">
+              <label className="block text-slate-300 font-bold">Update Council Review Status:</label>
+              <select
+                value={noticeStatus}
+                onChange={(e) => setNoticeStatus(e.target.value as any)}
+                className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 font-semibold focus:outline-none focus:border-purple-500 cursor-pointer"
+              >
+                <option value="Pending Council Review">Pending Council Review (Under Observation)</option>
+                <option value="Formal Notice Issued">Formal Notice Issued (Official Warning Written)</option>
+                <option value="Counseled & Resolved">Counseled & Resolved (Intervention Completed)</option>
+                <option value="Exempted">Exempted (Valid Medical / Academic Grounds)</option>
+              </select>
+            </div>
+
+            {/* Notes Textarea */}
+            <div className="space-y-1.5 text-xs">
+              <label className="block text-slate-300 font-bold">Council Review Notes & Recommendations:</label>
+              <textarea
+                rows={4}
+                value={noticeNotes}
+                onChange={(e) => setNoticeNotes(e.target.value)}
+                placeholder="Enter counseling notes, advisor meeting outcome, or attendance plan..."
+                className="w-full bg-[#12151B] border border-slate-800 rounded-xl p-3 text-slate-200 text-xs focus:outline-none focus:border-purple-500 font-sans"
+              />
+            </div>
+
+            {/* Footer Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800">
+              <button
+                type="button"
+                onClick={handleCopyNoticeText}
+                className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center gap-2 cursor-pointer"
+              >
+                {copiedNotice ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-purple-400" />}
+                <span>{copiedNotice ? 'Notice Text Copied!' : 'Copy Formal Notice Text'}</span>
+              </button>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={() => setNoticeMember(null)}
+                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleSaveNotice}
+                  className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-lg cursor-pointer"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>Save Governance Record</span>
+                </button>
               </div>
             </div>
           </div>

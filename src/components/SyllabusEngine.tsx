@@ -421,9 +421,10 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
       }
     });
 
-    // Default target: members matching target section or all active
+    // Default target: active members matching target section (excluding Superadmin and Rover Advisor)
     const targetMembers = members.filter((m) => {
       if (m.status !== 'Active') return false;
+      if (m.isSuperAdmin || m.councilRole === 'Superadmin' || m.councilRole === 'Rover Advisor') return false;
       if (pack.targetSection === 'All') return true;
       return m.section === pack.targetSection;
     });
@@ -623,9 +624,10 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
     setReviewTarget(null);
   };
 
-  // Recharts Analytics Data Calculations
+  // Recharts Analytics Data Calculations (Excludes Superadmin and Rover Advisor overseers)
   const filteredAnalyticsMembers = members.filter((m) => {
     if (m.status !== 'Active') return false;
+    if (m.isSuperAdmin || m.councilRole === 'Superadmin' || m.councilRole === 'Rover Advisor') return false;
     if (analyticsCrewFilter !== 'All' && m.crewId !== analyticsCrewFilter) return false;
     return true;
   });
@@ -1471,11 +1473,11 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                       if (!memberSearchQuery.trim()) return true;
                       const q = memberSearchQuery.toLowerCase().trim();
                       return (
-                        m.name.toLowerCase().includes(q) ||
-                        m.councilRole.toLowerCase().includes(q) ||
-                        m.section.toLowerCase().includes(q) ||
-                        m.crewName.toLowerCase().includes(q) ||
-                        m.idCard.toLowerCase().includes(q)
+                        (m.name || '').toLowerCase().includes(q) ||
+                        (m.councilRole || '').toLowerCase().includes(q) ||
+                        (m.section || '').toLowerCase().includes(q) ||
+                        (m.crewName || '').toLowerCase().includes(q) ||
+                        (m.idCard || '').toLowerCase().includes(q)
                       );
                     }).length
                   }</strong> of {isCouncil ? members.length : 1} records
@@ -1486,17 +1488,17 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 
           <div className="space-y-6">
             {(() => {
-              const baseList = isCouncil ? members : members.filter((m) => m.id === currentMember.id);
+              const baseList = isCouncil ? members : members.filter((m) => m && currentMember && m.id === currentMember.id);
               const filteredList = baseList.filter((m) => {
                 if (roleFilter !== 'All' && m.councilRole !== roleFilter) return false;
                 if (!memberSearchQuery.trim()) return true;
                 const q = memberSearchQuery.toLowerCase().trim();
                 return (
-                  m.name.toLowerCase().includes(q) ||
-                  m.councilRole.toLowerCase().includes(q) ||
-                  m.section.toLowerCase().includes(q) ||
-                  m.crewName.toLowerCase().includes(q) ||
-                  m.idCard.toLowerCase().includes(q)
+                  (m.name || '').toLowerCase().includes(q) ||
+                  (m.councilRole || '').toLowerCase().includes(q) ||
+                  (m.section || '').toLowerCase().includes(q) ||
+                  (m.crewName || '').toLowerCase().includes(q) ||
+                  (m.idCard || '').toLowerCase().includes(q)
                 );
               });
 
@@ -1523,19 +1525,31 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                         <div>
                           <div className="flex items-center gap-2">
                             <span className="font-bold text-sm text-slate-100">{m.name}</span>
-                            <span
-                              className={`text-[10px] font-bold px-1.5 py-0.2 rounded font-mono ${
-                                m.councilRole !== 'Member'
-                                  ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
-                                  : 'bg-slate-800 text-slate-400'
-                              }`}
-                            >
-                              {m.councilRole}
-                            </span>
+                            {m.isSuperAdmin || m.councilRole === 'Superadmin' || m.councilRole === 'Rover Advisor' ? (
+                              <span className="bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono flex items-center gap-1">
+                                <Shield className="w-3 h-3 text-purple-400" />
+                                Exempt Overseer ({m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Superadmin' : 'Rover Advisor'})
+                              </span>
+                            ) : (
+                              <span
+                                className={`text-[10px] font-bold px-1.5 py-0.2 rounded font-mono ${
+                                  m.councilRole !== 'Member'
+                                    ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
+                                    : 'bg-slate-800 text-slate-400'
+                                }`}
+                              >
+                                {m.councilRole}
+                              </span>
+                            )}
                           </div>
                           <div className="text-[11px] text-slate-400 mt-0.5">
-                            {m.section} ({m.age} yrs) • {m.crewName} • Primary Track:{' '}
-                            <span className="text-amber-300 font-medium">{relevantAward}</span>
+                            {m.isSuperAdmin || m.councilRole === 'Superadmin' ? (
+                              <span className="text-purple-300 font-medium">Portal Level Admin • Exempt from Crew & Candidate Syllabus Work</span>
+                            ) : m.councilRole === 'Rover Advisor' ? (
+                              <span className="text-purple-300 font-medium">Organisation Level Advisor • Exempt from Crew & Candidate Syllabus Work</span>
+                            ) : (
+                              <>{m.section} ({m.age} yrs) • {m.crewName} • Primary Track: <span className="text-amber-300 font-medium">{relevantAward}</span></>
+                            )}
                           </div>
                         </div>
                       </div>

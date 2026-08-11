@@ -275,23 +275,23 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
       const q = searchQuery.toLowerCase().trim();
 
       // Name & Contact details match
-      const matchName = m.name.toLowerCase().includes(q);
-      const matchId = m.idCard.toLowerCase().includes(q);
-      const matchEmail = m.email.toLowerCase().includes(q);
-      const matchMobile = m.mobile.toLowerCase().includes(q);
-      const matchRole = m.councilRole.toLowerCase().includes(q);
+      const matchName = (m.name || '').toLowerCase().includes(q);
+      const matchId = (m.idCard || '').toLowerCase().includes(q);
+      const matchEmail = (m.email || '').toLowerCase().includes(q);
+      const matchMobile = (m.mobile || '').toLowerCase().includes(q);
+      const matchRole = (m.councilRole || '').toLowerCase().includes(q);
 
       // Crew Sub-Group match
       const crewObj = crews.find((c) => c.id === m.crewId);
       const matchCrew =
-        m.crewName.toLowerCase().includes(q) ||
-        m.crewId.toLowerCase().includes(q) ||
-        (crewObj && (crewObj.name.toLowerCase().includes(q) || crewObj.location.toLowerCase().includes(q)));
+        (m.crewName || '').toLowerCase().includes(q) ||
+        (m.crewId || '').toLowerCase().includes(q) ||
+        (crewObj && ((crewObj.name || '').toLowerCase().includes(q) || (crewObj.location || '').toLowerCase().includes(q)));
 
       // Progression Award Status & Title match
       const matchAwardName =
-        stats.awardName.toLowerCase().includes(q) ||
-        stats.fullAwardType.toLowerCase().includes(q) ||
+        (stats.awardName || '').toLowerCase().includes(q) ||
+        (stats.fullAwardType || '').toLowerCase().includes(q) ||
         (q.includes('psa') && m.section === 'Explorer') ||
         (q.includes('bp') && m.section === 'Rover') ||
         (q.includes('president') && m.section === 'Explorer');

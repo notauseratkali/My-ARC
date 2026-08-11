@@ -143,6 +143,27 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
 
   return (
     <div className="space-y-6">
+      {/* Governance Exemption Jurisdiction Notice */}
+      <div className="bg-purple-950/30 border border-purple-500/30 rounded-2xl p-4 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+            <Shield className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+              <span>Governance Jurisdictions & Duty Exemptions</span>
+              <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
+                Exempt Overseers
+              </span>
+            </h4>
+            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+              <strong className="text-purple-300">Superadmin:</strong> Only administers portal-level operations (national organisation management, multi-tenant billing, portal permissions). Exempt from local crew assembly attendance, council role assignments, and syllabus work.<br />
+              <strong className="text-amber-300">Rover Advisor:</strong> Manages organisation-level governance (crew setup, executive overrides, council supervision). Exempt from local crew assembly attendance obligations and candidate syllabus badge completion.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* 1. SECTION HEADER & ROLE MANAGEMENT */}
       <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
@@ -439,7 +460,7 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
             .filter((m) => {
               if (assignmentSearch.trim()) {
                 const q = assignmentSearch.toLowerCase();
-                return m.name.toLowerCase().includes(q) || m.idCard.toLowerCase().includes(q) || m.councilRole.toLowerCase().includes(q);
+                return (m.name || '').toLowerCase().includes(q) || (m.idCard || '').toLowerCase().includes(q) || (m.councilRole || '').toLowerCase().includes(q);
               }
               return true;
             })

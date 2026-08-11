@@ -62,8 +62,9 @@ export const Header: React.FC<HeaderProps> = ({
   theme = 'dark',
   onToggleTheme,
 }) => {
-  const isAdvisor = currentMember?.councilRole === 'Rover Advisor';
-  const isCouncil = !!currentMember && currentMember.councilRole !== 'Member';
+  const isSuperAdmin = currentMember?.isSuperAdmin || currentMember?.councilRole === 'Superadmin';
+  const isAdvisor = currentMember?.councilRole === 'Rover Advisor' && !isSuperAdmin;
+  const isCouncil = !!currentMember && currentMember.councilRole !== 'Member' && !isSuperAdmin;
 
   const navItems: { id: TabType; label: string; icon: React.ReactNode; badge?: string; restricted?: boolean }[] = [
     { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
@@ -95,30 +96,41 @@ export const Header: React.FC<HeaderProps> = ({
               <h1 className="font-bold text-lg bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent tracking-tight leading-none">
                 My Rovers
               </h1>
-              <span className="bg-[#002B7F]/30 text-amber-300 border border-[#FFC72C]/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
-                ASG • Term {settings?.activeTerm || '1'}
-              </span>
-
-              {/* Council vs Member Access Indicator Badge */}
-              {isAdvisor ? (
-                <span className="hidden sm:inline-flex items-center gap-1 bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono">
+              {isSuperAdmin ? (
+                <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
                   <Crown className="w-3 h-3 text-purple-300" />
-                  <span>Rover Advisor • Supreme Admin</span>
-                </span>
-              ) : isCouncil ? (
-                <span className="hidden sm:inline-flex items-center gap-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
-                  <ShieldCheck className="w-3 h-3 text-amber-400" />
-                  <span>Council Admin Mode</span>
+                  <span>National Superadmin</span>
                 </span>
               ) : (
-                <span className="hidden sm:inline-flex items-center gap-1 bg-sky-500/10 text-sky-300 border border-sky-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
-                  <User className="w-3 h-3 text-sky-400" />
-                  <span>Personal Assigned View</span>
-                </span>
+                <>
+                  <span className="bg-[#002B7F]/30 text-amber-300 border border-[#FFC72C]/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                    ASG • Term {settings?.activeTerm || '1'}
+                  </span>
+
+                  {/* Council vs Member Access Indicator Badge */}
+                  {isAdvisor ? (
+                    <span className="hidden sm:inline-flex items-center gap-1 bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono">
+                      <Crown className="w-3 h-3 text-purple-300" />
+                      <span>Rover Advisor • Supreme Admin</span>
+                    </span>
+                  ) : isCouncil ? (
+                    <span className="hidden sm:inline-flex items-center gap-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                      <ShieldCheck className="w-3 h-3 text-amber-400" />
+                      <span>Council Admin Mode</span>
+                    </span>
+                  ) : (
+                    <span className="hidden sm:inline-flex items-center gap-1 bg-sky-500/10 text-sky-300 border border-sky-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+                      <User className="w-3 h-3 text-sky-400" />
+                      <span>Personal Assigned View</span>
+                    </span>
+                  )}
+                </>
               )}
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
-              Rover Operating Policy • Explorers & Rovers Management System
+              {isSuperAdmin
+                ? 'National Scout Organisation Portal Administration'
+                : 'Rover Operating Policy • Explorers & Rovers Management System'}
             </p>
           </div>
         </div>

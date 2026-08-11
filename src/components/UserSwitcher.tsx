@@ -34,7 +34,8 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
     );
   }
 
-  const isAdvisor = currentMember.councilRole === 'Rover Advisor';
+  const isSuperAdmin = currentMember.isSuperAdmin || currentMember.councilRole === 'Superadmin';
+  const isAdvisor = currentMember.councilRole === 'Rover Advisor' && !isSuperAdmin;
 
   return (
     <div className="relative inline-block text-left">
@@ -43,13 +44,13 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
         id="user-switcher-btn"
         onClick={() => setIsOpen(!isOpen)}
         className={`flex items-center gap-2 border hover:border-slate-700 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium transition shadow-sm ${
-          isAdvisor
+          isSuperAdmin || isAdvisor
             ? 'bg-purple-950/60 border-purple-500/40'
             : 'bg-[#1A1E26] border-slate-800'
         }`}
       >
         <div className={`w-6 h-6 rounded-full flex items-center justify-center font-bold text-xs overflow-hidden flex-shrink-0 ${
-          isAdvisor ? 'bg-purple-700 text-purple-100 ring-1 ring-purple-400' : 'bg-emerald-600 text-white'
+          isSuperAdmin || isAdvisor ? 'bg-purple-700 text-purple-100 ring-1 ring-purple-400' : 'bg-emerald-600 text-white'
         }`}>
           {currentMember.avatar ? (
             <img src={currentMember.avatar} alt={currentMember.name} className="w-full h-full object-cover" />
@@ -63,17 +64,17 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
             <span>{currentMember.name}</span>
             <span
               className={`text-[10px] px-1.5 py-0.2 rounded font-mono border flex items-center gap-0.5 ${
-                isAdvisor
+                isSuperAdmin || isAdvisor
                   ? 'bg-purple-500/20 text-purple-300 border-purple-500/40 font-bold'
                   : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
               }`}
             >
-              {isAdvisor && <Crown className="w-2.5 h-2.5 text-purple-300" />}
-              {currentMember.councilRole}
+              {(isSuperAdmin || isAdvisor) && <Crown className="w-2.5 h-2.5 text-purple-300" />}
+              {isSuperAdmin ? 'National Superadmin' : currentMember.councilRole}
             </span>
           </div>
           <div className="text-[10px] text-slate-400">
-            {currentMember.section} • {currentMember.crewName}
+            {isSuperAdmin ? 'National Portal Administration' : `${currentMember.section} • ${currentMember.crewName}`}
           </div>
         </div>
         <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-1" />
@@ -114,14 +115,16 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
 
               <div className="grid grid-cols-2 gap-1.5 text-[10px] pt-1">
                 <div className="bg-[#12151B] p-1.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block">Council Role</span>
-                  <span className={`font-semibold ${isAdvisor ? 'text-purple-300' : 'text-emerald-400'}`}>
-                    {currentMember.councilRole}
+                  <span className="text-slate-500 block">System Authority</span>
+                  <span className={`font-semibold ${isSuperAdmin || isAdvisor ? 'text-purple-300' : 'text-emerald-400'}`}>
+                    {isSuperAdmin ? 'National Superadmin' : currentMember.councilRole}
                   </span>
                 </div>
                 <div className="bg-[#12151B] p-1.5 rounded-lg border border-slate-800">
-                  <span className="text-slate-500 block">Crew Unit</span>
-                  <span className="text-slate-200 font-semibold truncate block">{currentMember.crewName}</span>
+                  <span className="text-slate-500 block">Scope</span>
+                  <span className="text-slate-200 font-semibold truncate block">
+                    {isSuperAdmin ? 'Global Portal Admin' : currentMember.crewName}
+                  </span>
                 </div>
               </div>
             </div>

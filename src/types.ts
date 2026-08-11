@@ -1,5 +1,5 @@
 export type Gender = 'Male' | 'Female' | 'Other';
-export type Section = 'Explorer' | 'Rover';
+export type Section = 'Explorer' | 'Rover' | 'National Portal' | (string & {});
 export type CouncilRole = 
   | 'Superadmin'
   | 'Rover Advisor'

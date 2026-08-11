@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   Member,
   FeeRequest,
@@ -32,10 +32,12 @@ import { useToast } from './ToastContext';
 
 interface PaymentsModuleProps {
   currentMember: Member | null;
-  members: Member[];
-  feeRequests: FeeRequest[];
-  paymentTransactions: CrewPaymentTransaction[];
-  onAddFeeRequest: (fee: Omit<FeeRequest, 'id' | 'createdAt'>) => void;
+  members?: Member[];
+  feeRequests?: FeeRequest[];
+  paymentTransactions?: CrewPaymentTransaction[];
+  transactions?: CrewPaymentTransaction[];
+  onAddFeeRequest?: (fee: Omit<FeeRequest, 'id' | 'createdAt'>) => void;
+  onCreateFeeRequest?: (fee: Omit<FeeRequest, 'id' | 'createdAt'>) => void;
   onSubmitPayment: (payment: Omit<CrewPaymentTransaction, 'id' | 'submittedAt' | 'status'>) => void;
   onVerifyPayment: (paymentId: string, status: 'Verified / Paid' | 'Rejected', notes?: string) => void;
   settings?: PortalSettings;
@@ -45,10 +47,12 @@ interface PaymentsModuleProps {
 
 export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
   currentMember,
-  members,
-  feeRequests,
+  members = [],
+  feeRequests = [],
   paymentTransactions,
+  transactions,
   onAddFeeRequest,
+  onCreateFeeRequest,
   onSubmitPayment,
   onVerifyPayment,
   settings,
@@ -56,6 +60,11 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
   activeOrgContext = 'all',
 }) => {
   const { toastSuccess, toastInfo, toastError } = useToast();
+
+  const safeTransactions = (paymentTransactions || transactions || []).filter(Boolean);
+  const safeFeeRequests = (feeRequests || []).filter(Boolean);
+  const safeMembers = (members || []).filter(Boolean);
+  const handleAddFee = onAddFeeRequest || onCreateFeeRequest;
 
   const isAdvisor = currentMember?.councilRole === 'Rover Advisor' || currentMember?.isSuperAdmin;
   const isCouncil = !!currentMember && currentMember.councilRole !== 'Member';
@@ -94,6 +103,30 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
     bankName: settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)',
   });
 
+  // Automated Toast Notification & Email Alert on Payment Status Change
+  const prevStatusesRef = useRef<Record<string, string>>({});
+
+  useEffect(() => {
+    if (!safeTransactions || safeTransactions.length === 0) return;
+
+    safeTransactions.forEach((pt) => {
+      if (!pt || !pt.id) return;
+      const prev = prevStatusesRef.current[pt.id];
+      if (prev && (prev === 'Pending Verification' || prev === 'Pending') && prev !== pt.status) {
+        if (pt.status === 'Verified / Paid') {
+          toastSuccess(
+            `🔔 Payment Approved: MVR ${pt.amountMvr} for "${pt.feeTitle}" (${pt.memberName}) has been VERIFIED. Automated email dispatch triggered.`
+          );
+        } else if (pt.status === 'Rejected') {
+          toastError(
+            `🚨 Payment Rejected: Submission for "${pt.feeTitle}" (${pt.memberName}) was REJECTED. Automated email alert sent to member.`
+          );
+        }
+      }
+      prevStatusesRef.current[pt.id] = pt.status;
+    });
+  }, [safeTransactions, toastSuccess, toastError]);
+
   const handleCopyBank = (text: string, field: string) => {
     navigator.clipboard.writeText(text);
     setCopiedBankField(field);
@@ -118,16 +151,18 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
       toastError('Please enter a valid title and fee amount.');
       return;
     }
-    onAddFeeRequest({
-      organisationId: activeOrgContext,
-      title: feeTitle.trim(),
-      category: feeCategory,
-      amountMvr: feeAmount,
-      dueDate: feeDueDate,
-      description: feeDesc.trim(),
-      createdBy: currentMember?.name || 'Rover Advisor',
-    });
-    toastSuccess(`Created fee request: ${feeTitle}`);
+    if (handleAddFee) {
+      handleAddFee({
+        organisationId: activeOrgContext,
+        title: feeTitle.trim(),
+        category: feeCategory,
+        amountMvr: feeAmount,
+        dueDate: feeDueDate,
+        description: feeDesc.trim(),
+        createdBy: currentMember?.name || 'Rover Advisor',
+      });
+      toastSuccess(`Created fee request: ${feeTitle}`);
+    }
     setFeeTitle('');
     setFeeDesc('');
     setActiveTab('requests');
@@ -186,8 +221,8 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
       toastError('Please select both a member and a fee request.');
       return;
     }
-    const m = members.find((x) => x.id === offlineMemberId);
-    const f = feeRequests.find((x) => x.id === offlineFeeId);
+    const m = safeMembers.find((x) => x.id === offlineMemberId);
+    const f = safeFeeRequests.find((x) => x.id === offlineFeeId);
     if (!m || !f) return;
 
     onSubmitPayment({
@@ -208,22 +243,23 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
   };
 
   // Filtered transactions
-  const myTransactions = paymentTransactions.filter((pt) => pt.memberId === currentMember?.id);
-  const filteredTransactions = paymentTransactions.filter((pt) => {
+  const myTransactions = safeTransactions.filter((pt) => pt && pt.memberId === currentMember?.id);
+  const filteredTransactions = safeTransactions.filter((pt) => {
+    if (!pt) return false;
     const matchesStatus = selectedStatusFilter === 'all' || pt.status === selectedStatusFilter;
     const matchesQuery =
-      pt.memberName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pt.feeTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (pt.referenceNumber && pt.referenceNumber.toLowerCase().includes(searchQuery.toLowerCase()));
+      (pt.memberName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (pt.feeTitle || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (pt.referenceNumber ? pt.referenceNumber.toLowerCase().includes(searchQuery.toLowerCase()) : false);
     return matchesStatus && matchesQuery;
   });
 
   // Calculate Metrics
-  const totalVerifiedMvr = paymentTransactions
-    .filter((pt) => pt.status === 'Verified / Paid')
-    .reduce((sum, pt) => sum + pt.amountMvr, 0);
+  const totalVerifiedMvr = safeTransactions
+    .filter((pt) => pt && pt.status === 'Verified / Paid')
+    .reduce((sum, pt) => sum + (pt?.amountMvr || 0), 0);
 
-  const pendingVerificationCount = paymentTransactions.filter((pt) => pt.status === 'Pending Verification').length;
+  const pendingVerificationCount = safeTransactions.filter((pt) => pt && pt.status === 'Pending Verification').length;
 
   const crewAccount = settings?.paymentDetails || {
     accountName: 'Kushafah Rover Scout Crew',
@@ -257,34 +293,36 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
             </p>
           </div>
 
-          {/* Quick Bank Account Card */}
-          <div className="bg-[#12151B]/90 border border-amber-500/30 p-3.5 rounded-2xl space-y-1.5 text-xs min-w-[260px] shadow-lg">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
-              <span className="font-bold text-amber-400 flex items-center gap-1 text-[11px]">
-                <Landmark className="w-3.5 h-3.5" />
-                <span>Crew Official Bank Account</span>
-              </span>
-              <span className="text-[10px] text-slate-400 font-mono">{crewAccount.bankName}</span>
+          {/* Quick Bank Account Card - Visible Only for Rover Advisor */}
+          {isAdvisor && (
+            <div className="bg-[#12151B]/90 border border-amber-500/30 p-3.5 rounded-2xl space-y-1.5 text-xs min-w-[260px] shadow-lg">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-1.5">
+                <span className="font-bold text-amber-400 flex items-center gap-1 text-[11px]">
+                  <Landmark className="w-3.5 h-3.5" />
+                  <span>Superadmin Preset Account</span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono">{crewAccount.bankName}</span>
+              </div>
+              <div>
+                <div className="text-[10px] text-slate-400">Account Name:</div>
+                <div className="font-semibold text-slate-200 truncate">{crewAccount.accountName}</div>
+              </div>
+              <div className="flex items-center justify-between bg-[#1A1E26] p-1.5 rounded-xl border border-slate-700/60 font-mono">
+                <span className="font-bold text-emerald-300 text-xs">{crewAccount.accountNumber}</span>
+                <button
+                  onClick={() => handleCopyBank(crewAccount.accountNumber, 'Account Number')}
+                  className="text-slate-400 hover:text-amber-300 p-1 transition cursor-pointer"
+                  title="Copy Account Number"
+                >
+                  {copiedBankField === 'Account Number' ? (
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                </button>
+              </div>
             </div>
-            <div>
-              <div className="text-[10px] text-slate-400">Account Name:</div>
-              <div className="font-semibold text-slate-200 truncate">{crewAccount.accountName}</div>
-            </div>
-            <div className="flex items-center justify-between bg-[#1A1E26] p-1.5 rounded-xl border border-slate-700/60 font-mono">
-              <span className="font-bold text-emerald-300 text-xs">{crewAccount.accountNumber}</span>
-              <button
-                onClick={() => handleCopyBank(crewAccount.accountNumber, 'Account Number')}
-                className="text-slate-400 hover:text-amber-300 p-1 transition cursor-pointer"
-                title="Copy Account Number"
-              >
-                {copiedBankField === 'Account Number' ? (
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                ) : (
-                  <Copy className="w-3.5 h-3.5" />
-                )}
-              </button>
-            </div>
-          </div>
+          )}
         </div>
       </div>
 
@@ -324,7 +362,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
             <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
           </div>
           <div className="min-w-0">
-            <div className="text-lg sm:text-2xl font-extrabold text-slate-100 truncate">{feeRequests.length}</div>
+            <div className="text-lg sm:text-2xl font-extrabold text-slate-100 truncate">{safeFeeRequests.length}</div>
             <div className="text-[10px] sm:text-xs text-slate-400 font-medium truncate">Active Dues Drives</div>
           </div>
         </div>
@@ -335,7 +373,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
           </div>
           <div className="min-w-0">
             <div className="text-lg sm:text-2xl font-extrabold text-sky-300 truncate">
-              {myTransactions.filter((pt) => pt.status === 'Verified / Paid').length} / {feeRequests.length}
+              {myTransactions.filter((pt) => pt?.status === 'Verified / Paid').length} / {safeFeeRequests.length}
             </div>
             <div className="text-[10px] sm:text-xs text-slate-400 font-medium truncate">My Personal Paid Fees</div>
           </div>
@@ -379,7 +417,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
               }`}
             >
               <Clock className="w-3.5 h-3.5" />
-              <span>Verify Submissions ({paymentTransactions.length})</span>
+              <span>Verify Submissions ({safeTransactions.length})</span>
               {pendingVerificationCount > 0 && (
                 <span className="bg-slate-950 text-amber-300 text-[10px] px-1.5 py-0.2 rounded-full font-mono">
                   {pendingVerificationCount}
@@ -411,7 +449,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
                 }`}
               >
                 <Landmark className="w-3.5 h-3.5" />
-                <span>Bank Account Setup</span>
+                <span>Preset Bank Details</span>
               </button>
             </>
           )}
@@ -422,8 +460,8 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
       {activeTab === 'requests' && (
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {feeRequests.map((fee) => {
-              const myPayment = paymentTransactions.find(
+            {safeFeeRequests.map((fee) => {
+              const myPayment = safeTransactions.find(
                 (pt) => pt.feeRequestId === fee.id && pt.memberId === currentMember?.id
               );
               const isPaid = myPayment?.status === 'Verified / Paid';
@@ -633,7 +671,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
                       <button
                         onClick={() => {
                           onVerifyPayment(pt.id, 'Verified / Paid', 'Verified by Council');
-                          toastSuccess(`Verified payment for ${pt.memberName}`);
+                          toastSuccess(`Verified payment for ${pt.memberName}. Email alert dispatched.`);
                         }}
                         className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl transition flex items-center gap-1 shadow-md cursor-pointer"
                       >
@@ -644,7 +682,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
                       <button
                         onClick={() => {
                           onVerifyPayment(pt.id, 'Rejected', 'Insufficient transfer verification');
-                          toastError(`Rejected submission for ${pt.memberName}`);
+                          toastError(`Rejected submission for ${pt.memberName}. Automated email notification sent.`);
                         }}
                         className="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1 cursor-pointer"
                       >
@@ -747,61 +785,57 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
         </div>
       )}
 
-      {/* TAB 5: BANK ACCOUNT CONFIGURATION (ADVISOR ONLY) */}
+      {/* TAB 5: PRESET BANK DETAILS VIEW (ROVER ADVISOR ONLY) */}
       {activeTab === 'bank_config' && isAdvisor && (
         <div className="bg-[#161920] border border-amber-500/30 rounded-2xl p-6 max-w-xl mx-auto space-y-5 shadow-xl">
           <div className="flex items-center gap-3 border-b border-slate-800 pb-3">
             <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
               <Landmark className="w-5 h-5" />
             </div>
-            <div>
-              <h3 className="text-base font-bold text-slate-100">Rover Crew Official Bank Account Configuration</h3>
-              <p className="text-xs text-slate-400">Set the bank details shown to crew members for submitting bank transfers.</p>
+            <div className="flex-1 flex items-center justify-between">
+              <div>
+                <h3 className="text-base font-bold text-slate-100">Superadmin Preset Bank Transfer Details</h3>
+                <p className="text-xs text-slate-400">Official account preset by Superadmin for portal subscriptions and fee transfers.</p>
+              </div>
+              <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded font-mono uppercase">
+                Preset by Superadmin
+              </span>
             </div>
           </div>
 
-          <form onSubmit={handleSaveBankConfig} className="space-y-4 text-xs">
-            <div>
-              <label className="block text-slate-300 font-semibold mb-1">Crew Account Name *</label>
-              <input
-                type="text"
-                required
-                value={bankForm.accountName}
-                onChange={(e) => setBankForm({ ...bankForm, accountName: e.target.value })}
-                className="w-full bg-[#12151B] border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-100 font-medium focus:outline-none focus:border-amber-500"
-              />
+          <div className="space-y-3 text-xs">
+            <div className="bg-[#12151B] p-3.5 rounded-xl border border-slate-800 flex justify-between items-center">
+              <span className="text-slate-400 text-xs font-medium">Bank Name</span>
+              <span className="font-semibold text-slate-200">{crewAccount.bankName}</span>
             </div>
 
-            <div>
-              <label className="block text-slate-300 font-semibold mb-1">Account Number *</label>
-              <input
-                type="text"
-                required
-                value={bankForm.accountNumber}
-                onChange={(e) => setBankForm({ ...bankForm, accountNumber: e.target.value })}
-                className="w-full bg-[#12151B] border border-slate-700 rounded-xl px-3.5 py-2.5 text-emerald-300 font-mono font-bold focus:outline-none focus:border-amber-500"
-              />
+            <div className="bg-[#12151B] p-3.5 rounded-xl border border-slate-800 flex justify-between items-center">
+              <span className="text-slate-400 text-xs font-medium">Official Account Name</span>
+              <span className="font-semibold text-slate-200 text-right">{crewAccount.accountName}</span>
             </div>
 
-            <div>
-              <label className="block text-slate-300 font-semibold mb-1">Bank Name *</label>
-              <input
-                type="text"
-                required
-                value={bankForm.bankName}
-                onChange={(e) => setBankForm({ ...bankForm, bankName: e.target.value })}
-                className="w-full bg-[#12151B] border border-slate-700 rounded-xl px-3.5 py-2.5 text-slate-100 focus:outline-none focus:border-amber-500"
-              />
+            <div className="bg-[#12151B] p-3.5 rounded-xl border border-slate-800 flex justify-between items-center">
+              <span className="text-slate-400 text-xs font-medium">Official Account Number</span>
+              <div className="flex items-center gap-2">
+                <span className="font-mono text-emerald-300 font-bold text-sm">{crewAccount.accountNumber}</span>
+                <button
+                  type="button"
+                  onClick={() => handleCopyBank(crewAccount.accountNumber, 'Account Number')}
+                  className="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1 rounded-lg text-[10px] font-semibold transition cursor-pointer flex items-center gap-1"
+                >
+                  {copiedBankField === 'Account Number' ? (
+                    <span className="text-emerald-400 font-bold">Copied!</span>
+                  ) : (
+                    <span>Copy</span>
+                  )}
+                </button>
+              </div>
             </div>
 
-            <button
-              type="submit"
-              className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl transition text-xs shadow-lg flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Save className="w-4 h-4" />
-              <span>Save Official Crew Bank Account</span>
-            </button>
-          </form>
+            <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-300/90 leading-relaxed">
+              <strong>Note for Rover Advisors:</strong> Bank transfer parameters are globally preset and maintained by the National Superadmin. If you require updates to the official bank account details, please request an update via Superadmin.
+            </div>
+          </div>
         </div>
       )}
 

@@ -84,7 +84,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
       let superAdminMember = members.find(
         (m) =>
           (m.isSuperAdmin || m.councilRole === 'Superadmin') &&
-          (userEmail ? (m.email.toLowerCase() === userEmail || userEmail === 'nazihnafiz@gmail.com') : true)
+          (userEmail ? ((m.email || '').toLowerCase() === userEmail || userEmail === 'nazihnafiz@gmail.com') : true)
       );
 
       if (!superAdminMember) {
@@ -136,10 +136,10 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         return m.isSuperAdmin || m.councilRole === 'Superadmin';
       }
 
-      const emailUser = m.email.split('@')[0].toLowerCase();
-      const fullEmail = m.email.toLowerCase();
-      const memberNid = m.idCard.trim().toUpperCase();
-      const memberName = m.name.toLowerCase();
+      const emailUser = (m.email || '').split('@')[0].toLowerCase();
+      const fullEmail = (m.email || '').toLowerCase();
+      const memberNid = (m.idCard || '').trim().toUpperCase();
+      const memberName = (m.name || '').toLowerCase();
 
       const usernameMatch =
         cleanUsername === '' ||
@@ -151,6 +151,18 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
       return (cleanUsername && usernameMatch) || (cleanNid && nidMatch);
     });
+
+    if (
+      cleanNid === 'SUPERADMIN' ||
+      cleanUsername === 'SUPERADMIN' ||
+      cleanUsername === 'superadmin' ||
+      (foundMember && (foundMember.isSuperAdmin || foundMember.councilRole === 'Superadmin'))
+    ) {
+      setErrorMessage(
+        'Superadmin accounts can only log in using Google Login. Please use the "Superadmin Google Auth Login" button below.'
+      );
+      return;
+    }
 
     if (!foundMember) {
       setErrorMessage(
@@ -240,9 +252,9 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
     const matched = members.find(
       (m) =>
-        m.email.toLowerCase() === query ||
-        m.idCard.trim().toLowerCase() === query ||
-        m.email.split('@')[0].toLowerCase() === query
+        (m.email || '').toLowerCase() === query ||
+        (m.idCard || '').trim().toLowerCase() === query ||
+        (m.email || '').split('@')[0].toLowerCase() === query
     );
 
     if (!matched) {

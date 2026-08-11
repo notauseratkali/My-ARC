@@ -15,6 +15,7 @@ import {
   Sun,
   Moon,
   ShieldCheck,
+  Building2,
   User,
   ChevronLeft,
   ChevronRight,
@@ -83,8 +84,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
 
   const isSuperAdmin = currentMember?.isSuperAdmin || currentMember?.councilRole === 'Superadmin';
-  const isAdvisor = currentMember?.councilRole === 'Rover Advisor';
-  const isCouncil = !!currentMember && currentMember.councilRole !== 'Member';
+  const isAdvisor = currentMember?.councilRole === 'Rover Advisor' && !isSuperAdmin;
+  const isCouncil = !!currentMember && currentMember.councilRole !== 'Member' && !isSuperAdmin;
   const canAccessDisciplinary = currentMember ? hasPermission(currentMember, 'manageDisciplinary', settings) : false;
 
   interface NavItem {
@@ -185,21 +186,30 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   Kushafah Portal
                 </h1>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="text-[10px] text-amber-300/80 font-mono">ASG • Term {settings?.activeTerm || '1'}</span>
-                  {isAdvisor ? (
+                  {isSuperAdmin ? (
                     <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
                       <Crown className="w-2.5 h-2.5 text-purple-300" />
-                      Rover Advisor
-                    </span>
-                  ) : isCouncil ? (
-                    <span className="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
-                      <ShieldCheck className="w-2.5 h-2.5 text-amber-400" />
-                      Council
+                      National Superadmin
                     </span>
                   ) : (
-                    <span className="bg-sky-500/10 text-sky-300 border border-sky-500/30 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
-                      Member
-                    </span>
+                    <>
+                      <span className="text-[10px] text-amber-300/80 font-mono">ASG • Term {settings?.activeTerm || '1'}</span>
+                      {isAdvisor ? (
+                        <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
+                          <Crown className="w-2.5 h-2.5 text-purple-300" />
+                          Rover Advisor
+                        </span>
+                      ) : isCouncil ? (
+                        <span className="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
+                          <ShieldCheck className="w-2.5 h-2.5 text-amber-400" />
+                          Council
+                        </span>
+                      ) : (
+                        <span className="bg-sky-500/10 text-sky-300 border border-sky-500/30 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
+                          Member
+                        </span>
+                      )}
+                    </>
                   )}
                 </div>
               </div>

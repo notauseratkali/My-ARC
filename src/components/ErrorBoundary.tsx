@@ -1,97 +1,74 @@
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw, Trash2 } from 'lucide-react';
+import React from 'react';
+import { ShieldAlert, RefreshCw, LogOut } from 'lucide-react';
 
 interface Props {
-  children: ReactNode;
+  children: React.ReactNode;
 }
 
 interface State {
   hasError: boolean;
   error: Error | null;
-  errorInfo: ErrorInfo | null;
 }
 
-export class ErrorBoundary extends (Component as any) {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: null,
-      errorInfo: null,
-    };
-  }
+export class ErrorBoundary extends React.Component<Props, State> {
+  declare props: Props;
+  state: State = {
+    hasError: false,
+    error: null,
+  };
 
   static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error, errorInfo: null };
+    return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Uncaught error in application:', error, errorInfo);
-    this.setState({ errorInfo });
+  componentDidCatch(error: React.ErrorInfo, errorInfo: React.ErrorInfo) {
+    console.error('Unhandled Portal Error caught by ErrorBoundary:', error, errorInfo);
   }
 
   handleReload = () => {
     window.location.reload();
   };
 
-  handleResetCache = () => {
-    try {
-      localStorage.clear();
-      sessionStorage.clear();
-    } catch (e) {
-      console.error('Failed to clear storage:', e);
-    }
-    window.location.reload();
+  handleResetSession = () => {
+    localStorage.clear();
+    window.location.href = './';
   };
 
   render() {
-    const { hasError, error, errorInfo } = this.state as State;
-
-    if (hasError) {
+    if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#0E1015] text-slate-100 flex items-center justify-center p-4 font-sans">
-          <div className="max-w-lg w-full bg-[#161920] border border-amber-500/30 rounded-2xl p-6 shadow-2xl space-y-5">
-            <div className="flex items-center gap-3 border-b border-slate-800 pb-4">
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                <AlertTriangle className="w-6 h-6" />
-              </div>
-              <div>
-                <h1 className="text-lg font-bold text-slate-100">My Rovers Portal Notice</h1>
-                <p className="text-xs text-slate-400">An unexpected issue occurred while loading this view.</p>
-              </div>
+        <div className="min-h-screen bg-[#0E1015] text-slate-100 flex items-center justify-center p-4">
+          <div className="bg-[#161920] border border-red-500/30 rounded-2xl p-8 max-w-lg w-full space-y-6 shadow-2xl text-center">
+            <div className="w-16 h-16 bg-red-500/10 border border-red-500/30 rounded-2xl flex items-center justify-center mx-auto text-red-400">
+              <ShieldAlert className="w-8 h-8" />
             </div>
 
-            <div className="bg-[#101217] border border-slate-800 rounded-xl p-3.5 space-y-2 text-xs">
-              <div className="font-semibold text-rose-400 font-mono">
-                {error?.name}: {error?.message || 'Unknown render exception'}
-              </div>
-              {errorInfo?.componentStack && (
-                <div className="max-h-32 overflow-y-auto text-[10px] font-mono text-slate-500 bg-slate-950 p-2 rounded">
-                  {errorInfo.componentStack}
-                </div>
-              )}
+            <div className="space-y-2">
+              <h2 className="text-xl font-bold text-slate-100">Portal View Recovered</h2>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                An unforeseen rendering state occurred in the current portal view. The error boundary prevented a system crash.
+              </p>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">
-              If this happened on GitHub Pages or a new environment, clearing the browser cache or reloading usually fixes state sync issues.
-            </p>
+            {this.state.error?.message && (
+              <div className="bg-[#12151B] p-3 rounded-xl border border-slate-800 text-left font-mono text-[11px] text-red-300 overflow-x-auto max-h-32">
+                {this.state.error.message}
+              </div>
+            )}
 
-            <div className="grid grid-cols-2 gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
-                type="button"
                 onClick={this.handleReload}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-lg"
               >
                 <RefreshCw className="w-4 h-4" />
-                <span>Reload Application</span>
+                <span>Reload Portal</span>
               </button>
-
               <button
-                type="button"
-                onClick={this.handleResetCache}
-                className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs py-2.5 px-4 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer"
+                onClick={this.handleResetSession}
+                className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer border border-slate-700"
               >
-                <Trash2 className="w-4 h-4 text-amber-400" />
+                <LogOut className="w-4 h-4" />
                 <span>Reset Local Cache</span>
               </button>
             </div>
@@ -100,6 +77,6 @@ export class ErrorBoundary extends (Component as any) {
       );
     }
 
-    return (this.props as Props).children;
+    return this.props.children;
   }
 }

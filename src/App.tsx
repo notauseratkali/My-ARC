@@ -16,6 +16,7 @@ import {
   INITIAL_POLICY_POLLS,
   INITIAL_FEE_REQUESTS,
   INITIAL_PAYMENT_TRANSACTIONS,
+  INITIAL_AUDIT_LOGS,
 } from './data/initialData';
 import {
   Organisation,
@@ -34,6 +35,7 @@ import {
   PolicyVote,
   FeeRequest,
   CrewPaymentTransaction,
+  AuditLogEntry,
 } from './types';
 import {
   initializeFirestoreDatabase,
@@ -62,8 +64,10 @@ import { DisciplinaryModule } from './components/DisciplinaryModule';
 import { SettingsCrewModule } from './components/SettingsCrewModule';
 import { RoverPolicyModule } from './components/RoverPolicyModule';
 import { PaymentsModule } from './components/PaymentsModule';
+import { AuditLogModule } from './components/AuditLogModule';
 import { PlanRenewalModal } from './components/PlanRenewalModal';
 import { useToast } from './components/ToastContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 function getURLRouteState() {
   const path = (window.location.pathname || '').toLowerCase();
@@ -142,6 +146,7 @@ export default function App() {
   const [polls, setPolls] = useState<PolicyAmendmentPoll[]>(INITIAL_POLICY_POLLS);
   const [feeRequests, setFeeRequests] = useState<FeeRequest[]>(INITIAL_FEE_REQUESTS);
   const [paymentTransactions, setPaymentTransactions] = useState<CrewPaymentTransaction[]>(INITIAL_PAYMENT_TRANSACTIONS);
+  const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(INITIAL_AUDIT_LOGS);
   const [settings, setSettings] = useState<PortalSettings>(INITIAL_SETTINGS);
 
   // Real-time Firestore Sync Status
@@ -261,7 +266,25 @@ export default function App() {
     });
 
     const unsubMembers = subscribeToCollection<Member>('members', (data) => {
-      if (data.length > 0) setMembers(data);
+      if (data.length > 0) {
+        const sanitized = data.map((m) => {
+          if (m.isSuperAdmin || m.id === 'm-superadmin' || m.councilRole === 'Superadmin') {
+            const updatedSuperadmin = {
+              ...m,
+              name: 'Ahmed Nazih Nafiz',
+              email: 'nazihnafiz@gmail.com',
+              crewName: '',
+              crewId: 'portal-admin',
+            };
+            if (m.name !== 'Ahmed Nazih Nafiz' || m.email !== 'nazihnafiz@gmail.com' || m.crewName !== '') {
+              saveDocumentToFirestore('members', updatedSuperadmin);
+            }
+            return updatedSuperadmin;
+          }
+          return m;
+        });
+        setMembers(sanitized);
+      }
     });
 
     const unsubEvents = subscribeToCollection<CrewEvent>('events', (data) => {
@@ -864,7 +887,8 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-[#0F1115] text-slate-200 flex flex-col lg:flex-row font-sans selection:bg-emerald-500 selection:text-slate-950 ${theme === 'light' ? 'light-mode' : ''}`}>
+    <ErrorBoundary>
+      <div className={`min-h-screen bg-[#0F1115] text-slate-200 flex flex-col lg:flex-row font-sans selection:bg-emerald-500 selection:text-slate-950 ${theme === 'light' ? 'light-mode' : ''}`}>
       {/* Left Collapsible Sidebar */}
       <Sidebar
         activeTab={activeTab as any}
@@ -901,6 +925,7 @@ export default function App() {
               {activeTab === 'policy' && 'Rover Operating Policy & Democratic Referendums'}
               {activeTab === 'payments' && 'Payments & Crew Dues Management'}
               {activeTab === 'disciplinary' && 'Disciplinary Incident Log'}
+              {activeTab === 'audit' && 'Audit Trails & Change Logs'}
               {activeTab === 'settings' && (isCouncil ? 'Crew Settings & Council Permissions' : 'Personal Profile Settings')}
             </h2>
             <span className="text-xs text-slate-500 font-mono">
@@ -1091,10 +1116,15 @@ export default function App() {
               currentMember={currentMember}
               members={filteredMembers}
               feeRequests={feeRequests}
+              paymentTransactions={paymentTransactions}
               transactions={paymentTransactions}
+              onAddFeeRequest={handleCreateFeeRequest}
               onCreateFeeRequest={handleCreateFeeRequest}
               onSubmitPayment={handleSubmitPayment}
               onVerifyPayment={handleVerifyPayment}
+              settings={settings}
+              onUpdateSettings={handleUpdateSettings}
+              activeOrgContext={selectedOrgId}
             />
           )}
 
@@ -1127,6 +1157,13 @@ export default function App() {
             )
           )}
 
+          {activeTab === 'audit' && (
+            <AuditLogModule
+              currentMember={currentMember}
+              auditLogs={auditLogs}
+            />
+          )}
+
           {activeTab === 'settings' && (
             <SettingsCrewModule
               crews={crews}
@@ -1146,15 +1183,23 @@ export default function App() {
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-200">
-                {activeOrgObj ? activeOrgObj.name : 'Kushafah Rover Crew'}
+                {isSuperAdmin
+                  ? 'National Scout Organisation Superadmin Portal'
+                  : activeOrgObj
+                  ? activeOrgObj.name
+                  : 'Kushafah Rover Crew'}
               </span>
-              <span className="text-slate-500">• Governed by Rover Operating Policy</span>
+              <span className="text-slate-500">
+                {isSuperAdmin ? '• Global Portal Administration' : '• Governed by Rover Operating Policy'}
+              </span>
             </div>
 
             <div className="flex items-center gap-4 text-slate-400">
-              <span>Governance Term: <strong className="text-emerald-400 font-mono">{settings.activeTerm}</strong></span>
-              <span>•</span>
-              <span className="text-slate-500">Parent Scout Group Authority</span>
+              {isSuperAdmin ? (
+                <span className="text-purple-300 font-semibold font-mono">National Administration Scope</span>
+              ) : (
+                <span>Governance Term: <strong className="text-emerald-400 font-mono">{settings.activeTerm}</strong></span>
+              )}
             </div>
           </div>
         </footer>
@@ -1183,6 +1228,7 @@ export default function App() {
           setIsOrgSignupOpen(false);
           setIsLoginModalOpen(true);
         }}
+        settings={settings}
       />
 
       {/* Plan Renewal & Validity Modal */}
@@ -1195,5 +1241,6 @@ export default function App() {
         />
       )}
     </div>
+    </ErrorBoundary>
   );
 }

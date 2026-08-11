@@ -546,7 +546,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
               />
             </div>
 
-            {/* Official Payment & Banking Details (Set by Super Admin) */}
+            {/* Official Payment & Banking Details (Preset by Superadmin) */}
             <div className="bg-[#1A1E26] border border-amber-500/30 rounded-2xl p-5 shadow-lg space-y-4">
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <div className="flex items-center gap-2">
@@ -554,69 +554,29 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                     <Landmark className="w-4 h-4" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-100">Official Payment & Banking Details</h3>
-                    <p className="text-[11px] text-slate-400">Configured by Superadmin for fee collection & event dues.</p>
+                    <h3 className="text-sm font-bold text-slate-100">Official Banking & Transfer Details</h3>
+                    <p className="text-[11px] text-slate-400">Preset by Superadmin for subscriptions & fee transfers.</p>
                   </div>
                 </div>
                 <span className="bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[9px] font-bold px-2 py-0.5 rounded font-mono uppercase">
-                  Superadmin
+                  Preset by Superadmin
                 </span>
               </div>
 
-              <form onSubmit={handleSavePaymentDetails} className="space-y-3.5 text-xs">
-                <div>
-                  <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-                    <User className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Account Name</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Kushafah Rover Crew Official"
-                    value={paymentForm.accountName}
-                    onChange={(e) => setPaymentForm({ ...paymentForm, accountName: e.target.value })}
-                    className="w-full bg-[#161920] border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-medium focus:outline-none focus:border-amber-500 transition"
-                  />
+              <div className="space-y-2 text-xs">
+                <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                  <span className="text-slate-400 text-[11px]">Bank Name</span>
+                  <span className="text-slate-300 font-semibold">{settings?.paymentDetails?.bankName || 'Bank of Maldives (BML)'}</span>
                 </div>
-
-                <div>
-                  <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-                    <CreditCard className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Account Number</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. 7730000123456"
-                    value={paymentForm.accountNumber}
-                    onChange={(e) => setPaymentForm({ ...paymentForm, accountNumber: e.target.value })}
-                    className="w-full bg-[#161920] border border-slate-800 rounded-xl px-3 py-2 text-emerald-300 font-mono font-bold focus:outline-none focus:border-amber-500 transition"
-                  />
+                <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                  <span className="text-slate-400 text-[11px]">Official Account Name</span>
+                  <span className="font-semibold text-slate-200 text-right">{settings?.paymentDetails?.accountName || 'National Scout Portal Account'}</span>
                 </div>
-
-                <div>
-                  <label className="block text-slate-300 font-semibold mb-1 flex items-center gap-1.5">
-                    <Landmark className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Bank Name</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Bank of Maldives (BML)"
-                    value={paymentForm.bankName}
-                    onChange={(e) => setPaymentForm({ ...paymentForm, bankName: e.target.value })}
-                    className="w-full bg-[#161920] border border-slate-800 rounded-xl px-3 py-2 text-slate-100 font-medium focus:outline-none focus:border-amber-500 transition"
-                  />
+                <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                  <span className="text-slate-400 text-[11px]">Official Account Number</span>
+                  <span className="font-mono text-emerald-300 font-bold">{settings?.paymentDetails?.accountNumber || '7701122334401'}</span>
                 </div>
-
-                <button
-                  type="submit"
-                  className="w-full bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-slate-950 font-bold text-xs py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Save className="w-4 h-4" />
-                  <span>Save Payment Details</span>
-                </button>
-              </form>
+              </div>
             </div>
           </div>
         </div>

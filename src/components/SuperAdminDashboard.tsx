@@ -176,9 +176,9 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
   const filteredOrgs = organisations.filter((o) => {
     const q = searchQuery.toLowerCase();
     return (
-      o.name.toLowerCase().includes(q) ||
-      o.code.toLowerCase().includes(q) ||
-      o.roverAdvisorName.toLowerCase().includes(q)
+      (o.name || '').toLowerCase().includes(q) ||
+      (o.code || '').toLowerCase().includes(q) ||
+      (o.roverAdvisorName || '').toLowerCase().includes(q)
     );
   });
 
@@ -271,7 +271,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
               National Organisation Portal Administration
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Create, review, and approve separate Scout Organisations. Assign Rover Advisors to form crews, manage subscription plans (Free, Monthly @ MVR 40, Annual @ MVR 400), and inspect uploaded payment receipts.
+              Create, review, and approve separate Scout Organisations. Assign Rover Advisors to form crews, manage subscription plans (Free, Monthly @ MVR 20, Annual @ MVR 200), and inspect uploaded payment receipts.
             </p>
           </div>
 
@@ -340,7 +340,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
           </div>
           <div>
             <div className="text-2xl font-extrabold text-sky-300">
-              MVR {organisations.reduce((acc, o) => acc + (o.plan === 'Monthly' ? 40 : o.plan === 'Annual' ? 400 : 0), 0)}
+              MVR {organisations.reduce((acc, o) => acc + (o.plan === 'Monthly' ? 20 : o.plan === 'Annual' ? 200 : 0), 0)}
             </div>
             <div className="text-xs text-slate-400 font-medium">Subscription Revenues</div>
           </div>
@@ -497,7 +497,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                     <div>
                       <span className="text-slate-500 block">Selected Plan:</span>
                       <strong className="text-emerald-400 font-bold">
-                        {org.plan === 'Free' ? 'Free (Superadmin Exemption)' : org.plan === 'Monthly' ? 'Monthly Plan (MVR 40/mo)' : 'Annual Plan (MVR 400/yr)'}
+                        {org.plan === 'Free' ? 'Free (Superadmin Exemption)' : org.plan === 'Monthly' ? 'Monthly Plan (MVR 20/mo)' : 'Annual Plan (MVR 200/yr)'}
                       </strong>
                     </div>
 
@@ -881,8 +881,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                   className="w-full bg-[#12151B] border border-slate-700 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer"
                 >
                   <option value="Free">Free Plan (Superadmin Exemption)</option>
-                  <option value="Monthly">Monthly Plan (MVR 40 / mo)</option>
-                  <option value="Annual">Annual Plan (MVR 400 / yr)</option>
+                  <option value="Monthly">Monthly Plan (MVR 20 / mo)</option>
+                  <option value="Annual">Annual Plan (MVR 200 / yr)</option>
                 </select>
               </div>
             </div>
@@ -1200,8 +1200,8 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                       className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3 py-2 text-slate-100 focus:outline-none focus:border-blue-500"
                     >
                       <option value="Free">Free (Exempt)</option>
-                      <option value="Monthly">Monthly (MVR 40)</option>
-                      <option value="Annual">Annual (MVR 400)</option>
+                      <option value="Monthly">Monthly (MVR 20)</option>
+                      <option value="Annual">Annual (MVR 200)</option>
                     </select>
                   </div>
 
