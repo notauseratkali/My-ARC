@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Member } from '../types';
 import { auth, googleAuthProvider, signInWithPopup, getFirebaseAuthErrorMessage } from '../lib/firebase';
 import { useToast } from './ToastContext';
@@ -45,6 +45,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isGoogleSigningIn, setIsGoogleSigningIn] = useState(false);
+  const [selectedGmail, setSelectedGmail] = useState<string>('');
 
   // Forced password change state
   const [pendingMember, setPendingMember] = useState<Member | null>(null);
@@ -59,13 +60,25 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   const [otpSentNotification, setOtpSentNotification] = useState<string | null>(null);
   const [forgotNewPassword, setForgotNewPassword] = useState('');
   const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
+  const [otpCountdown, setOtpCountdown] = useState<number>(0);
+
+  useEffect(() => {
+    let timer: any;
+    if (otpCountdown > 0) {
+      timer = setInterval(() => {
+        setOtpCountdown((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [otpCountdown]);
 
   if (!isOpen) return null;
 
-  const handleGoogleAuthSuperadmin = async () => {
+  const handleGoogleAuth = async () => {
     try {
       setIsGoogleSigningIn(true);
       setErrorMessage('');
+      setSuccessMessage('');
 
       let userEmail = '';
 
@@ -76,38 +89,46 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             userEmail = result.user.email.toLowerCase();
           }
         } catch (popupErr: any) {
-          console.warn('Firebase Google Auth popup error/sandbox fallback:', popupErr);
-          const friendlyMsg = getFirebaseAuthErrorMessage(popupErr);
-          toastInfo(`Google Sign-In Notice: ${friendlyMsg}`);
+          console.warn('Firebase Google Auth popup notice:', popupErr);
+          if (popupErr?.code !== 'auth/popup-closed-by-user') {
+            const friendlyMsg = getFirebaseAuthErrorMessage(popupErr);
+            toastInfo(`Google Sign-In Notice: ${friendlyMsg}`);
+          }
         }
       }
 
-      // Find Superadmin member matching email or fallback to primary Superadmin record
-      let superAdminMember = members.find(
+      // If user email was not obtained via popup (e.g. sandbox preview iframe restriction)
+      if (!userEmail) {
+        const promptEmail = prompt('Enter your registered Gmail address to verify against database:');
+        if (promptEmail) {
+          userEmail = promptEmail.trim().toLowerCase();
+        }
+      }
+
+      if (!userEmail) {
+        setIsGoogleSigningIn(false);
+        return;
+      }
+
+      // Check database for matching member email
+      const matchedMember = members.find(
         (m) =>
-          (m.isSuperAdmin || m.councilRole === 'Superadmin') &&
-          (userEmail ? ((m.email || '').toLowerCase() === userEmail || userEmail === 'nazihnafiz@gmail.com') : true)
+          (m.email || '').toLowerCase() === userEmail ||
+          (userEmail === 'nazihnafiz@gmail.com' && (m.isSuperAdmin || m.councilRole === 'Superadmin'))
       );
 
-      if (!superAdminMember) {
-        superAdminMember = members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0];
-      }
-
-      if (superAdminMember) {
-        onLogin(superAdminMember);
+      if (matchedMember) {
+        toastInfo(`Gmail Verified! Welcome, ${matchedMember.name}.`);
+        onLogin(matchedMember);
         if (onClose) onClose();
       } else {
-        setErrorMessage('Superadmin member account not found in system records.');
+        setErrorMessage(
+          `Access Denied: The Gmail address (${userEmail}) is NOT found in the registered member database. Please ensure your email is registered in the member directory or log in with your credentials.`
+        );
       }
     } catch (err: any) {
-      console.error('Google Superadmin Auth error:', err);
-      const fallbackAdmin = members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0];
-      if (fallbackAdmin) {
-        onLogin(fallbackAdmin);
-        if (onClose) onClose();
-      } else {
-        setErrorMessage(getFirebaseAuthErrorMessage(err));
-      }
+      console.error('Google Auth Error:', err);
+      setErrorMessage(getFirebaseAuthErrorMessage(err));
     } finally {
       setIsGoogleSigningIn(false);
     }
@@ -260,6 +281,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     setGeneratedOtp(code);
     setResetMember(matched);
+    setOtpCountdown(60);
     setOtpSentNotification(
       `OTP Verification Code sent to ${matched.email}! (Simulated Code: ${code})`
     );
@@ -300,6 +322,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
 
       setMode('login');
       setSuccessMessage('Password reset successfully! You can now log in with your new password.');
+      setNidInput(resetMember.idCard || resetMember.email?.split('@')[0] || '');
       setPasswordInput(forgotNewPassword.trim());
       setEnteredOtp('');
       setGeneratedOtp(null);
@@ -445,24 +468,74 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               </button>
             </form>
 
-            {/* GOOGLE SUPERADMIN AUTH */}
-            <div className="space-y-2 border-t border-slate-800/80 pt-4 relative z-10 text-xs">
+            {/* GOOGLE / GMAIL AUTHENTICATION FOR ALL USERS */}
+            <div className="space-y-3 border-t border-slate-800/80 pt-4 relative z-10 text-xs">
+              <div className="flex items-center justify-between text-slate-400">
+                <span className="h-px bg-slate-800 flex-1"></span>
+                <span className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
+                  Or Sign In with Gmail
+                </span>
+                <span className="h-px bg-slate-800 flex-1"></span>
+              </div>
 
-              {/* Superadmin Google Auth */}
-              <div className="text-center pt-2">
-                <button
-                  type="button"
-                  onClick={handleGoogleAuthSuperadmin}
-                  disabled={isGoogleSigningIn}
-                  className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold py-2.5 px-4 rounded-xl transition shadow-md flex items-center justify-center gap-2 cursor-pointer text-xs"
-                >
-                  <Shield className="w-4 h-4 text-purple-200" />
-                  <span>
-                    {isGoogleSigningIn
-                      ? 'Authenticating with Google...'
-                      : 'Superadmin Google Auth Login'}
+              <button
+                type="button"
+                onClick={handleGoogleAuth}
+                disabled={isGoogleSigningIn}
+                className="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:via-teal-500 hover:to-indigo-500 text-white font-bold py-3 px-4 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 cursor-pointer text-xs"
+              >
+                <Shield className="w-4 h-4 text-emerald-200" />
+                <span>
+                  {isGoogleSigningIn
+                    ? 'Verifying Gmail Account...'
+                    : 'Sign In with Google / Gmail Verification'}
+                </span>
+              </button>
+
+              {/* Registered Gmail Quick Selector (for database verification & preview) */}
+              <div className="bg-[#12151B] border border-slate-800/80 p-3 rounded-xl space-y-2 text-[11px]">
+                <div className="flex items-center justify-between text-slate-300 font-semibold">
+                  <span className="flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-emerald-400" /> Verify Registered Gmail Address
                   </span>
-                </button>
+                  <span className="text-[10px] text-slate-500 font-mono">Database Verification</span>
+                </div>
+                <div className="flex gap-2">
+                  <select
+                    value={selectedGmail}
+                    onChange={(e) => setSelectedGmail(e.target.value)}
+                    className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 flex-1 focus:outline-none focus:border-emerald-500 font-mono"
+                  >
+                    <option value="">-- Select a database Gmail to verify --</option>
+                    {members
+                      .filter((m) => m.email)
+                      .map((m) => (
+                        <option key={m.id} value={m.email}>
+                          {m.name} ({m.email}) [{m.councilRole}]
+                        </option>
+                      ))}
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!selectedGmail) {
+                        setErrorMessage('Please select a Gmail address to verify.');
+                        return;
+                      }
+                      const matched = members.find((m) => (m.email || '').toLowerCase() === selectedGmail.toLowerCase());
+                      if (matched) {
+                        toastInfo(`Gmail Verified! Welcome, ${matched.name}.`);
+                        onLogin(matched);
+                        if (onClose) onClose();
+                      } else {
+                        setErrorMessage(`Access Denied: Email ${selectedGmail} is not in the registered database.`);
+                      }
+                    }}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1 cursor-pointer shadow whitespace-nowrap"
+                  >
+                    <span>Verify & Sign In</span>
+                  </button>
+                </div>
               </div>
             </div>
           </>
@@ -551,12 +624,23 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             )}
 
             {otpSentNotification && (
-              <div className="bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 p-3 rounded-2xl flex items-start gap-2.5 font-medium leading-relaxed">
-                <Mail className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
-                <div>
-                  <div className="font-bold">Email Notification Sent!</div>
-                  <div className="text-[11px] font-mono mt-0.5">{otpSentNotification}</div>
+              <div className="bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 p-3 rounded-2xl flex items-start justify-between gap-2.5 font-medium leading-relaxed">
+                <div className="flex items-start gap-2.5">
+                  <Mail className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <div className="font-bold">Email Notification Sent!</div>
+                    <div className="text-[11px] font-mono mt-0.5">{otpSentNotification}</div>
+                  </div>
                 </div>
+                {generatedOtp && (
+                  <button
+                    type="button"
+                    onClick={() => setEnteredOtp(generatedOtp)}
+                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-[10px] px-2.5 py-1 rounded-lg shadow transition whitespace-nowrap cursor-pointer"
+                  >
+                    Auto-fill OTP
+                  </button>
+                )}
               </div>
             )}
 
@@ -579,6 +663,29 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                   />
                 </div>
 
+                {/* Quick Select Member Email */}
+                <div className="bg-[#12151B] border border-slate-800/80 p-2.5 rounded-xl space-y-1.5">
+                  <label className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
+                    <UserCheck className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Quick Select Roster Member Email:</span>
+                  </label>
+                  <select
+                    onChange={(e) => {
+                      if (e.target.value) setForgotEmailOrNid(e.target.value);
+                    }}
+                    className="w-full bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-lg px-2 py-1.5 focus:outline-none focus:border-amber-500 font-mono"
+                  >
+                    <option value="">-- Choose member from database --</option>
+                    {members
+                      .filter((m) => m.email)
+                      .map((m) => (
+                        <option key={m.id} value={m.email}>
+                          {m.name} ({m.email})
+                        </option>
+                      ))}
+                  </select>
+                </div>
+
                 <button
                   type="submit"
                   className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
@@ -591,10 +698,26 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               /* STEP 2: Verify OTP & Set New Password */
               <form onSubmit={handleResetPasswordWithOtp} className="space-y-3.5">
                 <div className="space-y-1.5">
-                  <label className="text-slate-300 font-semibold flex items-center justify-between">
-                    <span>Enter 6-Digit Email OTP *</span>
-                    <span className="text-[10px] text-amber-400 font-mono">OTP Sent to {resetMember?.email}</span>
-                  </label>
+                  <div className="flex items-center justify-between text-slate-300 font-semibold">
+                    <label className="flex items-center gap-1.5">
+                      <Key className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Enter 6-Digit Email OTP *</span>
+                    </label>
+                    <button
+                      type="button"
+                      disabled={otpCountdown > 0}
+                      onClick={(e) => {
+                        if (otpCountdown <= 0) handleRequestOtp(e);
+                      }}
+                      className={`text-[11px] font-mono ${
+                        otpCountdown > 0
+                          ? 'text-slate-500 cursor-not-allowed'
+                          : 'text-amber-400 hover:underline cursor-pointer'
+                      }`}
+                    >
+                      {otpCountdown > 0 ? `Resend OTP in ${otpCountdown}s` : 'Resend OTP'}
+                    </button>
+                  </div>
                   <input
                     type="text"
                     required

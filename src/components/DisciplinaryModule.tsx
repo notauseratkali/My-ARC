@@ -97,6 +97,8 @@ export const DisciplinaryModule: React.FC<DisciplinaryModuleProps> = ({
   const statuses: DisciplinaryStatus[] = ['Open', 'Under Review', 'Resolved', 'Escalated'];
 
   const filteredIncidents = incidents.filter((inc) => {
+    // General members can view disciplinary logs, but strictly restricted to their own individual logs
+    if (!isCouncil && inc.memberId !== currentMember.id) return false;
     if (statusFilter !== 'All' && inc.status !== statusFilter) return false;
     if (categoryFilter !== 'All' && inc.infractionCategory !== categoryFilter) return false;
     return true;
@@ -207,14 +209,16 @@ export const DisciplinaryModule: React.FC<DisciplinaryModuleProps> = ({
           </p>
         </div>
 
-        <button
-          id="disciplinary-log-btn"
-          onClick={handleOpenAdd}
-          className="bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Log Disciplinary Incident</span>
-        </button>
+        {isCouncil && (
+          <button
+            id="disciplinary-log-btn"
+            onClick={handleOpenAdd}
+            className="bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Log Disciplinary Incident</span>
+          </button>
+        )}
       </div>
 
       {/* Filter Bar */}
@@ -301,25 +305,27 @@ export const DisciplinaryModule: React.FC<DisciplinaryModuleProps> = ({
                   </h3>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => handleOpenEdit(inc)}
-                    className="p-1.5 text-slate-400 hover:text-emerald-400 transition rounded-lg hover:bg-slate-800 text-xs flex items-center gap-1"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                    <span>Edit Case</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      if (confirm(`Delete incident record for ${inc.memberName}?`)) {
-                        onDeleteIncident(inc.id);
-                      }
-                    }}
-                    className="p-1.5 text-slate-400 hover:text-rose-400 transition rounded-lg hover:bg-slate-800 text-xs flex items-center gap-1"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                {isCouncil && (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => handleOpenEdit(inc)}
+                      className="p-1.5 text-slate-400 hover:text-emerald-400 transition rounded-lg hover:bg-slate-800 text-xs flex items-center gap-1 cursor-pointer"
+                    >
+                      <Edit2 className="w-3.5 h-3.5" />
+                      <span>Edit Case</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        if (confirm(`Delete incident record for ${inc.memberName}?`)) {
+                          onDeleteIncident(inc.id);
+                        }
+                      }}
+                      className="p-1.5 text-slate-400 hover:text-rose-400 transition rounded-lg hover:bg-slate-800 text-xs flex items-center gap-1 cursor-pointer"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Narrative & Action Details */}

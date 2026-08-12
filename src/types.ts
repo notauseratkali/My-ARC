@@ -88,7 +88,7 @@ export interface Member {
   mustChangePassword?: boolean;
 }
 
-export type AwardType = "President's Scout Award" | 'Baden-Powell (BP) Award' | 'Auxiliary Badge';
+export type AwardType = "President's Scout Award" | 'Baden-Powell Award' | 'Auxiliary Badge';
 export type CategoryType = 'Leadership' | 'Community Service' | 'Outdoor Skills' | 'Personal Development' | 'Scoutcraft' | 'Global Citizenship';
 export type SubmissionType = 'checkbox' | 'report' | 'evidence_files' | 'mixed';
 

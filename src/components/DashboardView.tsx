@@ -684,13 +684,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <span className="text-xs font-semibold text-slate-300">{rovers.length} Active Members</span>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-100">Baden-Powell (BP) Award</h4>
+                  <h4 className="text-sm font-bold text-slate-100">Baden-Powell Award</h4>
                   <p className="text-xs text-slate-400 mt-0.5">Focus: Rover Crew Administration, 100km Maritime Expedition, Sustainable Community Service.</p>
                 </div>
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
                   <span className="text-slate-400">Core Modules:</span>
                   <span className="font-mono text-sky-400 font-semibold">
-                    {syllabus.filter((s) => s.awardType === 'Baden-Powell (BP) Award').length} Requirements
+                    {syllabus.filter((s) => s.awardType === 'Baden-Powell Award').length} Requirements
                   </span>
                 </div>
               </div>

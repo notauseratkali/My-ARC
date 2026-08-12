@@ -645,7 +645,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
   });
 
   const totalPresidentsReqs = syllabus.filter((s) => s.awardType === "President's Scout Award").length || 1;
-  const totalBpReqs = syllabus.filter((s) => s.awardType === 'Baden-Powell (BP) Award').length || 1;
+  const totalBpReqs = syllabus.filter((s) => s.awardType === 'Baden-Powell Award').length || 1;
   const totalAuxReqs = syllabus.filter((s) => s.awardType === 'Auxiliary Badge').length || 1;
 
   const analyticsMemberData = filteredAnalyticsMembers.map((mem) => {
@@ -658,7 +658,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 
     const bpCompleted = memProgress.filter((p) => {
       const req = syllabus.find((s) => s.id === p.requirementId);
-      return req?.awardType === 'Baden-Powell (BP) Award' && p.status === 'Completed';
+      return req?.awardType === 'Baden-Powell Award' && p.status === 'Completed';
     }).length;
 
     const auxCompleted = memProgress.filter((p) => {
@@ -704,7 +704,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 
     const bpCount = crewProgress.filter((p) => {
       const req = syllabus.find((s) => s.id === p.requirementId);
-      return req?.awardType === 'Baden-Powell (BP) Award' && p.status === 'Completed';
+      return req?.awardType === 'Baden-Powell Award' && p.status === 'Completed';
     }).length;
 
     const auxCount = crewProgress.filter((p) => {
@@ -850,7 +850,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
               >
                 <option value="All">All Award Frameworks</option>
                 <option value="President's Scout Award">President's Scout Award (Explorer)</option>
-                <option value="Baden-Powell (BP) Award">Baden-Powell (BP) Award (Rover)</option>
+                <option value="Baden-Powell Award">Baden-Powell Award (Rover)</option>
                 <option value="Auxiliary Badge">Auxiliary Badges</option>
               </select>
             </div>
@@ -888,7 +888,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                           className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
                             req.awardType === "President's Scout Award"
                               ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                              : req.awardType === 'Baden-Powell (BP) Award'
+                              : req.awardType === 'Baden-Powell Award'
                               ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
                               : 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
                           }`}
@@ -1117,11 +1117,11 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 
             <div className="bg-[#1A1E26] border border-slate-800 p-4 rounded-2xl shadow-md">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-semibold text-amber-400">Baden-Powell (BP)</span>
+                <span className="text-[11px] font-semibold text-amber-400">Baden-Powell</span>
                 <Award className="w-4 h-4 text-amber-400" />
               </div>
               <div className="text-2xl font-bold text-amber-300 mt-1 font-mono">
-                {syllabus.filter((s) => s.awardType === "Baden-Powell (BP) Award").length}
+                {syllabus.filter((s) => s.awardType === "Baden-Powell Award").length}
               </div>
               <div className="text-[10px] text-slate-500 mt-0.5">Rover Section Requirements</div>
             </div>
@@ -1202,7 +1202,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
               </span>
               <div className="flex items-center gap-3 text-[11px] font-medium text-slate-400">
                 <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> President's Scout</span>
-                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Baden-Powell (BP)</span>
+                <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span> Baden-Powell</span>
                 <span className="flex items-center gap-1"><span className="w-2.5 h-2.5 rounded-full bg-sky-500 inline-block"></span> Auxiliary Badges</span>
               </div>
             </div>
@@ -1235,7 +1235,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                   />
                   <Bar
                     dataKey={analyticsMetricType === 'percentage' ? 'bpPct' : 'bpCompleted'}
-                    name="Baden-Powell (BP)"
+                    name="Baden-Powell"
                     fill="#F59E0B"
                     radius={[4, 4, 0, 0]}
                   />
@@ -1278,7 +1278,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                       }}
                     />
                     <Bar dataKey="presidentsCount" name="President's Scout" fill="#10B981" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="bpCount" name="Baden-Powell BP" fill="#F59E0B" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="bpCount" name="Baden-Powell" fill="#F59E0B" radius={[4, 4, 0, 0]} />
                     <Bar dataKey="auxCount" name="Auxiliary Badges" fill="#0EA5E9" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
@@ -1346,7 +1346,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                     <th className="py-2.5 px-3">Scout Member</th>
                     <th className="py-2.5 px-3">Crew / Section</th>
                     <th className="py-2.5 px-3">President's Scout</th>
-                    <th className="py-2.5 px-3">Baden-Powell (BP)</th>
+                    <th className="py-2.5 px-3">Baden-Powell</th>
                     <th className="py-2.5 px-3">Auxiliary Badges</th>
                     <th className="py-2.5 px-3 text-right">Total Verified</th>
                     <th className="py-2.5 px-3 text-right">Award Certificate</th>
@@ -1391,10 +1391,10 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                             const topTier = m.presidentsPct >= 100
                               ? "President's Scout Award"
                               : m.bpPct >= 100
-                              ? 'Baden-Powell (BP) Award'
+                              ? 'Baden-Powell Award'
                               : m.presidentsPct > m.bpPct
                               ? "President's Scout Award"
-                              : 'Baden-Powell (BP) Award';
+                              : 'Baden-Powell Award';
 
                             setCertModal({
                               isOpen: true,
@@ -1552,7 +1552,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
               }
 
               return filteredList.map((m) => {
-                const relevantAward = m.section === 'Explorer' ? "President's Scout Award" : 'Baden-Powell (BP) Award';
+                const relevantAward = m.section === 'Explorer' ? "President's Scout Award" : 'Baden-Powell Award';
                 const memberRequirements = syllabus.filter((s) => s.awardType === relevantAward || s.awardType === 'Auxiliary Badge');
 
                 return (
@@ -1882,7 +1882,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                   className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
                 >
                   <option value="President's Scout Award">President's Scout Award (Explorer Section)</option>
-                  <option value="Baden-Powell (BP) Award">Baden-Powell (BP) Award (Rover Section)</option>
+                  <option value="Baden-Powell Award">Baden-Powell Award (Rover Section)</option>
                   <option value="Auxiliary Badge">Auxiliary Badge</option>
                 </select>
               </div>

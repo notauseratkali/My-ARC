@@ -210,7 +210,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
 
   // Helper to compute progression award stats for a member
   const getMemberAwardStats = (member: Member) => {
-    const relevantAward = member.section === 'Explorer' ? "President's Scout Award" : 'Baden-Powell (BP) Award';
+    const relevantAward = member.section === 'Explorer' ? "President's Scout Award" : 'Baden-Powell Award';
     const memberReqs = syllabus.filter((s) => s.awardType === relevantAward || s.awardType === 'Auxiliary Badge');
     const memberProgs = progressList.filter((p) => p.memberId === member.id);
 

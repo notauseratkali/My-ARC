@@ -209,7 +209,7 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
             </span>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            President's Scout & Baden-Powell (BP) Award syllabus completion rates across sub-crews.
+            President's Scout & Baden-Powell Award syllabus completion rates across sub-crews.
           </p>
         </div>
 
