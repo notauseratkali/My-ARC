@@ -21,7 +21,7 @@ export type RenewalStatus = 'None' | 'Pending Verification' | 'Approved' | 'Reje
 export interface Organisation {
   id: string;
   name: string;
-  code: string; // e.g. "KUSHAFAH", "AMINIYA", "CHSE" (Organisation Username)
+  code: string; // e.g. "MEYVAA", "AMINIYA", "CHSE" (Organisation Username)
   roverAdvisorName: string;
   roverAdvisorEmail: string;
   roverAdvisorNid: string;

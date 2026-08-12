@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 import { hasPermission } from '../utils/permissions';
 
-import { Crown, LogOut, LogIn, Vote, Wifi, WifiOff, RefreshCw, AlertCircle, Database } from 'lucide-react';
+import { Crown, LogOut, LogIn, Vote } from 'lucide-react';
 
 export type TabType =
   | 'superadmin'
@@ -54,14 +54,10 @@ interface SidebarProps {
   onSelectMember?: (member: Member) => void;
   onLogout?: () => void;
   onOpenLoginModal?: () => void;
-  onOpenOrgSignup?: () => void;
   settings?: PortalSettings;
   unresolvedIncidentsCount?: number;
   theme?: 'dark' | 'light';
   onToggleTheme?: () => void;
-  syncStatus?: 'synced' | 'syncing' | 'offline' | 'error';
-  lastSyncedAt?: Date | null;
-  onTriggerSync?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -72,20 +68,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectMember = (_m: Member) => {},
   onLogout,
   onOpenLoginModal,
-  onOpenOrgSignup,
   settings = { aiEnabled: true, smsNotificationsEnabled: true, emailNotificationsEnabled: true, activeTerm: '1' },
   theme = 'dark',
   onToggleTheme,
-  syncStatus = 'synced',
-  lastSyncedAt,
-  onTriggerSync,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
 
   const isSuperAdmin = currentMember?.isSuperAdmin || currentMember?.councilRole === 'Superadmin';
   const isAdvisor = currentMember?.councilRole === 'Rover Advisor' && !isSuperAdmin;
-  const isCouncil = !!currentMember && currentMember.councilRole !== 'Member' && !isSuperAdmin;
+  const isCouncil = !!currentMember && (currentMember.councilRole !== 'Member' || isSuperAdmin);
   const canAccessDisciplinary = currentMember ? hasPermission(currentMember, 'manageDisciplinary', settings) : false;
 
   interface NavItem {
@@ -97,28 +89,27 @@ export const Sidebar: React.FC<SidebarProps> = ({
     restricted?: boolean;
   }
 
-  const navItems: NavItem[] = isSuperAdmin
-    ? [
-        { id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-purple-400" />, category: 'Main' as const, badge: 'Portal Admin' },
-        { id: 'payments' as TabType, label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' as const },
-        { id: 'audit' as TabType, label: 'Audit Trails & Logs', icon: <History className="w-5 h-5 text-indigo-400" />, category: 'Operations' as const },
-      ]
-    : [
-        { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" />, category: 'Main' },
-        { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5" />, category: 'Main' },
-        { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-5 h-5" />, category: 'Main' },
-        { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-5 h-5" />, category: 'Main', badge: settings?.aiEnabled ? 'AI' : undefined },
-        { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5" />, category: 'Operations' },
-        { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
-        { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
-        { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-400" />, category: 'Operations' },
-        { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' },
-        ...(isCouncil ? [
+  const navItems: NavItem[] = [
+    ...(isSuperAdmin
+      ? [{ id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-purple-400" />, category: 'Main' as const, badge: 'Portal Admin' }]
+      : []),
+    { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" />, category: 'Main' },
+    { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5" />, category: 'Main' },
+    { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-5 h-5" />, category: 'Main' },
+    { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-5 h-5" />, category: 'Main', badge: settings?.aiEnabled ? 'AI' : undefined },
+    { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5" />, category: 'Operations' },
+    { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
+    { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
+    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-400" />, category: 'Operations' },
+    { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' },
+    ...((isCouncil || isSuperAdmin)
+      ? [
           { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true },
           { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-indigo-400" />, category: 'Operations' as const },
-        ] : []),
-        { id: 'settings', label: isCouncil ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
-      ];
+        ]
+      : []),
+    { id: 'settings', label: (isCouncil || isSuperAdmin) ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
+  ];
 
   const categories = ['Main', 'Operations', 'System'] as const;
 
@@ -145,7 +136,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </button>
           <div className="flex items-center gap-2">
             <Compass className="w-5 h-5 text-emerald-400" />
-            <span className="font-bold text-sm text-emerald-400">Kushafah Portal</span>
+            <span className="font-bold text-sm text-emerald-400">Meyvaa Portal</span>
           </div>
         </div>
 
@@ -183,13 +174,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
             {(!isCollapsed || isMobileOpen) && (
               <div className="min-w-0">
                 <h1 className="font-bold text-sm bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent truncate leading-tight">
-                  Kushafah Portal
+                  Meyvaa Portal
                 </h1>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   {isSuperAdmin ? (
                     <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
                       <Crown className="w-2.5 h-2.5 text-purple-300" />
-                      National Superadmin
+                      Superadmin
                     </span>
                   ) : (
                     <>
@@ -302,117 +293,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </div>
 
-        {/* Sidebar Footer: Sync Status, Theme & AI Status */}
+        {/* Sidebar Footer: Theme & Logout */}
         <div className="p-3 border-t border-slate-800 bg-[#12151B] space-y-2">
-          {/* Real-time Firestore Sync Status Indicator */}
-          {(!isCollapsed || isMobileOpen) ? (
-            <button
-              type="button"
-              onClick={onTriggerSync}
-              className={`w-full p-2.5 rounded-xl text-[11px] font-medium border flex items-center justify-between transition shadow-sm cursor-pointer hover:scale-[1.01] ${
-                syncStatus === 'synced'
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
-                  : syncStatus === 'syncing'
-                  ? 'bg-amber-500/10 border-amber-500/30 text-amber-300'
-                  : syncStatus === 'offline'
-                  ? 'bg-slate-800/90 border-slate-700 text-slate-400'
-                  : 'bg-rose-500/10 border-rose-500/30 text-rose-300'
-              }`}
-              title="Click to verify live Cloud Firestore synchronization"
-            >
-              <div className="flex items-center gap-2 truncate">
-                {syncStatus === 'synced' && (
-                  <>
-                    <span className="relative flex h-2 w-2 flex-shrink-0">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                    </span>
-                    <div className="truncate">
-                      <div className="font-bold text-emerald-300 leading-tight">Firestore Synced</div>
-                      <div className="text-[9px] text-emerald-400/70 font-mono">Real-time Connected</div>
-                    </div>
-                  </>
-                )}
-                {syncStatus === 'syncing' && (
-                  <>
-                    <RefreshCw className="w-3.5 h-3.5 text-amber-400 animate-spin flex-shrink-0" />
-                    <div className="truncate">
-                      <div className="font-bold text-amber-200 leading-tight">Syncing Cloud...</div>
-                      <div className="text-[9px] text-amber-300/70 font-mono">Updating Firestore</div>
-                    </div>
-                  </>
-                )}
-                {syncStatus === 'offline' && (
-                  <>
-                    <WifiOff className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
-                    <div className="truncate">
-                      <div className="font-bold text-slate-300 leading-tight">Offline Mode</div>
-                      <div className="text-[9px] text-slate-500 font-mono">Using Local Cache</div>
-                    </div>
-                  </>
-                )}
-                {syncStatus === 'error' && (
-                  <>
-                    <AlertCircle className="w-3.5 h-3.5 text-rose-400 flex-shrink-0" />
-                    <div className="truncate">
-                      <div className="font-bold text-rose-300 leading-tight">Connection Issue</div>
-                      <div className="text-[9px] text-rose-400/70 font-mono">Check Network</div>
-                    </div>
-                  </>
-                )}
-              </div>
-              <Database
-                className={`w-3.5 h-3.5 flex-shrink-0 ${
-                  syncStatus === 'synced'
-                    ? 'text-emerald-400'
-                    : syncStatus === 'syncing'
-                    ? 'text-amber-400 animate-pulse'
-                    : syncStatus === 'offline'
-                    ? 'text-slate-500'
-                    : 'text-rose-400'
-                }`}
-              />
-            </button>
-          ) : (
-            <div
-              className={`p-2 rounded-xl flex items-center justify-center border transition ${
-                syncStatus === 'synced'
-                  ? 'bg-emerald-500/10 border-emerald-500/30'
-                  : syncStatus === 'syncing'
-                  ? 'bg-amber-500/10 border-amber-500/30'
-                  : syncStatus === 'offline'
-                  ? 'bg-slate-800 border-slate-700'
-                  : 'bg-rose-500/10 border-rose-500/30'
-              }`}
-              title={
-                syncStatus === 'synced'
-                  ? 'Firestore Live Synced'
-                  : syncStatus === 'syncing'
-                  ? 'Syncing changes to cloud...'
-                  : syncStatus === 'offline'
-                  ? 'App is offline (Local cache)'
-                  : 'Firestore connection issue'
-              }
-            >
-              {syncStatus === 'synced' && (
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-              )}
-              {syncStatus === 'syncing' && <RefreshCw className="w-4 h-4 text-amber-400 animate-spin" />}
-              {syncStatus === 'offline' && <WifiOff className="w-4 h-4 text-slate-400" />}
-              {syncStatus === 'error' && <AlertCircle className="w-4 h-4 text-rose-400" />}
-            </div>
-          )}
-
-          {settings?.aiEnabled && (!isCollapsed || isMobileOpen) && (
-            <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] p-2 rounded-xl font-medium">
-              <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse flex-shrink-0" />
-              <span className="truncate">AI Polish Active</span>
-            </div>
-          )}
-
           {currentMember && onLogout ? (
             <button
               onClick={onLogout}

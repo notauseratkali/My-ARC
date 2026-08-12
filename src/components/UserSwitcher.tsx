@@ -70,11 +70,11 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
               }`}
             >
               {(isSuperAdmin || isAdvisor) && <Crown className="w-2.5 h-2.5 text-purple-300" />}
-              {isSuperAdmin ? 'National Superadmin' : currentMember.councilRole}
+              {isSuperAdmin ? 'Superadmin' : currentMember.councilRole}
             </span>
           </div>
           <div className="text-[10px] text-slate-400">
-            {isSuperAdmin ? 'National Portal Administration' : `${currentMember.section} • ${currentMember.crewName}`}
+            {isSuperAdmin ? 'Portal Administration' : `${currentMember.section} • ${currentMember.crewName}`}
           </div>
         </div>
         <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-1" />
@@ -117,7 +117,7 @@ export const UserSwitcher: React.FC<UserSwitcherProps> = ({
                 <div className="bg-[#12151B] p-1.5 rounded-lg border border-slate-800">
                   <span className="text-slate-500 block">System Authority</span>
                   <span className={`font-semibold ${isSuperAdmin || isAdvisor ? 'text-purple-300' : 'text-emerald-400'}`}>
-                    {isSuperAdmin ? 'National Superadmin' : currentMember.councilRole}
+                    {isSuperAdmin ? 'Superadmin' : currentMember.councilRole}
                   </span>
                 </div>
                 <div className="bg-[#12151B] p-1.5 rounded-lg border border-slate-800">

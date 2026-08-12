@@ -403,7 +403,7 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
           <span className="flex items-center gap-1 text-purple-300 font-mono">
             <Crown className="w-3.5 h-3.5 text-purple-400" /> Advisory Directive Protocol
           </span>
-          <span>Kushafah Portal Supreme Council</span>
+          <span>Meyvaa Portal Supreme Council</span>
         </div>
       </div>
     </div>

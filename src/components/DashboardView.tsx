@@ -200,11 +200,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </h2>
             <p className="text-slate-400 text-sm mt-1 max-w-2xl">
               {isAdvisor ? (
-                <>Operating with supreme authority over <span className="text-purple-300 font-semibold">{settings?.networkName || 'Kushafah Scouting Network'}</span>. Administering scout group decisions, executive council governance, and overall Scout operations through Kushafah Portal across {crews.length} decentralized crews.</>
+                <>Operating with supreme authority over <span className="text-purple-300 font-semibold">{settings?.networkName || 'Meyvaa Scouting Network'}</span>. Administering scout group decisions, executive council governance, and overall Scout operations through Meyvaa Portal across {crews.length} decentralized crews.</>
               ) : isCouncil ? (
-                <>Operating via <span className="text-emerald-400 font-semibold">Kushafah Portal</span> for <span className="text-emerald-300 font-semibold">{settings?.networkName || 'Scout Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-emerald-400 font-semibold">Meyvaa Portal</span> for <span className="text-emerald-300 font-semibold">{settings?.networkName || 'Scout Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               ) : (
-                <>Operating via <span className="text-emerald-400 font-semibold">Kushafah Portal</span> for <span className="text-emerald-300 font-semibold">{currentMember?.crewName || settings?.crewName || 'Scout Group Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-emerald-400 font-semibold">Meyvaa Portal</span> for <span className="text-emerald-300 font-semibold">{currentMember?.crewName || settings?.crewName || 'Scout Group Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               )}
             </p>
           </div>
@@ -240,6 +240,34 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             )}
           </div>
         </div>
+      </div>
+
+      {/* AI Progression Coach Banner */}
+      <div className="bg-gradient-to-r from-emerald-950/70 via-slate-900 to-cyan-950/70 border border-emerald-500/30 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-400 shrink-0">
+            <Sparkles className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+              AI Progression & Award Assistant
+              <span className="text-[10px] font-semibold uppercase bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full">
+                Grounded on User Logs
+              </span>
+            </h4>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Analyzes portfolio journals, attended events, and active badges to suggest next award requirements & identify progress gaps.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => onNavigateTabActual('syllabus')}
+          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 border border-emerald-400/30 shadow-md"
+        >
+          <span>Launch AI Coach</span>
+          <ArrowRight className="w-3.5 h-3.5" />
+        </button>
       </div>
 
       {/* Transition Alert Banner (If any members turn 18 and council or user is involved) */}
@@ -657,7 +685,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 </div>
                 <div>
                   <h4 className="text-sm font-bold text-slate-100">Baden-Powell (BP) Award</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">Focus: Rover Crew Administration, 100km Maritime Expedition, Sustainable National Service.</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Focus: Rover Crew Administration, 100km Maritime Expedition, Sustainable Community Service.</p>
                 </div>
                 <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
                   <span className="text-slate-400">Core Modules:</span>

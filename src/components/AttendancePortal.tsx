@@ -323,7 +323,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
         if (isExemptRole) {
           initialMap[m.id] = {
             status: 'Exempt',
-            reason: m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Exempt: National Superadmin' : 'Exempt: Rover Advisor Governance',
+            reason: m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Exempt: Superadmin' : 'Exempt: Rover Advisor Governance',
           };
         } else if (
           selectedEvent &&
@@ -479,7 +479,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
           if (isExemptRole) {
             recordMap[ev.id] = {
               status: 'Exempt',
-              reason: m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Exempt: National Superadmin' : 'Exempt: Rover Advisor Governance',
+              reason: m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Exempt: Superadmin' : 'Exempt: Rover Advisor Governance',
             };
             exemptCount++;
           } else if (ev.crewId !== 'all' && ev.crewId !== m.crewId) {
@@ -674,7 +674,7 @@ ${memberReportList
 
   const [flaggedMap, setFlaggedMap] = useState<Record<string, CouncilFlagRecord>>(() => {
     try {
-      const saved = localStorage.getItem('kushafah_flagged_attendance');
+      const saved = localStorage.getItem('meyvaa_flagged_attendance');
       if (saved) return JSON.parse(saved);
     } catch (e) {
       console.error('Failed to load flagged attendance map', e);
@@ -699,7 +699,7 @@ ${memberReportList
   const saveFlaggedMap = (newMap: Record<string, CouncilFlagRecord>) => {
     setFlaggedMap(newMap);
     try {
-      localStorage.setItem('kushafah_flagged_attendance', JSON.stringify(newMap));
+      localStorage.setItem('meyvaa_flagged_attendance', JSON.stringify(newMap));
     } catch (e) {
       console.error('Failed to save flagged attendance map', e);
     }
@@ -848,7 +848,7 @@ ${memberReportList
   const handleCopyNoticeText = () => {
     if (!noticeMember) return;
     const text = `=====================================================
-KUSHAFAH PORTAL - SCOUT GROUP COUNCIL ATTENDANCE REVIEW NOTICE
+MEYVAA PORTAL - SCOUT GROUP COUNCIL ATTENDANCE REVIEW NOTICE
 =====================================================
 Date Generated: ${new Date().toLocaleDateString()}
 Issued By: ${currentMember.name} (${currentMember.councilRole})
@@ -928,7 +928,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `Kushafah_Low_Attendance_Council_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `Meyvaa_Low_Attendance_Council_Report_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -942,7 +942,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
     const reportLines = [
       `=====================================================`,
-      `KUSHAFAH PORTAL - SCOUT GROUP LOW ATTENDANCE & COUNCIL REVIEW SUMMARY`,
+      `MEYVAA PORTAL - SCOUT GROUP LOW ATTENDANCE & COUNCIL REVIEW SUMMARY`,
       `Date: ${new Date().toLocaleDateString()}`,
       `Evaluated Threshold: <${attendanceThreshold}% Attendance`,
       `=====================================================`,

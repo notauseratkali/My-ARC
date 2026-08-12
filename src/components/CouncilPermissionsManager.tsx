@@ -157,7 +157,7 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
               </span>
             </h4>
             <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              <strong className="text-purple-300">Superadmin:</strong> Only administers portal-level operations (national organisation management, multi-tenant billing, portal permissions). Exempt from local crew assembly attendance, council role assignments, and syllabus work.<br />
+              <strong className="text-purple-300">Superadmin:</strong> Only administers portal-level operations (organisation management, multi-crew billing, portal permissions). Exempt from local crew assembly attendance, council role assignments, and syllabus work.<br />
               <strong className="text-amber-300">Rover Advisor:</strong> Manages organisation-level governance (crew setup, executive overrides, council supervision). Exempt from local crew assembly attendance obligations and candidate syllabus badge completion.
             </p>
           </div>

@@ -282,11 +282,11 @@ export default function App() {
               councilRole: 'Superadmin' as const,
               name: 'Ahmed Nazih Nafiz',
               email: 'nazihnafiz@gmail.com',
-              section: 'National Portal' as const,
-              crewName: 'N/A (National Superadmin)',
+              section: 'Rover' as const,
+              crewName: 'N/A (Superadmin)',
               crewId: 'portal-admin',
             };
-            if (m.name !== 'Ahmed Nazih Nafiz' || m.email !== 'nazihnafiz@gmail.com' || m.crewName !== 'N/A (National Superadmin)') {
+            if (m.name !== 'Ahmed Nazih Nafiz' || m.email !== 'nazihnafiz@gmail.com' || m.crewName !== 'N/A (Superadmin)') {
               saveDocumentToFirestore('members', updatedSuperadmin);
             }
             return updatedSuperadmin;
@@ -660,7 +660,7 @@ export default function App() {
     const newMember: Member = {
       ...newMemberData,
       id: newId,
-      organisationId: currentMember?.organisationId || 'org-kushafah',
+      organisationId: currentMember?.organisationId || 'org-meyvaa',
       crewName: crewObj ? crewObj.name : 'Unassigned Crew',
       attendanceUnexcused: 0,
       attendanceExcused: 0,
@@ -955,14 +955,10 @@ export default function App() {
         onSelectMember={(m) => handleLogin(m)}
         onLogout={handleLogout}
         onOpenLoginModal={() => setIsLoginModalOpen(true)}
-        onOpenOrgSignup={() => setIsOrgSignupOpen(true)}
         settings={settings}
         unresolvedIncidentsCount={(incidents || []).filter((i) => i.status !== 'Resolved').length}
         theme={theme}
         onToggleTheme={toggleTheme}
-        syncStatus={syncStatus}
-        lastSyncedAt={lastSyncedAt}
-        onTriggerSync={handleTriggerManualSync}
       />
 
       {/* Main Content Area */}
@@ -986,7 +982,7 @@ export default function App() {
               {activeTab === 'settings' && (isCouncil ? 'Crew Settings & Council Permissions' : 'Personal Profile Settings')}
             </h2>
             <span className="text-xs text-slate-500 font-mono">
-              | {activeOrgObj ? activeOrgObj.name : 'Kushafah Portal'}
+              | {activeOrgObj ? activeOrgObj.name : 'Arabiyya Rover Crew'}
             </span>
           </div>
 
@@ -1008,14 +1004,6 @@ export default function App() {
                 </span>
               </button>
             )}
-
-            <button
-              onClick={() => setIsOrgSignupOpen(true)}
-              className="bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/40 px-2.5 py-1.5 rounded-xl text-xs font-semibold transition flex items-center gap-1 cursor-pointer"
-            >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Sign Up Organisation</span>
-            </button>
 
             <UserSwitcher
               currentMember={currentMemberId ? verifiedMember : null}
@@ -1090,6 +1078,10 @@ export default function App() {
                 progressList={progressList}
                 members={filteredMembers}
                 currentMember={currentMember}
+                journals={journals}
+                events={events}
+                attendance={attendance}
+                aiEnabled={settings.aiEnabled}
                 onAddRequirement={handleAddRequirement}
                 onUpdateRequirement={handleUpdateRequirement}
                 onDeleteRequirement={handleDeleteRequirement}
@@ -1247,19 +1239,19 @@ export default function App() {
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-200">
                 {isSuperAdmin
-                  ? 'National Scout Organisation Superadmin Portal'
+                  ? 'Superadmin Portal'
                   : activeOrgObj
                   ? activeOrgObj.name
-                  : 'Kushafah Scouting Portal'}
+                  : 'Arabiyya Rover Portal'}
               </span>
               <span className="text-slate-500">
-                {isSuperAdmin ? '• Global Portal Administration' : '• Governed by Rover Operating Policy'}
+                {isSuperAdmin ? '• Portal Administration' : '• Governed by Rover Operating Policy'}
               </span>
             </div>
 
             <div className="flex items-center gap-4 text-slate-400">
               {isSuperAdmin ? (
-                <span className="text-purple-300 font-semibold font-mono">National Administration Scope</span>
+                <span className="text-purple-300 font-semibold font-mono">Superadmin Scope</span>
               ) : (
                 <span>Governance Term: <strong className="text-emerald-400 font-mono">{settings.activeTerm}</strong></span>
               )}
@@ -1279,19 +1271,6 @@ export default function App() {
         allowClose={!!currentMemberId}
         members={members}
         onLogin={handleLogin}
-        onOpenOrgSignup={() => setIsOrgSignupOpen(true)}
-      />
-
-      {/* Organisation Sign Up Modal */}
-      <OrganisationSignupModal
-        isOpen={isOrgSignupOpen}
-        onClose={() => setIsOrgSignupOpen(false)}
-        onSignupSubmit={handleOrgSignupSubmit}
-        onOpenLogin={() => {
-          setIsOrgSignupOpen(false);
-          setIsLoginModalOpen(true);
-        }}
-        settings={settings}
       />
 
       {/* Plan Renewal & Validity Modal */}

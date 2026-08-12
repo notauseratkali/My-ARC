@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { CertificateModal } from './CertificateModal';
+import { AIProgressionAssistant } from './AIProgressionAssistant';
 import {
   ResponsiveContainer,
   BarChart,
@@ -21,6 +22,9 @@ import {
   MemberRequirementProgress,
   RequirementStatus,
   SubmissionType,
+  JournalEntry,
+  CrewEvent,
+  AttendanceRecord,
 } from '../types';
 import {
   Award,
@@ -72,6 +76,10 @@ interface SyllabusEngineProps {
   progressList: MemberRequirementProgress[];
   members: Member[];
   currentMember: Member;
+  journals?: JournalEntry[];
+  events?: CrewEvent[];
+  attendance?: AttendanceRecord[];
+  aiEnabled?: boolean;
   onAddRequirement: (req: Omit<SyllabusRequirement, 'id'>) => void;
   onUpdateRequirement: (req: SyllabusRequirement) => void;
   onDeleteRequirement: (id: string) => void;
@@ -83,6 +91,10 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
   progressList = [],
   members = [],
   currentMember,
+  journals = [],
+  events = [],
+  attendance = [],
+  aiEnabled = true,
   onAddRequirement,
   onUpdateRequirement,
   onDeleteRequirement,
@@ -90,7 +102,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 }) => {
   const [awardFilter, setAwardFilter] = useState<AwardType | 'All'>('All');
   const [categoryFilter, setCategoryFilter] = useState<CategoryType | 'All'>('All');
-  const [activeTab, setActiveTab] = useState<'catalog' | 'signoffs' | 'presets' | 'analytics'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'signoffs' | 'presets' | 'analytics' | 'ai-assistant'>('catalog');
 
   // Search & Filter State for Sign-off Matrix
   const [memberSearchQuery, setMemberSearchQuery] = useState<string>('');
@@ -775,6 +787,17 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
               <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
               <span>Tier Analytics</span>
             </button>
+            <button
+              onClick={() => setActiveTab('ai-assistant')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                activeTab === 'ai-assistant'
+                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Bot className="w-3.5 h-3.5 text-emerald-400" />
+              <span>AI Progress Coach</span>
+            </button>
           </div>
 
           {/* AI Builder Button */}
@@ -1395,6 +1418,23 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* AI Progression Assistant Tab Content */}
+      {activeTab === 'ai-assistant' && (
+        <AIProgressionAssistant
+          members={members}
+          currentMember={currentMember}
+          syllabus={syllabus}
+          progressList={progressList}
+          journals={journals}
+          events={events}
+          attendance={attendance}
+          aiEnabled={aiEnabled}
+          onSelectRequirement={(reqId) => {
+            setActiveTab('catalog');
+          }}
+        />
       )}
 
       {/* Member Sign-Off Matrix View */}

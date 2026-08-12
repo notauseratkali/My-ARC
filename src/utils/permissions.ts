@@ -125,8 +125,8 @@ export function hasPermission(
   settings?: PortalSettings
 ): boolean {
   if (!member) return false;
-  // Rover Advisor is the supreme network authority
-  if (member.councilRole === 'Rover Advisor') return true;
+  // Superadmin & Rover Advisor have supreme authority
+  if (member.isSuperAdmin || member.councilRole === 'Superadmin' || member.councilRole === 'Rover Advisor') return true;
   if (member.councilRole === 'Member') return false;
 
   // Check if custom configured in settings

@@ -833,7 +833,7 @@ export const PaymentsModule: React.FC<PaymentsModuleProps> = ({
             </div>
 
             <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-xl text-[11px] text-amber-300/90 leading-relaxed">
-              <strong>Note for Rover Advisors:</strong> Bank transfer parameters are globally preset and maintained by the National Superadmin. If you require updates to the official bank account details, please request an update via Superadmin.
+              <strong>Note for Rover Advisors:</strong> Bank transfer parameters are globally preset and maintained by Superadmin. If you require updates to the official bank account details, please request an update via Superadmin.
             </div>
           </div>
         </div>

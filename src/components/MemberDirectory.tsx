@@ -708,7 +708,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                     </div>
                     <div>
                       <span className="text-slate-500 text-[10px] block font-mono">Crew Sub-Group</span>
-                      <span className="font-semibold text-slate-200 truncate block" title={m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'N/A (National Superadmin)' : (m.crewName || 'Unassigned Crew')}>
+                      <span className="font-semibold text-slate-200 truncate block" title={m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'N/A (Superadmin)' : (m.crewName || 'Unassigned Crew')}>
                         {m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'N/A (Superadmin)' : (m.crewName || 'Unassigned Crew')}
                       </span>
                     </div>
@@ -798,7 +798,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                     <span>•</span>
                     <span className="text-emerald-400 font-semibold">{selectedMember.section} Section</span>
                     <span>•</span>
-                    <span>{selectedMember.isSuperAdmin || selectedMember.councilRole === 'Superadmin' ? 'N/A (National Superadmin)' : (selectedMember.crewName || 'Unassigned Crew')}</span>
+                    <span>{selectedMember.isSuperAdmin || selectedMember.councilRole === 'Superadmin' ? 'N/A (Superadmin)' : (selectedMember.crewName || 'Unassigned Crew')}</span>
                   </div>
                   <button
                     type="button"
@@ -984,7 +984,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                       <span className="text-slate-400 text-[10px] block font-mono">Assigned Crew Sub-Group</span>
                       <span className="font-bold text-slate-100 flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-emerald-400" />
-                        {selectedMember.isSuperAdmin || selectedMember.councilRole === 'Superadmin' ? 'N/A (National Superadmin)' : (selectedMember.crewName || 'Unassigned Crew')}
+                        {selectedMember.isSuperAdmin || selectedMember.councilRole === 'Superadmin' ? 'N/A (Superadmin)' : (selectedMember.crewName || 'Unassigned Crew')}
                       </span>
                     </div>
 
@@ -1429,7 +1429,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">National ID Card Number *</label>
+                  <label className="block text-slate-300 font-medium mb-1">ID Card Number (NID) *</label>
                   <input
                     type="text"
                     required
@@ -1480,7 +1480,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                     <input
                       type="text"
                       disabled
-                      value="N/A (National Superadmin)"
+                      value="N/A (Superadmin)"
                       className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-slate-400 cursor-not-allowed text-xs"
                     />
                   ) : (

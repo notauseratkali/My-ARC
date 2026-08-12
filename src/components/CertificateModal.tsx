@@ -93,7 +93,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
                   </span>
                 )}
               </h3>
-              <p className="text-xs text-slate-400">Official Kushafah Portal Scouting Certification</p>
+              <p className="text-xs text-slate-400">Official Meyvaa Portal Scouting Certification</p>
             </div>
           </div>
 
@@ -171,7 +171,7 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             <div className="text-center space-y-2 relative z-10 pt-2">
               <div className="flex items-center justify-center gap-2 text-amber-400 font-mono text-xs tracking-widest uppercase">
                 <Sparkles className="w-4 h-4" />
-                <span>Kushafah Portal • Owned & Managed by Nazih</span>
+                <span>Meyvaa Portal • Owned & Managed by Nazih</span>
                 <Sparkles className="w-4 h-4" />
               </div>
 

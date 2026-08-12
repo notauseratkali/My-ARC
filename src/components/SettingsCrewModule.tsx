@@ -570,7 +570,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 </div>
                 <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
                   <span className="text-slate-400 text-[11px]">Official Account Name</span>
-                  <span className="font-semibold text-slate-200 text-right">{settings?.paymentDetails?.accountName || 'National Scout Portal Account'}</span>
+                  <span className="font-semibold text-slate-200 text-right">{settings?.paymentDetails?.accountName || 'Scout Portal Account'}</span>
                 </div>
                 <div className="bg-[#161920] p-2.5 rounded-xl border border-slate-800 flex justify-between items-center">
                   <span className="text-slate-400 text-[11px]">Official Account Number</span>
@@ -681,7 +681,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 </div>
               </div>
 
-              {/* Kushafah Scout Group Official Brand Color Palette Widget */}
+              {/* Meyvaa Scout Group Official Brand Color Palette Widget */}
               <div className="bg-[#1A1E26] border border-amber-500/20 rounded-2xl p-5 shadow-lg space-y-3.5">
                 <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
                   <div className="flex items-center gap-2">
@@ -701,7 +701,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 <div className="grid grid-cols-2 gap-2.5">
                   {[
                     {
-                      name: 'Kushafah Maroon',
+                      name: 'Meyvaa Maroon',
                       role: 'School & Emblem Trim',
                       hex: '#800020',
                       bg: 'bg-[#800020]',

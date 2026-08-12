@@ -132,8 +132,8 @@ export const PRESET_SYLLABUS_PACKS: PresetSyllabusPack[] = [
         id: 'preset-bp-3',
         awardType: 'Baden-Powell (BP) Award',
         category: 'Global Citizenship',
-        title: 'UN SDG National Environmental Advocacy',
-        description: 'Spearhead a major long-term national service project contributing to UN Sustainable Development Goals in the Maldives.',
+        title: 'UN SDG Community Environmental Advocacy',
+        description: 'Spearhead a major long-term community service project contributing to UN Sustainable Development Goals in the Maldives.',
         tasks: [
           { id: 'bp3-1', text: 'Log 50+ hours of verified community service.' },
           { id: 'bp3-2', text: 'Partner with a local NGO or government body.' },

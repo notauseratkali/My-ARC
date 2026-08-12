@@ -268,7 +268,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-extrabold font-serif text-slate-100">
-              National Organisation Portal Administration
+              Portal Administration & Crew Control
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
               Create, review, and approve separate Scout Organisations. Assign Rover Advisors to form crews, manage subscription plans (Free, Monthly @ MVR 20, Annual @ MVR 200), and inspect uploaded payment receipts.

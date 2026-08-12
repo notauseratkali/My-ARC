@@ -99,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
               {isSuperAdmin ? (
                 <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
                   <Crown className="w-3 h-3 text-purple-300" />
-                  <span>National Superadmin</span>
+                  <span>Superadmin</span>
                 </span>
               ) : (
                 <>
@@ -129,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <p className="text-xs text-slate-400 mt-0.5">
               {isSuperAdmin
-                ? 'National Scout Organisation Portal Administration'
+                ? 'Portal Administration'
                 : 'Rover Operating Policy • Explorers & Rovers Management System'}
             </p>
           </div>

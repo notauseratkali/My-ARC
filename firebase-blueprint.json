@@ -2,7 +2,7 @@
   "entities": {
     "Organisation": {
       "title": "Organisation",
-      "description": "Scout group or national scout association registration",
+      "description": "Scout group or rover crew registration",
       "type": "object",
       "properties": {
         "id": { "type": "string" },

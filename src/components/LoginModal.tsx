@@ -22,7 +22,6 @@ interface LoginModalProps {
   onClose?: () => void;
   members: Member[];
   onLogin: (member: Member) => void;
-  onOpenOrgSignup?: () => void;
   allowClose?: boolean;
 }
 
@@ -33,7 +32,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
   onClose,
   members,
   onLogin,
-  onOpenOrgSignup,
   allowClose = true,
 }) => {
   const { toastInfo } = useToast();
@@ -324,13 +322,13 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-bold font-serif text-slate-100 flex items-center gap-2">
-                <span>Kushafah Portal</span>
+                <span>Meyvaa Portal</span>
                 <span className="bg-amber-500/15 text-amber-300 border border-amber-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono uppercase tracking-wider">
                   Official Session
                 </span>
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Kushafah Portal • Owned & Managed by Nazih
+                Meyvaa Portal • Owned & Managed by Nazih
               </p>
             </div>
           </div>
@@ -348,30 +346,6 @@ export const LoginModal: React.FC<LoginModalProps> = ({
         {/* MODE 1: STANDARD LOGIN */}
         {mode === 'login' && (
           <>
-            {/* Tab Switcher: Log In vs Sign Up */}
-            {onOpenOrgSignup && (
-              <div className="grid grid-cols-2 gap-2 bg-[#12151B] p-1.5 rounded-2xl border border-slate-800 relative z-10">
-                <button
-                  type="button"
-                  className="bg-amber-500 text-slate-950 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md"
-                >
-                  <LogIn className="w-3.5 h-3.5" />
-                  <span>Log In</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (onClose) onClose();
-                    onOpenOrgSignup();
-                  }}
-                  className="text-slate-400 hover:text-slate-100 hover:bg-slate-800/80 font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition cursor-pointer"
-                >
-                  <Building2 className="w-3.5 h-3.5 text-purple-400" />
-                  <span>Sign Up / Register</span>
-                </button>
-              </div>
-            )}
-
             {/* Organisation Security Banner */}
             <div className="bg-[#12151B] p-3 rounded-2xl border border-amber-500/30 flex items-center gap-3 relative z-10 text-xs">
               <div className="p-2 bg-amber-500/10 rounded-xl text-amber-400">
@@ -419,7 +393,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
               <div className="space-y-1">
                 <label className="text-slate-300 font-semibold flex items-center gap-1.5">
                   <UserCheck className="w-3.5 h-3.5 text-amber-400" />
-                  <span>NID (National ID Card Number)</span>
+                  <span>NID Card Number</span>
                 </label>
                 <input
                   type="text"
@@ -467,31 +441,12 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
               >
                 <LogIn className="w-4 h-4" />
-                <span>Log In to Kushafah Session</span>
+                <span>Log In to Meyvaa Session</span>
               </button>
             </form>
 
-            {/* ORGANISATION SIGN UP & GOOGLE SUPERADMIN */}
+            {/* GOOGLE SUPERADMIN AUTH */}
             <div className="space-y-2 border-t border-slate-800/80 pt-4 relative z-10 text-xs">
-              {onOpenOrgSignup && (
-                <div className="bg-[#12151B] p-3 rounded-2xl border border-slate-800 flex items-center justify-between gap-3">
-                  <div>
-                    <span className="font-bold text-slate-200 block">New Scout Organisation?</span>
-                    <span className="text-[10px] text-slate-400 block">Rover Advisor required to submit registration.</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (onClose) onClose();
-                      onOpenOrgSignup();
-                    }}
-                    className="bg-purple-600 hover:bg-purple-500 text-white font-bold px-3.5 py-2 rounded-xl transition text-xs whitespace-nowrap shadow-md cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Building2 className="w-3.5 h-3.5" />
-                    <span>Sign Up Organisation</span>
-                  </button>
-                </div>
-              )}
 
               {/* Superadmin Google Auth */}
               <div className="text-center pt-2">
@@ -522,7 +477,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
                 <span>First-Time Password Change Required</span>
               </div>
               <p className="text-slate-300 leading-relaxed text-xs">
-                Welcome, <strong className="text-amber-200">{pendingMember.name}</strong>! As required by Kushafah security policy, your initial default password (<code className="text-amber-400">123456</code>) must be updated to a personalized secure password.
+                Welcome, <strong className="text-amber-200">{pendingMember.name}</strong>! As required by Meyvaa security policy, your initial default password (<code className="text-amber-400">123456</code>) must be updated to a personalized secure password.
               </p>
             </div>
 
@@ -609,7 +564,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
             {!generatedOtp ? (
               <form onSubmit={handleRequestOtp} className="space-y-3">
                 <p className="text-slate-400 text-xs leading-relaxed">
-                  Enter your registered Organisation Email Address or National ID (NID). A 6-digit OTP verification code will be sent to your email to reset your password.
+                  Enter your registered Organisation Email Address or NID card number. A 6-digit OTP verification code will be sent to your email to reset your password.
                 </p>
 
                 <div className="space-y-1.5">
@@ -692,7 +647,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({
           <span className="flex items-center gap-1">
             <Shield className="w-3.5 h-3.5 text-emerald-400" /> Encrypted Organisation Session
           </span>
-          <span>Kushafah Portal • Owned by Nazih</span>
+          <span>Meyvaa Portal • Owned by Nazih</span>
         </div>
       </div>
     </div>
