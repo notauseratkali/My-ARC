@@ -170,46 +170,46 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
 
     const lines = text.split('\n');
     return (
-      <div className="space-y-3 text-slate-100 leading-relaxed text-sm">
+      <div className="space-y-3 text-slate-800 leading-relaxed text-sm">
         {lines.map((line, idx) => {
           if (line.startsWith('# ')) {
             return (
-              <h1 key={idx} className="text-xl font-bold text-emerald-400 border-b border-slate-700 pb-1 mt-4">
+              <h1 key={idx} className="text-xl font-bold text-[#002B7F] border-b border-slate-200 pb-1 mt-4">
                 {line.replace('# ', '')}
               </h1>
             );
           }
           if (line.startsWith('## ')) {
             return (
-              <h2 key={idx} className="text-lg font-bold text-slate-100 mt-3">
+              <h2 key={idx} className="text-lg font-bold text-slate-900 mt-3">
                 {line.replace('## ', '')}
               </h2>
             );
           }
           if (line.startsWith('### ')) {
             return (
-              <h3 key={idx} className="text-base font-semibold text-slate-200 mt-2">
+              <h3 key={idx} className="text-base font-semibold text-slate-800 mt-2">
                 {line.replace('### ', '')}
               </h3>
             );
           }
           if (line.startsWith('• ') || line.startsWith('- ')) {
             return (
-              <li key={idx} className="ml-5 list-disc text-slate-200">
+              <li key={idx} className="ml-5 list-disc text-slate-700">
                 {line.replace(/^[•-]\s*/, '')}
               </li>
             );
           }
           if (/^\d+\.\s/.test(line)) {
             return (
-              <li key={idx} className="ml-5 list-decimal text-slate-200">
+              <li key={idx} className="ml-5 list-decimal text-slate-700">
                 {line.replace(/^\d+\.\s*/, '')}
               </li>
             );
           }
           if (line.startsWith('> ')) {
             return (
-              <blockquote key={idx} className="border-l-4 border-emerald-500 pl-3 italic text-slate-300 my-2 bg-emerald-500/5 py-1 rounded-r">
+              <blockquote key={idx} className="border-l-4 border-[#002B7F] pl-3 italic text-slate-700 my-2 bg-blue-50/50 py-1 rounded-r">
                 {line.replace('> ', '')}
               </blockquote>
             );
@@ -222,23 +222,23 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
                   <img
                     src={match[2]}
                     alt={match[1]}
-                    className="max-h-80 rounded-xl border border-slate-700 object-cover"
+                    className="max-h-80 rounded-xl border border-slate-200 object-cover"
                   />
-                  <p className="text-xs text-slate-400 italic">{match[1]}</p>
+                  <p className="text-xs text-slate-500 italic">{match[1]}</p>
                 </div>
               );
             }
           }
           if (line.startsWith('|')) {
             return (
-              <div key={idx} className="font-mono text-xs overflow-x-auto bg-slate-900/60 p-2 rounded-lg border border-slate-800 text-slate-300">
+              <div key={idx} className="font-mono text-xs overflow-x-auto bg-slate-50 p-2 rounded-lg border border-slate-200 text-slate-800">
                 {line}
               </div>
             );
           }
           if (!line.trim()) return <div key={idx} className="h-1" />;
 
-          return <p key={idx} className="text-slate-200">{line}</p>;
+          return <p key={idx} className="text-slate-800">{line}</p>;
         })}
       </div>
     );
@@ -251,24 +251,24 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
     <div className="space-y-3">
       {/* Label and Mode Toggle Bar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-        <label className="text-xs font-bold text-slate-300 flex items-center gap-1.5 uppercase tracking-wider">
-          <FileText className="w-4 h-4 text-emerald-400" />
+        <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5 uppercase tracking-wider">
+          <FileText className="w-4 h-4 text-[#002B7F]" />
           <span>{label}</span>
         </label>
 
         <div className="flex items-center gap-2">
-          <span className="text-[11px] font-mono text-slate-400">
+          <span className="text-[11px] font-mono text-slate-500">
             {wordCount} words • {charCount} chars
           </span>
 
-          <div className="bg-slate-900 border border-slate-800 p-1 rounded-xl flex items-center text-xs">
+          <div className="bg-slate-100 border border-slate-200 p-1 rounded-xl flex items-center text-xs">
             <button
               type="button"
               onClick={() => setActiveTab('write')}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'write'
-                  ? 'bg-slate-800 text-emerald-400 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white text-[#002B7F] shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Edit3 className="w-3.5 h-3.5" /> Write
@@ -276,10 +276,10 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
             <button
               type="button"
               onClick={() => setActiveTab('preview')}
-              className={`px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 ${
+              className={`px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer ${
                 activeTab === 'preview'
-                  ? 'bg-slate-800 text-emerald-400 shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white text-[#002B7F] shadow-2xs font-bold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Eye className="w-3.5 h-3.5" /> Document Preview
@@ -289,15 +289,15 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
       </div>
 
       {/* Editor Container */}
-      <div className="bg-[#12151B] border border-slate-800 rounded-2xl overflow-hidden focus-within:border-emerald-500/50 transition">
+      <div className="bg-white border border-slate-300 rounded-2xl overflow-hidden focus-within:border-[#002B7F] shadow-2xs transition">
         {/* Microsoft Word Style Toolbar */}
         {activeTab === 'write' && (
-          <div className="bg-slate-900/90 border-b border-slate-800 p-2 flex flex-wrap items-center gap-1 overflow-x-auto text-xs">
+          <div className="bg-slate-50 border-b border-slate-200 p-2 flex flex-wrap items-center gap-1 overflow-x-auto text-xs">
             <button
               type="button"
               onClick={() => applyFormatting('**', '**')}
               title="Bold (Ctrl+B)"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Bold className="w-4 h-4" />
             </button>
@@ -305,7 +305,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => applyFormatting('*', '*')}
               title="Italic (Ctrl+I)"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Italic className="w-4 h-4" />
             </button>
@@ -313,7 +313,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => applyFormatting('<u>', '</u>')}
               title="Underline"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Underline className="w-4 h-4" />
             </button>
@@ -321,18 +321,18 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => applyFormatting('~~', '~~')}
               title="Strikethrough"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Strikethrough className="w-4 h-4" />
             </button>
 
-            <div className="w-px h-5 bg-slate-800 mx-1" />
+            <div className="w-px h-5 bg-slate-300 mx-1" />
 
             <button
               type="button"
               onClick={() => insertBlockFormat('# ')}
               title="Heading 1"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Heading1 className="w-4 h-4" />
             </button>
@@ -340,7 +340,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('## ')}
               title="Heading 2"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Heading2 className="w-4 h-4" />
             </button>
@@ -348,18 +348,18 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('### ')}
               title="Heading 3"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Heading3 className="w-4 h-4" />
             </button>
 
-            <div className="w-px h-5 bg-slate-800 mx-1" />
+            <div className="w-px h-5 bg-slate-300 mx-1" />
 
             <button
               type="button"
               onClick={() => insertBlockFormat('• ')}
               title="Bulleted List"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <List className="w-4 h-4" />
             </button>
@@ -367,7 +367,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('1. ')}
               title="Numbered List"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <ListOrdered className="w-4 h-4" />
             </button>
@@ -375,7 +375,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('> ')}
               title="Quote Block"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
             >
               <Quote className="w-4 h-4" />
             </button>
@@ -384,18 +384,18 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={insertTableTemplate}
               title="Insert Resolution / Decision Table"
-              className="p-1.5 text-slate-300 hover:text-white hover:bg-slate-800 rounded-lg transition flex items-center gap-1"
+              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition flex items-center gap-1 cursor-pointer"
             >
-              <TableIcon className="w-4 h-4 text-emerald-400" />
+              <TableIcon className="w-4 h-4 text-[#002B7F]" />
             </button>
 
-            <div className="w-px h-5 bg-slate-800 mx-1" />
+            <div className="w-px h-5 bg-slate-300 mx-1" />
 
             {/* Photo Upload Trigger Button */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="px-2.5 py-1 bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 rounded-lg transition flex items-center gap-1 font-semibold text-xs ml-auto"
+              className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-[#002B7F] border border-blue-200 rounded-lg transition flex items-center gap-1 font-semibold text-xs ml-auto cursor-pointer"
             >
               <ImageIcon className="w-4 h-4" />
               <span>Insert Photo</span>
@@ -413,17 +413,17 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
         )}
 
         {/* Text Area / Document Surface */}
-        <div className="p-4">
+        <div className="p-4 bg-white">
           {activeTab === 'write' ? (
             <textarea
               ref={textareaRef}
               value={value}
               onChange={(e) => onChange(e.target.value)}
               placeholder={placeholder}
-              className={`w-full bg-transparent text-slate-100 text-sm focus:outline-none resize-y leading-relaxed font-sans ${minHeight}`}
+              className={`w-full bg-transparent text-slate-900 text-sm focus:outline-none resize-y leading-relaxed font-sans placeholder:text-slate-400 ${minHeight}`}
             />
           ) : (
-            <div className={`p-2 ${minHeight}`}>
+            <div className={`p-2 bg-white ${minHeight}`}>
               {renderFormattedPreview(value)}
             </div>
           )}
@@ -432,12 +432,12 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
 
       {/* Photo Attachments & Uploaded Images Section */}
       {attachments.length > 0 && (
-        <div className="bg-slate-900/60 border border-slate-800 rounded-xl p-3 space-y-2">
-          <div className="flex items-center justify-between text-xs font-semibold text-slate-300">
-            <span className="flex items-center gap-1.5 text-emerald-400">
+        <div className="bg-white border border-slate-200 rounded-xl p-3 space-y-2 shadow-2xs">
+          <div className="flex items-center justify-between text-xs font-semibold text-slate-800">
+            <span className="flex items-center gap-1.5 text-[#002B7F]">
               <Paperclip className="w-4 h-4" /> Attached Photos & Documents ({attachments.length})
             </span>
-            <span className="text-[11px] text-slate-400 font-mono">
+            <span className="text-[11px] text-slate-500 font-mono">
               Click photo caption to edit label
             </span>
           </div>
@@ -446,9 +446,9 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
             {attachments.map((att) => (
               <div
                 key={att.id}
-                className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden group relative flex flex-col justify-between"
+                className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden group relative flex flex-col justify-between"
               >
-                <div className="relative aspect-square overflow-hidden bg-slate-900">
+                <div className="relative aspect-square overflow-hidden bg-slate-100">
                   <img
                     src={att.url}
                     alt={att.name}
@@ -457,7 +457,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
                   <button
                     type="button"
                     onClick={() => removeAttachment(att.id)}
-                    className="absolute top-1 right-1 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-lg"
+                    className="absolute top-1 right-1 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition shadow-lg cursor-pointer"
                     title="Delete Photo"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -470,10 +470,10 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
                     value={att.caption || ''}
                     onChange={(e) => updateCaption(att.id, e.target.value)}
                     placeholder="Photo caption..."
-                    className="w-full bg-slate-900 text-[11px] text-slate-200 px-1.5 py-0.5 rounded border border-slate-800 focus:outline-none focus:border-emerald-500/50"
+                    className="w-full bg-white text-[11px] text-slate-800 px-1.5 py-0.5 rounded border border-slate-300 focus:outline-none focus:border-[#002B7F]"
                   />
                   {att.size && (
-                    <span className="text-[9px] font-mono text-slate-400 block text-center">
+                    <span className="text-[9px] font-mono text-slate-500 block text-center">
                       {att.size}
                     </span>
                   )}

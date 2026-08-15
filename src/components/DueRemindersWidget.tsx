@@ -224,41 +224,41 @@ export const DueRemindersWidget: React.FC<DueRemindersWidgetProps> = ({
   const highPriorityCount = reminders.filter((r) => r.priority === 'High' || r.isOverdue).length;
 
   return (
-    <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-4 transition-all">
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4 transition-all">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 relative">
+          <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#002B7F] relative">
             <Bell className="w-5 h-5" />
             {highPriorityCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[10px] font-bold flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#800020] text-white rounded-full text-[10px] font-bold flex items-center justify-center">
                 {highPriorityCount}
               </span>
             )}
           </div>
           <div>
-            <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
               <span>Due Reminders & Action Center</span>
-              <span className="text-xs font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-mono font-semibold bg-emerald-50 text-[#006B3F] border border-emerald-200 px-2 py-0.5 rounded-full">
                 {reminders.length} Active Reminders
               </span>
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               Action items, award verifications, upcoming event RSVPs, and council notices.
             </p>
           </div>
         </div>
 
         {/* Category Filters */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-slate-900 border border-slate-800 p-1 rounded-xl text-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-slate-50 border border-slate-200 p-1 rounded-xl text-xs">
           {(['All', 'My Items', 'Council Review', 'High Priority'] as const).map((cat) => (
             <button
               key={cat}
               onClick={() => setFilterCategory(cat)}
-              className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition cursor-pointer ${
                 filterCategory === cat
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-[#002B7F] text-white font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               {cat}
@@ -270,9 +270,9 @@ export const DueRemindersWidget: React.FC<DueRemindersWidgetProps> = ({
       {/* Reminder List Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-96 overflow-y-auto pr-1">
         {filteredReminders.length === 0 ? (
-          <div className="col-span-full py-8 text-center bg-slate-900/50 border border-slate-800 rounded-xl">
-            <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2 opacity-80" />
-            <p className="text-sm font-semibold text-slate-300">All Reminders Cleared</p>
+          <div className="col-span-full py-8 text-center bg-slate-50 border border-slate-200 rounded-xl">
+            <CheckCircle2 className="w-8 h-8 text-[#006B3F] mx-auto mb-2 opacity-80" />
+            <p className="text-sm font-semibold text-slate-800">All Reminders Cleared</p>
             <p className="text-xs text-slate-500 mt-1">No pending action items found for this filter.</p>
           </div>
         ) : (
@@ -281,40 +281,40 @@ export const DueRemindersWidget: React.FC<DueRemindersWidgetProps> = ({
               key={item.id}
               className={`p-3.5 rounded-xl border transition flex flex-col justify-between space-y-2 group ${
                 item.isOverdue || item.priority === 'High'
-                  ? 'bg-amber-500/5 border-amber-500/30 hover:border-amber-500/50'
-                  : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'
+                  ? 'bg-rose-50/50 border-rose-200 hover:border-rose-300'
+                  : 'bg-slate-50 border-slate-200 hover:border-blue-200'
               }`}
             >
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold">
                     {item.category === 'Syllabus' && (
-                      <span className="text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 flex items-center gap-1">
+                      <span className="text-[#006B3F] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
                         <Award className="w-3 h-3" /> Syllabus
                       </span>
                     )}
                     {item.category === 'Event' && (
-                      <span className="text-sky-400 bg-sky-500/10 px-2 py-0.5 rounded border border-sky-500/20 flex items-center gap-1">
+                      <span className="text-[#002B7F] bg-blue-50 px-2 py-0.5 rounded border border-blue-200 flex items-center gap-1">
                         <Calendar className="w-3 h-3" /> Event
                       </span>
                     )}
                     {item.category === 'Attendance' && (
-                      <span className="text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded border border-indigo-500/20 flex items-center gap-1">
+                      <span className="text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1">
                         <CheckSquare className="w-3 h-3" /> Attendance
                       </span>
                     )}
                     {item.category === 'Disciplinary' && (
-                      <span className="text-red-400 bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20 flex items-center gap-1">
+                      <span className="text-[#800020] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 flex items-center gap-1">
                         <ShieldAlert className="w-3 h-3" /> Disciplinary
                       </span>
                     )}
                     {item.category === 'Journal' && (
-                      <span className="text-purple-400 bg-purple-500/10 px-2 py-0.5 rounded border border-purple-500/20 flex items-center gap-1">
+                      <span className="text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 flex items-center gap-1">
                         <BookOpen className="w-3 h-3" /> Notebook
                       </span>
                     )}
                     {item.category === 'Administrative' && (
-                      <span className="text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20 flex items-center gap-1">
+                      <span className="text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 flex items-center gap-1">
                         <Sparkles className="w-3 h-3" /> Policy
                       </span>
                     )}
@@ -323,39 +323,39 @@ export const DueRemindersWidget: React.FC<DueRemindersWidgetProps> = ({
                   <span
                     className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold border ${
                       item.isOverdue
-                        ? 'bg-red-500/20 text-red-300 border-red-500/30'
+                        ? 'bg-rose-100 text-[#800020] border-rose-300'
                         : item.priority === 'High'
-                        ? 'bg-amber-500/20 text-amber-300 border-amber-500/30'
-                        : 'bg-slate-800 text-slate-400 border-slate-700'
+                        ? 'bg-blue-100 text-[#002B7F] border-blue-300'
+                        : 'bg-white text-slate-600 border-slate-200'
                     }`}
                   >
                     {item.dueDateLabel}
                   </span>
                 </div>
 
-                <h4 className="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition leading-snug">
+                <h4 className="text-xs font-bold text-slate-900 group-hover:text-[#002B7F] transition leading-snug">
                   {item.title}
                 </h4>
 
-                <p className="text-xs text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed">
                   {item.description}
                 </p>
               </div>
 
-              <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between">
+              <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
                 {item.targetMemberName ? (
-                  <span className="text-[10px] text-slate-400 font-mono flex items-center gap-1">
-                    <UserCheck className="w-3 h-3 text-slate-400" /> {item.targetMemberName}
+                  <span className="text-[10px] text-slate-500 font-mono flex items-center gap-1">
+                    <UserCheck className="w-3 h-3 text-slate-500" /> {item.targetMemberName}
                   </span>
                 ) : (
-                  <span className="text-[10px] text-slate-400 font-mono">
+                  <span className="text-[10px] text-slate-500 font-mono">
                     Rover Policy Task
                   </span>
                 )}
 
                 <button
                   onClick={() => onNavigateTab(item.targetTab)}
-                  className="flex items-center gap-1 text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/20 px-2.5 py-1 rounded-lg transition"
+                  className="flex items-center gap-1 text-xs font-bold text-[#002B7F] hover:text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-lg transition cursor-pointer"
                 >
                   <span>{item.actionText}</span>
                   <ChevronRight className="w-3.5 h-3.5" />

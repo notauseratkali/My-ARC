@@ -75,39 +75,39 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const dataItem = payload[0].payload;
     return (
-      <div className="bg-slate-900 border border-slate-700 p-3.5 rounded-xl shadow-2xl text-xs space-y-1.5">
-        <p className="font-bold text-slate-100">{dataItem.eventTitle}</p>
-        <p className="text-[10px] text-slate-400 font-mono">Assembly Date: {dataItem.date}</p>
-        <div className="pt-1.5 border-t border-slate-800 space-y-1">
-          <div className="text-emerald-400 font-semibold flex items-center justify-between gap-6">
+      <div className="bg-white border-2 border-[#FF9999] p-3.5 rounded-xl shadow-xl text-xs space-y-1.5 text-slate-800">
+        <p className="font-bold text-[#800000]">{dataItem.eventTitle}</p>
+        <p className="text-[10px] text-slate-600 font-mono">Assembly Date: {dataItem.date}</p>
+        <div className="pt-1.5 border-t border-[#FF9999]/60 space-y-1">
+          <div className="text-emerald-700 font-semibold flex items-center justify-between gap-6">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block"></span>
               Present:
             </span>
-            <span className="font-mono">{dataItem.Present}</span>
+            <span className="font-mono font-bold">{dataItem.Present}</span>
           </div>
-          <div className="text-blue-400 font-semibold flex items-center justify-between gap-6">
+          <div className="text-blue-700 font-semibold flex items-center justify-between gap-6">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
               Excused:
             </span>
-            <span className="font-mono">{dataItem.Excused}</span>
+            <span className="font-mono font-bold">{dataItem.Excused}</span>
           </div>
-          <div className="text-rose-400 font-semibold flex items-center justify-between gap-6">
+          <div className="text-rose-700 font-semibold flex items-center justify-between gap-6">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-rose-500 inline-block"></span>
               Unexcused:
             </span>
-            <span className="font-mono">{dataItem.Unexcused}</span>
+            <span className="font-mono font-bold">{dataItem.Unexcused}</span>
           </div>
-          <div className="text-amber-400 font-semibold flex items-center justify-between gap-6">
+          <div className="text-amber-700 font-semibold flex items-center justify-between gap-6">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
               Exempt:
             </span>
-            <span className="font-mono">{dataItem.Exempt}</span>
+            <span className="font-mono font-bold">{dataItem.Exempt}</span>
           </div>
-          <div className="pt-1.5 border-t border-slate-800 flex justify-between items-center gap-6 font-mono font-bold text-emerald-300 text-[11px]">
+          <div className="pt-1.5 border-t border-[#FF9999]/60 flex justify-between items-center gap-6 font-mono font-bold text-[#800000] text-[11px]">
             <span>Turnout Rate:</span> <span>{dataItem.AttendanceRate}%</span>
           </div>
         </div>
@@ -384,7 +384,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
 
   // Filter members for attendance sheet
   const displayMembers = members.filter((m) => {
-    if (m.isSuperAdmin || m.councilRole === 'Superadmin') return false;
+    if (m.isSuperAdmin || m.councilRole === 'Superadmin' || m.councilRole === 'Rover Advisor') return false;
     if (m.status !== 'Active') return false;
     if (filterCrewId !== 'All' && m.crewId !== filterCrewId) return false;
     if (filterSection !== 'All' && m.section !== filterSection) return false;
@@ -434,7 +434,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
 
     // Filter members for report
     const targetMembers = members.filter((m) => {
-      if (m.isSuperAdmin || m.councilRole === 'Superadmin') return false;
+      if (m.isSuperAdmin || m.councilRole === 'Superadmin' || m.councilRole === 'Rover Advisor') return false;
       if (reportCrewId !== 'All' && m.crewId !== reportCrewId) return false;
       if (reportSection !== 'All' && m.section !== reportSection) return false;
       if (reportSearchQuery.trim()) {
@@ -1005,26 +1005,26 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Top Main Navigation Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#1A1E26] border border-slate-800 p-5 rounded-2xl shadow-md">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border-2 border-[#FF9999] p-5 rounded-2xl shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-            <CheckSquare className="w-6 h-6 text-emerald-400" />
+          <h2 className="text-xl font-bold text-[#800000] flex items-center gap-2">
+            <CheckSquare className="w-6 h-6 text-[#800000]" />
             Attendance & Custom Absentee Reports Portal
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 mt-0.5 font-medium">
             Mark live assembly attendance sheets and compute custom percentage reports on absent and excused members.
           </p>
         </div>
 
         {/* Tab Switcher: Mark Sheet vs Custom Reports */}
-        <div className="flex items-center gap-2 bg-[#12151C] p-1.5 rounded-xl border border-slate-800 text-xs">
+        <div className="flex items-center gap-2 bg-[#FFF0F0] p-1.5 rounded-xl border border-[#FF9999] text-xs">
           <button
             type="button"
             onClick={() => setActivePortalTab('mark')}
-            className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 ${
+            className={`px-4 py-2 rounded-lg font-bold transition flex items-center gap-2 cursor-pointer ${
               activePortalTab === 'mark'
-                ? 'bg-emerald-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#800000] text-white !text-white shadow-xs'
+                : 'text-slate-700 hover:text-[#800000] hover:bg-white/60'
             }`}
           >
             <CheckSquare className="w-4 h-4" />
@@ -1034,15 +1034,17 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
           <button
             type="button"
             onClick={() => setActivePortalTab('reports')}
-            className={`px-4 py-2 rounded-lg font-semibold transition flex items-center gap-2 relative ${
+            className={`px-4 py-2 rounded-lg font-bold transition flex items-center gap-2 relative cursor-pointer ${
               activePortalTab === 'reports'
-                ? 'bg-emerald-600 text-white shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-[#800000] text-white !text-white shadow-xs'
+                : 'text-slate-700 hover:text-[#800000] hover:bg-white/60'
             }`}
           >
             <FileText className="w-4 h-4" />
             <span>Custom Absentee Reports</span>
-            <span className="bg-amber-500 text-slate-950 font-bold text-[9px] px-1.5 py-0.5 rounded-full uppercase">
+            <span className={`text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase ${
+              activePortalTab === 'reports' ? 'bg-white text-[#800000]' : 'bg-[#800000] text-white'
+            }`}>
               Roster %
             </span>
           </button>
@@ -1055,23 +1057,23 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
       {activePortalTab === 'mark' && (
         <div className="space-y-6">
           {/* Header Action */}
-          <div className="flex justify-between items-center bg-[#1A1E26] border border-slate-800 p-4 rounded-xl">
-            <div className="text-xs text-slate-300 font-medium">
-              Editing Assembly: <span className="font-bold text-emerald-400">{selectedEvent?.title}</span>
+          <div className="flex justify-between items-center bg-[#FFF0F0] border border-[#FF9999] p-4 rounded-xl">
+            <div className="text-xs text-slate-800 font-medium">
+              Editing Assembly: <span className="font-bold text-[#800000]">{selectedEvent?.title}</span>
             </div>
 
             {isCouncil ? (
               <button
                 id="attendance-save-btn"
                 onClick={handleSave}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-5 py-2 rounded-xl shadow-md flex items-center gap-2 transition cursor-pointer"
+                className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-sm flex items-center gap-2 transition cursor-pointer"
               >
-                <Save className="w-4 h-4" />
+                <Save className="w-4 h-4 text-white" />
                 <span>Save Attendance & Update Roster Metrics</span>
               </button>
             ) : (
-              <span className="bg-slate-800 text-slate-300 border border-slate-700 text-xs px-3.5 py-1.5 rounded-xl font-medium inline-flex items-center gap-1.5">
-                <Shield className="w-3.5 h-3.5 text-amber-400" />
+              <span className="bg-white text-slate-700 border border-[#FF9999] text-xs px-3.5 py-1.5 rounded-xl font-bold inline-flex items-center gap-1.5">
+                <Shield className="w-3.5 h-3.5 text-[#800000]" />
                 <span>Read-Only Roll</span>
               </span>
             )}

@@ -96,25 +96,25 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn">
-      <div className="bg-[#161920] border border-slate-800 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4 relative overflow-hidden my-auto">
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-fadeIn">
+      <div className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl space-y-4 relative overflow-hidden my-auto text-slate-900">
         {/* Glowing Background Accent */}
-        <div className="absolute top-0 right-0 w-72 h-72 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
 
         {/* Modal Header */}
-        <div className="flex items-start justify-between border-b border-slate-800 pb-3 relative z-10">
+        <div className="flex items-start justify-between border-b border-slate-200 pb-3 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold">
-              <RefreshCw className="w-5 h-5 animate-spin-slow" />
+            <div className="w-10 h-10 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-[#002B7F] font-bold shadow-xs">
+              <RefreshCw className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-100 flex items-center gap-2">
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
                 <span>Plan Validity & Renewal</span>
-                <span className="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] px-2 py-0.5 rounded-full font-mono uppercase font-bold">
+                <span className="bg-[#002B7F]/10 text-[#002B7F] border border-[#002B7F]/20 text-[10px] px-2 py-0.5 rounded-full font-mono uppercase font-bold">
                   {currentOrg.code}
                 </span>
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500">
                 {currentOrg.name} • Subscription Management
               </p>
             </div>
@@ -122,37 +122,37 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-xl transition"
+            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Current Plan & Validity Info Banner */}
-        <div className="bg-[#12151B] p-3.5 rounded-2xl border border-slate-800 space-y-2 text-xs relative z-10">
+        <div className="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2 text-xs relative z-10">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400 font-semibold flex items-center gap-1.5">
-              <Building2 className="w-3.5 h-3.5 text-purple-400" />
+            <span className="text-slate-600 font-semibold flex items-center gap-1.5">
+              <Building2 className="w-3.5 h-3.5 text-[#800020]" />
               <span>Current Plan Type:</span>
             </span>
-            <span className="font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+            <span className="font-bold text-[#006B3F] bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
               {currentOrg.plan} Plan
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-slate-400 font-semibold flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5 text-amber-400" />
+            <span className="text-slate-600 font-semibold flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5 text-[#002B7F]" />
               <span>Plan Valid Until:</span>
             </span>
-            <span className="font-mono font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+            <span className="font-mono font-bold text-[#002B7F] bg-blue-50 border border-blue-200 px-2.5 py-0.5 rounded-full">
               {currentOrg.planValidUntil || 'Indefinite'}
             </span>
           </div>
 
           {currentOrg.renewalStatus === 'Pending Verification' && (
-            <div className="mt-2 bg-amber-500/15 border border-amber-500/40 text-amber-300 p-2.5 rounded-xl flex items-center gap-2">
-              <Clock className="w-4 h-4 flex-shrink-0 text-amber-400 animate-pulse" />
+            <div className="mt-2 bg-blue-50 border border-blue-300 text-[#002B7F] p-2.5 rounded-xl flex items-center gap-2">
+              <Clock className="w-4 h-4 flex-shrink-0 text-[#002B7F] animate-pulse" />
               <div className="text-[11px] leading-tight">
                 <strong className="block">Renewal Verification Pending</strong>
                 <span>Receipt uploaded on {currentOrg.renewalSubmittedAt || 'recently'}. Superadmin review in progress.</span>
@@ -162,94 +162,94 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
         </div>
 
         {isFreePlan ? (
-          <div className="bg-purple-950/30 border border-purple-500/30 p-4 rounded-2xl space-y-2 text-xs text-center relative z-10">
-            <Sparkles className="w-8 h-8 text-purple-400 mx-auto" />
-            <h4 className="font-bold text-purple-200">Indefinite Free Plan Exemption</h4>
-            <p className="text-slate-300 leading-relaxed text-[11px]">
+          <div className="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-2 text-xs text-center relative z-10">
+            <Sparkles className="w-8 h-8 text-[#002B7F] mx-auto" />
+            <h4 className="font-bold text-slate-900">Indefinite Free Plan Exemption</h4>
+            <p className="text-slate-600 leading-relaxed text-[11px]">
               This organisation is operating on a Superadmin-granted Free Indefinite Plan. No periodic payment receipts or manual renewals are required.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3.5 text-xs relative z-10">
             {/* Superadmin BML Payment Details Box */}
-            <div className="bg-[#12151B] p-3 rounded-2xl border border-amber-500/30 space-y-1.5">
-              <div className="flex items-center justify-between text-amber-300 font-bold border-b border-slate-800 pb-1">
+            <div className="bg-slate-50 p-3 rounded-2xl border border-blue-200 space-y-1.5">
+              <div className="flex items-center justify-between text-[#002B7F] font-bold border-b border-slate-200 pb-1">
                 <span className="flex items-center gap-1.5">
                   <Landmark className="w-3.5 h-3.5" />
                   <span>BML Transfer Details for Extension</span>
                 </span>
-                <span className="text-[10px] text-amber-400/80 font-mono">BML Direct</span>
+                <span className="text-[10px] text-blue-700 font-mono">BML Direct</span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px]">
                 <div>
                   <span className="text-slate-500 block">Account Name:</span>
-                  <strong className="text-slate-200">{bankDetails.accountName}</strong>
+                  <strong className="text-slate-800">{bankDetails.accountName}</strong>
                 </div>
                 <div>
                   <span className="text-slate-500 block">Account Number:</span>
-                  <strong className="text-emerald-400 font-mono font-bold">{bankDetails.accountNumber}</strong>
+                  <strong className="text-[#006B3F] font-mono font-bold">{bankDetails.accountNumber}</strong>
                 </div>
               </div>
             </div>
 
             {errorMessage && (
-              <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 p-2.5 rounded-xl flex items-center gap-2 font-medium">
-                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+              <div className="bg-rose-50 border border-rose-200 text-rose-800 p-2.5 rounded-xl flex items-center gap-2 font-medium">
+                <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-600" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
             {isSubmittedSuccess && (
-              <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-2.5 rounded-xl flex items-center gap-2 font-medium">
-                <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-emerald-400" />
+              <div className="bg-emerald-50 border border-emerald-200 text-[#006B3F] p-2.5 rounded-xl flex items-center gap-2 font-medium">
+                <CheckCircle2 className="w-4 h-4 flex-shrink-0 text-[#006B3F]" />
                 <span>Renewal receipt submitted! Superadmin will verify and extend validity.</span>
               </div>
             )}
 
             {/* Requested Extension Duration / Term */}
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold flex items-center gap-1">
-                <CreditCard className="w-3.5 h-3.5 text-amber-400" />
+              <label className="text-slate-800 font-semibold flex items-center gap-1">
+                <CreditCard className="w-3.5 h-3.5 text-[#002B7F]" />
                 <span>Requested Plan Extension Amount / Term *</span>
               </label>
               <div className="grid grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => setRequestedTerm('+1 Month')}
-                  className={`p-2 rounded-xl text-center font-bold border transition ${
+                  className={`p-2.5 rounded-xl text-center font-bold border transition cursor-pointer ${
                     requestedTerm === '+1 Month'
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md'
-                      : 'bg-[#12151B] text-slate-300 border-slate-800 hover:border-slate-700'
+                      ? 'bg-blue-50 text-[#002B7F] border-[#002B7F] shadow-xs'
+                      : 'bg-white text-slate-700 border-slate-300 hover:border-blue-400'
                   }`}
                 >
                   <div className="text-xs">+1 Month</div>
-                  <div className="text-[10px] font-mono opacity-80">MVR 20</div>
+                  <div className="text-[10px] font-mono font-semibold text-[#002B7F]">MVR 20</div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setRequestedTerm('+1 Year')}
-                  className={`p-2 rounded-xl text-center font-bold border transition ${
+                  className={`p-2.5 rounded-xl text-center font-bold border transition cursor-pointer ${
                     requestedTerm === '+1 Year'
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md'
-                      : 'bg-[#12151B] text-slate-300 border-slate-800 hover:border-slate-700'
+                      ? 'bg-emerald-50 text-[#006B3F] border-[#006B3F] shadow-xs'
+                      : 'bg-white text-slate-700 border-slate-300 hover:border-emerald-400'
                   }`}
                 >
                   <div className="text-xs">+1 Year (Annual)</div>
-                  <div className="text-[10px] font-mono opacity-80">MVR 200</div>
+                  <div className="text-[10px] font-mono font-semibold text-[#006B3F]">MVR 200</div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setRequestedTerm('Custom')}
-                  className={`p-2 rounded-xl text-center font-bold border transition ${
+                  className={`p-2.5 rounded-xl text-center font-bold border transition cursor-pointer ${
                     requestedTerm === 'Custom'
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md'
-                      : 'bg-[#12151B] text-slate-300 border-slate-800 hover:border-slate-700'
+                      ? 'bg-rose-50 text-[#800020] border-[#800020] shadow-xs'
+                      : 'bg-white text-slate-700 border-slate-300 hover:border-rose-400'
                   }`}
                 >
                   <div className="text-xs">Specific Term</div>
-                  <div className="text-[10px] opacity-80">Custom / Term</div>
+                  <div className="text-[10px] font-semibold text-[#800020]">Custom / Term</div>
                 </button>
               </div>
 
@@ -259,22 +259,22 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
                   placeholder="e.g. 2026-2027 Term or 2026-12-31"
                   value={customTerm}
                   onChange={(e) => setCustomTerm(e.target.value)}
-                  className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3 py-2 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500 mt-1.5"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 mt-1.5"
                 />
               )}
             </div>
 
             {/* Receipt File Upload */}
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold flex items-center justify-between">
+              <label className="text-slate-800 font-semibold flex items-center justify-between">
                 <span className="flex items-center gap-1">
-                  <Upload className="w-3.5 h-3.5 text-amber-400" />
+                  <Upload className="w-3.5 h-3.5 text-[#002B7F]" />
                   <span>Upload BML Payment Transfer Receipt *</span>
                 </span>
                 <span className="text-[10px] text-slate-500">Image or PDF</span>
               </label>
 
-              <div className="border-2 border-dashed border-slate-800 hover:border-amber-500/50 rounded-2xl p-4 text-center bg-[#12151B] transition relative cursor-pointer group">
+              <div className="border-2 border-dashed border-slate-300 hover:border-blue-500 rounded-2xl p-4 text-center bg-white transition relative cursor-pointer group">
                 <input
                   type="file"
                   accept="image/*,.pdf"
@@ -283,17 +283,17 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
                 />
                 <div className="space-y-1 pointer-events-none">
                   {receiptUrl || currentOrg.renewalReceiptUrl ? (
-                    <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold">
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                    <div className="flex items-center justify-center gap-2 text-[#006B3F] font-bold">
+                      <CheckCircle2 className="w-5 h-5 text-[#006B3F]" />
                       <span className="truncate max-w-[220px]">
                         {receiptName || currentOrg.renewalReceiptName || 'Receipt Attached'}
                       </span>
                     </div>
                   ) : (
                     <>
-                      <Upload className="w-6 h-6 text-slate-500 group-hover:text-amber-400 mx-auto transition" />
-                      <div className="text-slate-300 font-medium">Click or Drag & Drop BML Transfer Receipt</div>
-                      <div className="text-[10px] text-slate-500">JPEG, PNG, or PDF format supported</div>
+                      <Upload className="w-6 h-6 text-slate-400 group-hover:text-blue-600 mx-auto transition" />
+                      <div className="text-slate-700 font-medium">Click or Drag & Drop BML Transfer Receipt</div>
+                      <div className="text-[10px] text-slate-400">JPEG, PNG, or PDF format supported</div>
                     </>
                   )}
                 </div>
@@ -302,20 +302,20 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
 
             {/* Notes */}
             <div className="space-y-1">
-              <label className="text-slate-300 font-semibold">Payment / Renewal Notes (Optional)</label>
+              <label className="text-slate-800 font-semibold">Payment / Renewal Notes (Optional)</label>
               <textarea
                 rows={2}
                 placeholder="e.g. Paid MVR 20 via BML Mobile Banking transfer for Term 2 extension."
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-[#12151B] border border-slate-800 rounded-xl p-2.5 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500"
+                className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
               />
             </div>
 
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold py-3 rounded-2xl transition shadow-lg flex items-center justify-center gap-2 text-xs cursor-pointer mt-2"
+              className="w-full bg-[#002B7F] hover:bg-blue-800 text-white font-bold py-3 rounded-2xl transition shadow-md flex items-center justify-center gap-2 text-xs cursor-pointer mt-2"
             >
               <Upload className="w-4 h-4" />
               <span>Submit Renewal Receipt for Superadmin Verification</span>

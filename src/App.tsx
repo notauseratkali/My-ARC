@@ -72,34 +72,35 @@ import { useToast } from './components/ToastContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 function getURLRouteState() {
-  const path = (window.location.pathname || '').toLowerCase();
-  const hash = (window.location.hash || '').toLowerCase();
-  const search = (window.location.search || '').toLowerCase();
+  const rawPath = (window.location.pathname || '').toLowerCase();
+  const path = rawPath.replace(/\.html$/, '');
+  const hash = (window.location.hash || '').toLowerCase().replace(/\.html$/, '');
+  const search = (window.location.search || '').toLowerCase().replace(/\.html$/, '');
   const isLoggedIn = !!localStorage.getItem('arabiya_logged_member_id');
 
   let tab = 'dashboard';
   let showLogin = !isLoggedIn;
   let showSignup = false;
 
-  if (path.includes('login') || hash.includes('login') || search.includes('login')) {
-    showLogin = true;
-    showSignup = false;
-  } else if (path.includes('signup') || path.includes('register') || hash.includes('signup') || search.includes('signup')) {
+  if (path.includes('signup') || path.includes('register') || hash.includes('signup') || search.includes('signup')) {
     showSignup = true;
     showLogin = false;
-  } else if (path.includes('auth') || hash.includes('auth') || search.includes('auth')) {
+  } else if (path.includes('login') || path.includes('auth') || hash.includes('login') || hash.includes('auth') || search.includes('login') || search.includes('auth')) {
     showLogin = true;
     showSignup = false;
-  } else if (path.includes('members') || hash.includes('members') || search.includes('members')) {
+  } else if (path.includes('superadmin') || hash.includes('superadmin') || search.includes('superadmin')) {
+    tab = 'superadmin';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('members') || path.includes('directory') || hash.includes('members') || hash.includes('directory') || search.includes('members')) {
     tab = 'members';
     if (isLoggedIn) showLogin = false;
   } else if (path.includes('attendance') || hash.includes('attendance') || search.includes('attendance')) {
     tab = 'attendance';
     if (isLoggedIn) showLogin = false;
-  } else if (path.includes('syllabus') || hash.includes('syllabus') || search.includes('syllabus')) {
+  } else if (path.includes('syllabus') || path.includes('awards') || hash.includes('syllabus') || hash.includes('awards') || search.includes('syllabus')) {
     tab = 'syllabus';
     if (isLoggedIn) showLogin = false;
-  } else if (path.includes('events') || hash.includes('events') || search.includes('events')) {
+  } else if (path.includes('events') || path.includes('calendar') || hash.includes('events') || hash.includes('calendar') || search.includes('events')) {
     tab = 'events';
     if (isLoggedIn) showLogin = false;
   } else if (path.includes('minutes') || hash.includes('minutes') || search.includes('minutes')) {
@@ -114,14 +115,17 @@ function getURLRouteState() {
   } else if (path.includes('disciplinary') || hash.includes('disciplinary') || search.includes('disciplinary')) {
     tab = 'disciplinary';
     if (isLoggedIn) showLogin = false;
-  } else if (path.includes('portfolio') || hash.includes('portfolio') || search.includes('portfolio')) {
-    tab = 'portfolio';
+  } else if (path.includes('portfolio') || path.includes('journal') || path.includes('notebook') || hash.includes('portfolio') || hash.includes('journal') || search.includes('portfolio') || search.includes('journal')) {
+    tab = 'journals';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('audit') || hash.includes('audit') || search.includes('audit')) {
+    tab = 'audit';
     if (isLoggedIn) showLogin = false;
   } else if (path.includes('settings') || hash.includes('settings') || search.includes('settings')) {
     tab = 'settings';
     if (isLoggedIn) showLogin = false;
-  } else if (path.includes('superadmin') || hash.includes('superadmin') || search.includes('superadmin')) {
-    tab = 'superadmin';
+  } else if (path.includes('dashboard') || path.includes('overview') || hash.includes('dashboard') || search.includes('dashboard')) {
+    tab = 'dashboard';
     if (isLoggedIn) showLogin = false;
   }
 
@@ -170,7 +174,7 @@ export default function App() {
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('arabiya_theme');
-    return saved === 'dark' || saved === 'light' ? saved : 'light';
+    return saved === 'dark' ? 'dark' : 'light';
   });
 
   const verifiedMember = React.useMemo(() => {
@@ -226,9 +230,13 @@ export default function App() {
   useEffect(() => {
     if (theme === 'light') {
       document.documentElement.classList.add('light-mode');
+      document.documentElement.classList.remove('dark-mode', 'dark');
       document.body.classList.add('light-mode');
+      document.body.classList.remove('dark-mode', 'dark');
     } else {
+      document.documentElement.classList.add('dark-mode', 'dark');
       document.documentElement.classList.remove('light-mode');
+      document.body.classList.add('dark-mode', 'dark');
       document.body.classList.remove('light-mode');
     }
   }, [theme]);
@@ -247,17 +255,17 @@ export default function App() {
 
   useEffect(() => {
     try {
-      let targetFile = `${activeTab}.html`;
+      let targetPath = `/${activeTab}`;
       if (!currentMemberId) {
-        targetFile = isOrgSignupOpen ? 'signup.html' : 'login.html';
+        targetPath = isOrgSignupOpen ? '/signup' : '/login';
       } else if (isOrgSignupOpen) {
-        targetFile = 'signup.html';
+        targetPath = '/signup';
       } else if (isLoginModalOpen) {
-        targetFile = 'login.html';
+        targetPath = '/login';
       }
       const currentPath = window.location.pathname;
-      if (!currentPath.endsWith(targetFile)) {
-        window.history.replaceState(null, '', `./${targetFile}`);
+      if (currentPath !== targetPath && !currentPath.endsWith(targetPath)) {
+        window.history.replaceState(null, '', targetPath);
       }
     } catch {
       // Ignore security/origin constraints if running in restricted context
@@ -945,7 +953,7 @@ export default function App() {
 
   return (
     <ErrorBoundary>
-      <div className={`min-h-screen bg-[#0F1115] text-slate-200 flex flex-col lg:flex-row font-sans selection:bg-emerald-500 selection:text-slate-950 ${theme === 'light' ? 'light-mode' : ''}`}>
+      <div className={`min-h-screen ${theme === 'dark' ? 'bg-black text-white dark-mode dark' : 'bg-white text-black light-mode'} flex flex-col lg:flex-row font-sans selection:bg-[#002B7F] selection:text-white`}>
       {/* Left Collapsible Sidebar */}
       <Sidebar
         activeTab={activeTab as any}
@@ -958,15 +966,14 @@ export default function App() {
         settings={settings}
         unresolvedIncidentsCount={(incidents || []).filter((i) => i.status !== 'Resolved').length}
         theme={theme}
-        onToggleTheme={toggleTheme}
       />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 min-h-screen">
         {/* Top Minimal View Bar */}
-        <header className="hidden lg:flex items-center justify-between px-6 py-3.5 bg-[#161920]/80 border-b border-slate-800/80 backdrop-blur-md sticky top-0 z-30">
+        <header className="hidden lg:flex items-center justify-between px-6 py-3.5 bg-white/95 border-b border-slate-200 backdrop-blur-md sticky top-0 z-30 shadow-xs">
           <div className="flex items-center gap-3">
-            <h2 className="text-base font-bold text-slate-100 tracking-tight">
+            <h2 className="text-base font-bold text-slate-900 tracking-tight">
               {activeTab === 'superadmin' && 'Superadmin Portal Administration'}
               {activeTab === 'dashboard' && 'Rover Crew Overview'}
               {(activeTab === 'directory' || activeTab === 'members') && 'Members Directory'}
@@ -992,10 +999,10 @@ export default function App() {
                 onClick={() => setIsRenewalModalOpen(true)}
                 className={`px-2.5 py-1.5 rounded-xl text-xs font-semibold border transition flex items-center gap-1.5 cursor-pointer ${
                   activeOrgObj.renewalStatus === 'Pending Verification'
-                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 animate-pulse'
+                    ? 'bg-blue-50 text-[#002B7F] border-blue-300 animate-pulse'
                     : (activeOrgObj.planValidUntil && activeOrgObj.planValidUntil !== 'Indefinite' && activeOrgObj.planValidUntil < new Date().toISOString().split('T')[0])
-                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/40'
-                    : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                    ? 'bg-rose-50 text-[#800020] border-rose-300'
+                    : 'bg-emerald-50 text-[#006B3F] border-emerald-300'
                 }`}
               >
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -1038,6 +1045,19 @@ export default function App() {
                 onRejectOrgRenewal={handleRejectOrgRenewal}
                 onUpdateOrg={handleUpdateOrg}
                 onDeleteOrg={handleDeleteOrg}
+                onUpdateMember={handleUpdateMember}
+                syllabus={syllabus}
+                progressList={progressList}
+                journals={journals}
+                events={events}
+                attendance={attendance}
+                meetingMinutes={meetingMinutes}
+                policy={policy}
+                polls={polls}
+                feeRequests={feeRequests}
+                paymentTransactions={paymentTransactions}
+                incidents={incidents}
+                auditLogs={auditLogs}
               />
             )}
 
@@ -1224,6 +1244,12 @@ export default function App() {
                 settings={settings}
                 members={filteredMembers}
                 currentMember={currentMember}
+                theme={theme}
+                onUpdateTheme={(newTheme) => {
+                  setTheme(newTheme);
+                  localStorage.setItem('arabiya_theme', newTheme);
+                  toastSuccess('Appearance Updated', `Primary mode changed to ${newTheme === 'light' ? 'Light Mode' : 'Dark Mode'}.`);
+                }}
                 onAddCrew={handleAddCrew}
                 onDeleteCrew={handleDeleteCrew}
                 onUpdateSettings={handleUpdateSettings}
@@ -1234,26 +1260,26 @@ export default function App() {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-slate-800 bg-[#161920] py-4 text-center text-xs text-slate-400 mt-auto">
+        <footer className={`border-t ${theme === 'dark' ? 'border-[#262626] bg-black text-slate-300' : 'border-slate-200 bg-white text-black'} py-4 text-center text-xs mt-auto`}>
           <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <span className="font-bold text-slate-200">
+              <span className={`font-bold ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                 {isSuperAdmin
                   ? 'Superadmin Portal'
                   : activeOrgObj
                   ? activeOrgObj.name
                   : 'Arabiyya Rover Portal'}
               </span>
-              <span className="text-slate-500">
+              <span className={theme === 'dark' ? 'text-slate-400' : 'text-black'}>
                 {isSuperAdmin ? '• Portal Administration' : '• Governed by Rover Operating Policy'}
               </span>
             </div>
 
-            <div className="flex items-center gap-4 text-slate-400">
+            <div className={`flex items-center gap-4 ${theme === 'dark' ? 'text-slate-400' : 'text-black'}`}>
               {isSuperAdmin ? (
-                <span className="text-purple-300 font-semibold font-mono">Superadmin Scope</span>
+                <span className="text-purple-400 font-semibold font-mono">Superadmin Scope</span>
               ) : (
-                <span>Governance Term: <strong className="text-emerald-400 font-mono">{settings.activeTerm}</strong></span>
+                <span>Governance Term: <strong className="text-emerald-600 font-mono font-bold">{settings.activeTerm}</strong></span>
               )}
             </div>
           </div>
@@ -1262,7 +1288,7 @@ export default function App() {
 
       {/* Login Modal Dialog */}
       <LoginModal
-        isOpen={isLoginModalOpen || !currentMemberId}
+        isOpen={(isLoginModalOpen || !currentMemberId) && !isOrgSignupOpen}
         onClose={() => {
           if (currentMemberId) {
             setIsLoginModalOpen(false);
@@ -1271,6 +1297,27 @@ export default function App() {
         allowClose={!!currentMemberId}
         members={members}
         onLogin={handleLogin}
+        onOpenSignUp={() => {
+          setIsLoginModalOpen(false);
+          setIsOrgSignupOpen(true);
+        }}
+      />
+
+      {/* Organisation Sign-up / Registration Modal */}
+      <OrganisationSignupModal
+        isOpen={isOrgSignupOpen}
+        onClose={() => {
+          setIsOrgSignupOpen(false);
+          if (!currentMemberId) {
+            setIsLoginModalOpen(true);
+          }
+        }}
+        onSignupSubmit={handleOrgSignupSubmit}
+        onOpenLogin={() => {
+          setIsOrgSignupOpen(false);
+          setIsLoginModalOpen(true);
+        }}
+        settings={settings}
       />
 
       {/* Plan Renewal & Validity Modal */}

@@ -58,16 +58,16 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
   // Ensure user is Rover Advisor
   if (currentMember.councilRole !== 'Rover Advisor') {
     return (
-      <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div className="bg-[#161920] border border-rose-500/40 rounded-3xl max-w-md w-full p-6 text-center space-y-4">
-          <ShieldAlert className="w-12 h-12 text-rose-500 mx-auto" />
-          <h3 className="text-lg font-bold text-slate-100">Access Restricted</h3>
-          <p className="text-xs text-slate-400">
-            Emergency Chairperson Replacement and Crew Overhaul protocols are restricted strictly to the <strong className="text-purple-300">Rover Advisor</strong> supreme role.
+      <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+        <div className="bg-white border border-rose-200 rounded-3xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl">
+          <ShieldAlert className="w-12 h-12 text-[#800020] mx-auto" />
+          <h3 className="text-lg font-bold text-slate-900">Access Restricted</h3>
+          <p className="text-xs text-slate-600">
+            Emergency Chairperson Replacement and Crew Overhaul protocols are restricted strictly to the <strong className="text-[#002B7F]">Rover Advisor</strong> supreme role.
           </p>
           <button
             onClick={onClose}
-            className="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2 rounded-xl text-xs font-semibold"
+            className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer"
           >
             Close
           </button>
@@ -151,27 +151,24 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
-      <div className="bg-[#161920] border-2 border-purple-500/40 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-6 relative overflow-hidden">
-        {/* Glow */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-fadeIn">
+      <div className="bg-white border border-purple-200 rounded-3xl max-w-2xl w-full p-6 shadow-2xl space-y-6 relative overflow-hidden text-slate-900">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-slate-800/80 pb-4 relative z-10">
+        <div className="flex items-start justify-between border-b border-slate-100 pb-4 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-purple-600 to-purple-900 flex items-center justify-center text-purple-100 shadow-lg shadow-purple-950/60 border border-purple-400/30">
-              <Crown className="w-7 h-7 text-purple-300" />
+            <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center text-purple-700 shadow-xs border border-purple-200">
+              <Crown className="w-7 h-7 text-purple-700" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold font-serif text-slate-100">
+                <h2 className="text-lg font-bold font-serif text-slate-900">
                   Rover Advisor Executive Mandate
                 </h2>
-                <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono uppercase">
+                <span className="bg-purple-50 text-purple-800 border border-purple-200 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono uppercase">
                   Supreme Override Protocol
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5">
                 Restricted to Rover Advisor • Ouster of Chairperson & Crew Overhaul Authority
               </p>
             </div>
@@ -179,7 +176,7 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-xl transition"
+            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -187,30 +184,30 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
 
         {/* Success Alert Banner */}
         {successMsg && (
-          <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-4 rounded-2xl flex items-start gap-3 text-xs relative z-10 shadow-lg">
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" />
+          <div className="bg-emerald-50 border border-emerald-200 text-emerald-900 p-4 rounded-2xl flex items-start gap-3 text-xs relative z-10 shadow-xs">
+            <CheckCircle2 className="w-5 h-5 text-[#006B3F] flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-bold text-sm text-emerald-200 mb-0.5">Advisory Action Successful</p>
-              <p className="leading-relaxed">{successMsg}</p>
+              <p className="font-bold text-sm text-[#006B3F] mb-0.5">Advisory Action Successful</p>
+              <p className="leading-relaxed text-slate-700">{successMsg}</p>
             </div>
           </div>
         )}
 
         {/* Action Toggle Tabs */}
-        <div className="bg-[#12151B] p-1.5 rounded-2xl border border-slate-800 flex items-center gap-2 relative z-10 text-xs">
+        <div className="bg-slate-50 p-1.5 rounded-2xl border border-slate-200 flex items-center gap-2 relative z-10 text-xs">
           <button
             type="button"
             onClick={() => {
               setActiveAction('replace_chair');
               setSuccessMsg('');
             }}
-            className={`flex-1 py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-2 ${
+            className={`flex-1 py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-2 cursor-pointer ${
               activeAction === 'replace_chair'
-                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-white text-purple-800 border border-purple-200 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <UserX className="w-4 h-4 text-purple-400" />
+            <UserX className="w-4 h-4 text-purple-700" />
             <span>Oust / Replace Chairperson</span>
           </button>
 
@@ -220,13 +217,13 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
               setActiveAction('overhaul_crew');
               setSuccessMsg('');
             }}
-            className={`flex-1 py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-2 ${
+            className={`flex-1 py-2.5 rounded-xl font-semibold transition flex items-center justify-center gap-2 cursor-pointer ${
               activeAction === 'overhaul_crew'
-                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-white text-purple-800 border border-purple-200 shadow-2xs font-bold'
+                : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            <RefreshCw className="w-4 h-4 text-purple-400" />
+            <RefreshCw className="w-4 h-4 text-purple-700" />
             <span>Full Leadership Overhaul</span>
           </button>
         </div>
@@ -235,9 +232,9 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
         {activeAction === 'replace_chair' && (
           <form onSubmit={handleExecuteReplaceChairperson} className="space-y-4 relative z-10 text-xs">
             {/* Current Chairperson Card */}
-            <div className="bg-[#12151B] border border-amber-500/30 p-3.5 rounded-2xl flex items-center justify-between gap-3">
+            <div className="bg-amber-50/60 border border-amber-200 p-3.5 rounded-2xl flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 font-bold overflow-hidden">
+                <div className="w-10 h-10 rounded-full bg-amber-100 border border-amber-200 flex items-center justify-center text-amber-800 font-bold overflow-hidden">
                   {currentChairperson?.avatar ? (
                     <img src={currentChairperson.avatar} alt={currentChairperson.name} className="w-full h-full object-cover" />
                   ) : (
@@ -245,31 +242,31 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
                   )}
                 </div>
                 <div>
-                  <div className="text-[10px] text-amber-400 font-mono font-bold uppercase tracking-wider">
+                  <div className="text-[10px] text-amber-800 font-mono font-bold uppercase tracking-wider">
                     Incumbent Chairperson
                   </div>
-                  <div className="text-sm font-bold text-slate-100">{currentChairperson?.name || 'No Active Chairperson'}</div>
-                  <div className="text-[10px] text-slate-400">
-                    ID: <span className="font-mono text-slate-300">{currentChairperson?.idCard || 'N/A'}</span> • {currentChairperson?.crewName}
+                  <div className="text-sm font-bold text-slate-900">{currentChairperson?.name || 'No Active Chairperson'}</div>
+                  <div className="text-[10px] text-slate-500">
+                    ID: <span className="font-mono text-slate-700">{currentChairperson?.idCard || 'N/A'}</span> • {currentChairperson?.crewName}
                   </div>
                 </div>
               </div>
 
-              <span className="bg-rose-500/10 text-rose-300 border border-rose-500/30 text-[10px] font-bold px-2.5 py-1 rounded-xl">
+              <span className="bg-rose-50 text-[#800020] border border-rose-200 text-[10px] font-bold px-2.5 py-1 rounded-xl">
                 Target for Ouster
               </span>
             </div>
 
             {/* Select New Chairperson */}
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-semibold flex items-center gap-1.5">
-                <UserCheck className="w-3.5 h-3.5 text-purple-400" />
+              <label className="text-slate-700 font-semibold flex items-center gap-1.5">
+                <UserCheck className="w-3.5 h-3.5 text-purple-700" />
                 <span>Appoint New Replacement Chairperson</span>
               </label>
               <select
                 value={selectedNewChairId}
                 onChange={(e) => setSelectedNewChairId(e.target.value)}
-                className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 font-semibold focus:outline-none focus:border-purple-500 cursor-pointer"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-semibold focus:outline-none focus:border-purple-600 cursor-pointer"
               >
                 <option value="">-- Select Member to Promote to Chairperson --</option>
                 {eligibleNewChairs.map((m) => (
@@ -282,14 +279,14 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
 
             {/* Reassign Demoted Chairperson Role */}
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-semibold flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
+              <label className="text-slate-700 font-semibold flex items-center gap-1.5">
+                <ShieldCheck className="w-3.5 h-3.5 text-purple-700" />
                 <span>Reassign Incumbent Chairperson To</span>
               </label>
               <select
                 value={demoteCurrentChairRole}
                 onChange={(e) => setDemoteCurrentChairRole(e.target.value)}
-                className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3.5 py-2.5 text-slate-100 font-semibold focus:outline-none focus:border-purple-500 cursor-pointer"
+                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-slate-900 font-semibold focus:outline-none focus:border-purple-600 cursor-pointer"
               >
                 <option value="Member">General Member (Standard Member Access)</option>
                 <option value="Vice Chairperson">Vice Chairperson</option>
@@ -299,40 +296,40 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
 
             {/* Termination Reason */}
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-semibold flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-purple-400" />
+              <label className="text-slate-700 font-semibold flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-purple-700" />
                 <span>Official Advisory Termination / Replacement Reason</span>
               </label>
               <textarea
                 rows={2}
                 value={terminationReason}
                 onChange={(e) => setTerminationReason(e.target.value)}
-                className="w-full bg-[#12151B] border border-slate-800 rounded-xl p-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                className="w-full bg-white border border-slate-300 rounded-xl p-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                 placeholder="State reason for replacing the chairperson..."
               />
             </div>
 
             {/* High Security Checkbox */}
-            <div className="bg-purple-950/30 border border-purple-500/30 p-3.5 rounded-2xl flex items-start gap-3">
+            <div className="bg-purple-50 border border-purple-200 p-3.5 rounded-2xl flex items-start gap-3">
               <input
                 type="checkbox"
                 id="chair-confirm"
                 checked={chairConfirmCheck}
                 onChange={(e) => setChairConfirmCheck(e.target.checked)}
-                className="mt-1 accent-purple-500 w-4 h-4 cursor-pointer"
+                className="mt-1 accent-purple-700 w-4 h-4 cursor-pointer"
               />
-              <label htmlFor="chair-confirm" className="text-[11px] text-purple-200 leading-relaxed cursor-pointer font-medium">
-                I solemnly confirm as <strong className="text-purple-300">Rover Advisor ({currentMember.name})</strong> that I am exercising my supreme advisory decree to terminate the incumbent chairperson and appoint a new leadership head.
+              <label htmlFor="chair-confirm" className="text-[11px] text-purple-900 leading-relaxed cursor-pointer font-medium">
+                I solemnly confirm as <strong className="text-purple-800">Rover Advisor ({currentMember.name})</strong> that I am exercising my supreme advisory decree to terminate the incumbent chairperson and appoint a new leadership head.
               </label>
             </div>
 
             <button
               type="submit"
               disabled={!chairConfirmCheck}
-              className={`w-full py-3 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-lg ${
+              className={`w-full py-3 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-xs ${
                 chairConfirmCheck
-                  ? 'bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-500 hover:to-amber-500 text-white cursor-pointer'
-                  : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                  ? 'bg-purple-700 hover:bg-purple-800 text-white cursor-pointer'
+                  : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
               }`}
             >
               <Crown className="w-4 h-4" />
@@ -344,52 +341,52 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
         {/* ACTION 2: FULL CREW LEADERSHIP OVERHAUL */}
         {activeAction === 'overhaul_crew' && (
           <form onSubmit={handleExecuteOverhaulCrew} className="space-y-4 relative z-10 text-xs">
-            <div className="bg-rose-950/20 border border-rose-500/30 p-4 rounded-2xl space-y-2">
-              <div className="flex items-center gap-2 text-rose-400 font-bold text-sm">
-                <AlertTriangle className="w-4 h-4 text-rose-400" />
+            <div className="bg-rose-50 border border-rose-200 p-4 rounded-2xl space-y-2">
+              <div className="flex items-center gap-2 text-[#800020] font-bold text-sm">
+                <AlertTriangle className="w-4 h-4 text-[#800020]" />
                 <span>High-Level Advisory Overhaul Warning</span>
               </div>
-              <p className="text-slate-300 text-[11px] leading-relaxed">
+              <p className="text-slate-700 text-[11px] leading-relaxed">
                 Executing a Full Leadership Overhaul will immediately dissolve all assigned Council positions across the entire Rover Crew/Network (Chairperson, Vice Chairperson, Secretary, Treasurer, Coordinators) and reset them to regular Members.
               </p>
             </div>
 
             {/* Overhaul Reason */}
             <div className="space-y-1.5">
-              <label className="text-slate-300 font-semibold flex items-center gap-1.5">
-                <FileText className="w-3.5 h-3.5 text-purple-400" />
+              <label className="text-slate-700 font-semibold flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-purple-700" />
                 <span>Official Overhaul Decree Reason</span>
               </label>
               <textarea
                 rows={2}
                 value={overhaulReason}
                 onChange={(e) => setOverhaulReason(e.target.value)}
-                className="w-full bg-[#12151B] border border-slate-800 rounded-xl p-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-purple-500"
+                className="w-full bg-white border border-slate-300 rounded-xl p-3 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                 placeholder="State justification for dissolving the crew council leadership..."
               />
             </div>
 
             {/* Security Checkbox */}
-            <div className="bg-purple-950/30 border border-purple-500/30 p-3.5 rounded-2xl flex items-start gap-3">
+            <div className="bg-purple-50 border border-purple-200 p-3.5 rounded-2xl flex items-start gap-3">
               <input
                 type="checkbox"
                 id="overhaul-confirm"
                 checked={overhaulConfirmCheck}
                 onChange={(e) => setOverhaulConfirmCheck(e.target.checked)}
-                className="mt-1 accent-purple-500 w-4 h-4 cursor-pointer"
+                className="mt-1 accent-purple-700 w-4 h-4 cursor-pointer"
               />
-              <label htmlFor="overhaul-confirm" className="text-[11px] text-purple-200 leading-relaxed cursor-pointer font-medium">
-                I confirm as <strong className="text-purple-300">Rover Advisor</strong> to dissolve all active council positions and initiate a complete crew leadership reorganization.
+              <label htmlFor="overhaul-confirm" className="text-[11px] text-purple-900 leading-relaxed cursor-pointer font-medium">
+                I confirm as <strong className="text-purple-800">Rover Advisor</strong> to dissolve all active council positions and initiate a complete crew leadership reorganization.
               </label>
             </div>
 
             <button
               type="submit"
               disabled={!overhaulConfirmCheck}
-              className={`w-full py-3 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-lg ${
+              className={`w-full py-3 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-xs ${
                 overhaulConfirmCheck
-                  ? 'bg-rose-600 hover:bg-rose-500 text-white cursor-pointer'
-                  : 'bg-slate-800 text-slate-500 cursor-not-allowed border border-slate-700'
+                  ? 'bg-[#800020] hover:bg-rose-900 text-white cursor-pointer'
+                  : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
               }`}
             >
               <RefreshCw className="w-4 h-4" />
@@ -399,11 +396,11 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
         )}
 
         {/* Modal Footer */}
-        <div className="border-t border-slate-800/80 pt-3 flex items-center justify-between text-[11px] text-slate-500 relative z-10">
-          <span className="flex items-center gap-1 text-purple-300 font-mono">
-            <Crown className="w-3.5 h-3.5 text-purple-400" /> Advisory Directive Protocol
+        <div className="border-t border-slate-100 pt-3 flex items-center justify-between text-[11px] text-slate-500 relative z-10">
+          <span className="flex items-center gap-1 text-purple-700 font-mono">
+            <Crown className="w-3.5 h-3.5 text-purple-700" /> Advisory Directive Protocol
           </span>
-          <span>Meyvaa Portal Supreme Council</span>
+          <span>Portal Supreme Council</span>
         </div>
       </div>
     </div>

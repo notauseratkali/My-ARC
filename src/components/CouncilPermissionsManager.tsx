@@ -123,61 +123,61 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
   const getPermIcon = (key: CouncilPermissionKey) => {
     switch (key) {
       case 'createSyllabus':
-        return <BookOpen className="w-4 h-4 text-emerald-400" />;
+        return <BookOpen className="w-4 h-4 text-[#002B7F]" />;
       case 'assignCourses':
-        return <Award className="w-4 h-4 text-teal-400" />;
+        return <Award className="w-4 h-4 text-[#006B3F]" />;
       case 'monitorProgress':
-        return <CheckCircle2 className="w-4 h-4 text-sky-400" />;
+        return <CheckCircle2 className="w-4 h-4 text-[#002B7F]" />;
       case 'addMembers':
-        return <UsersIcon className="w-4 h-4 text-amber-400" />;
+        return <UsersIcon className="w-4 h-4 text-[#800020]" />;
       case 'manageEvents':
-        return <Calendar className="w-4 h-4 text-indigo-400" />;
+        return <Calendar className="w-4 h-4 text-[#002B7F]" />;
       case 'manageDisciplinary':
-        return <ShieldAlert className="w-4 h-4 text-rose-400" />;
+        return <ShieldAlert className="w-4 h-4 text-[#800020]" />;
       case 'manageSettings':
-        return <Settings className="w-4 h-4 text-purple-400" />;
+        return <Settings className="w-4 h-4 text-slate-700" />;
       default:
-        return <Key className="w-4 h-4 text-slate-400" />;
+        return <Key className="w-4 h-4 text-slate-600" />;
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-slate-900">
       {/* Governance Exemption Jurisdiction Notice */}
-      <div className="bg-purple-950/30 border border-purple-500/30 rounded-2xl p-4 shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="bg-blue-50/60 border border-blue-200 rounded-2xl p-4 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-blue-100 border border-blue-200 flex items-center justify-center text-[#002B7F] shrink-0">
             <Shield className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+            <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
               <span>Governance Jurisdictions & Duty Exemptions</span>
-              <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
+              <span className="bg-blue-100 text-[#002B7F] border border-blue-200 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full">
                 Exempt Overseers
               </span>
             </h4>
-            <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-              <strong className="text-purple-300">Superadmin:</strong> Only administers portal-level operations (organisation management, multi-crew billing, portal permissions). Exempt from local crew assembly attendance, council role assignments, and syllabus work.<br />
-              <strong className="text-amber-300">Rover Advisor:</strong> Manages organisation-level governance (crew setup, executive overrides, council supervision). Exempt from local crew assembly attendance obligations and candidate syllabus badge completion.
+            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+              <strong className="text-[#002B7F]">Superadmin:</strong> Only administers portal-level operations (organisation management, multi-crew billing, portal permissions). Exempt from local crew assembly attendance, council role assignments, and syllabus work.<br />
+              <strong className="text-[#800020]">Rover Advisor:</strong> Manages organisation-level governance (crew setup, executive overrides, council supervision). Exempt from local crew assembly attendance obligations and candidate syllabus badge completion.
             </p>
           </div>
         </div>
       </div>
 
       {/* 1. SECTION HEADER & ROLE MANAGEMENT */}
-      <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-emerald-400" />
-              <h3 className="text-base font-bold text-slate-100">
+              <Shield className="w-5 h-5 text-[#002B7F]" />
+              <h3 className="text-base font-bold text-slate-900">
                 Council Member Settings & Role Permissions
               </h3>
-              <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
+              <span className="bg-emerald-50 text-[#006B3F] border border-emerald-200 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
                 RBAC Active
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-1">
+            <p className="text-xs text-slate-500 mt-1">
               Define council positions, assign permissions (who gets to create syllabus, add members, monitor progress, assign courses, manage events, etc.), and allocate roles to members.
             </p>
           </div>
@@ -185,7 +185,7 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
           <div className="flex items-center gap-2">
             <button
               onClick={onCreateRole}
-              className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow transition flex items-center gap-1.5"
+              className="bg-[#002B7F] hover:bg-blue-800 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
             >
               <Plus className="w-4 h-4" />
               <span>Add New Council Position</span>
@@ -206,14 +206,14 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                 onClick={() => setSelectedRoleForMatrix(roleName)}
                 className={`p-3.5 rounded-xl border transition cursor-pointer flex flex-col justify-between gap-2.5 ${
                   isSelected
-                    ? 'bg-emerald-950/30 border-emerald-500/50 shadow-md ring-1 ring-emerald-500/30'
-                    : 'bg-slate-950/80 border-slate-800 hover:border-slate-700'
+                    ? 'bg-blue-50 border-[#002B7F] shadow-xs ring-1 ring-[#002B7F]/20'
+                    : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <span className="font-bold text-xs text-slate-100 block">{roleName}</span>
-                    <span className="text-[10px] text-emerald-400 font-mono">
+                    <span className="font-bold text-xs text-slate-900 block">{roleName}</span>
+                    <span className="text-[10px] text-[#006B3F] font-mono font-semibold">
                       {assignedMembers.length} {assignedMembers.length === 1 ? 'member' : 'members'} assigned
                     </span>
                   </div>
@@ -224,7 +224,7 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                         e.stopPropagation();
                         onEditRole(index, roleName);
                       }}
-                      className="p-1 text-slate-400 hover:text-emerald-400 hover:bg-slate-800 rounded transition"
+                      className="p-1 text-slate-400 hover:text-[#002B7F] hover:bg-slate-100 rounded transition cursor-pointer"
                       title="Edit Position Name"
                     >
                       <Edit2 className="w-3 h-3" />
@@ -234,7 +234,7 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                         e.stopPropagation();
                         onDeleteRole(index, roleName);
                       }}
-                      className="p-1 text-slate-400 hover:text-rose-400 hover:bg-slate-800 rounded transition"
+                      className="p-1 text-slate-400 hover:text-[#800020] hover:bg-slate-100 rounded transition cursor-pointer"
                       title="Delete Position"
                     >
                       <Trash2 className="w-3 h-3" />
@@ -242,12 +242,12 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-800/80">
-                  <span className="text-slate-400 flex items-center gap-1">
-                    <Key className="w-3 h-3 text-emerald-400" />
+                <div className="flex items-center justify-between text-[10px] pt-1.5 border-t border-slate-200">
+                  <span className="text-slate-500 flex items-center gap-1">
+                    <Key className="w-3 h-3 text-[#002B7F]" />
                     {activePermsCount} of {PERMISSIONS_LIST.length} capabilities
                   </span>
-                  <span className={`font-semibold ${isSelected ? 'text-emerald-400' : 'text-slate-500'}`}>
+                  <span className={`font-semibold ${isSelected ? 'text-[#002B7F]' : 'text-slate-400'}`}>
                     {isSelected ? 'Active Filter' : 'Click to inspect'}
                   </span>
                 </div>
@@ -258,17 +258,17 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
       </div>
 
       {/* 2. CAPABILITIES PERMISSION MATRIX BY COUNCIL ROLE */}
-      <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <Key className="w-5 h-5 text-amber-400" />
-              <h3 className="text-base font-bold text-slate-100">
+              <Key className="w-5 h-5 text-[#002B7F]" />
+              <h3 className="text-base font-bold text-slate-900">
                 Council Role Permission Matrix
               </h3>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Configure fine-grained permissions for <strong className="text-emerald-400 font-mono">{selectedRoleForMatrix}</strong>. Members in this role inherit these permissions automatically.
+            <p className="text-xs text-slate-500 mt-0.5">
+              Configure fine-grained permissions for <strong className="text-[#002B7F] font-mono">{selectedRoleForMatrix}</strong>. Members in this role inherit these permissions automatically.
             </p>
           </div>
 
@@ -276,19 +276,19 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
           <div className="flex items-center gap-2 text-xs">
             <button
               onClick={() => handleGrantAll(selectedRoleForMatrix)}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-emerald-400 font-semibold transition border border-slate-700"
+              className="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-[#006B3F] font-semibold transition border border-slate-200 cursor-pointer"
             >
               Grant All Capabilities
             </button>
             <button
               onClick={() => handleResetDefaults(selectedRoleForMatrix)}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold transition border border-slate-700"
+              className="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold transition border border-slate-200 cursor-pointer"
             >
               Reset to Role Defaults
             </button>
             <button
               onClick={() => setMatrixViewMode(matrixViewMode === 'full' ? 'single' : 'full')}
-              className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-amber-400 font-semibold transition border border-slate-700"
+              className="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-[#002B7F] font-semibold transition border border-slate-200 cursor-pointer"
             >
               {matrixViewMode === 'full' ? 'Focus View' : 'Full Matrix View'}
             </button>
@@ -307,13 +307,13 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                 onClick={() => handleTogglePermission(selectedRoleForMatrix, perm.key)}
                 className={`p-4 rounded-xl border transition cursor-pointer space-y-2 flex flex-col justify-between ${
                   isEnabled
-                    ? 'bg-emerald-950/20 border-emerald-500/40 shadow-sm'
-                    : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 opacity-75'
+                    ? 'bg-blue-50/60 border-blue-300 shadow-xs'
+                    : 'bg-slate-50 border-slate-200 hover:border-slate-300 opacity-75'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 font-bold text-xs text-slate-100">
+                    <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
                       {getPermIcon(perm.key)}
                       <span>{perm.label}</span>
                     </div>
@@ -321,25 +321,25 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                     {/* Toggle Switch UI */}
                     <div
                       className={`w-9 h-5 rounded-full flex items-center p-0.5 transition ${
-                        isEnabled ? 'bg-emerald-500 justify-end' : 'bg-slate-700 justify-start'
+                        isEnabled ? 'bg-[#002B7F] justify-end' : 'bg-slate-300 justify-start'
                       }`}
                     >
-                      <div className="w-4 h-4 rounded-full bg-white shadow-md transform transition-transform" />
+                      <div className="w-4 h-4 rounded-full bg-white shadow-xs transform transition-transform" />
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-slate-400 mt-1.5 leading-relaxed">
+                  <p className="text-[11px] text-slate-500 mt-1.5 leading-relaxed">
                     {perm.description}
                   </p>
                 </div>
 
-                <div className="pt-2 border-t border-slate-800/60 flex items-center justify-between text-[10px]">
-                  <span className="text-slate-500 uppercase font-mono tracking-wider">{perm.category}</span>
+                <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[10px]">
+                  <span className="text-slate-400 uppercase font-mono tracking-wider">{perm.category}</span>
                   <span
                     className={`font-bold px-2 py-0.5 rounded font-mono ${
                       isEnabled
-                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
-                        : 'bg-slate-800 text-slate-500'
+                        ? 'bg-blue-100 text-[#002B7F] border border-blue-200'
+                        : 'bg-slate-200 text-slate-600'
                     }`}
                   >
                     {isEnabled ? 'ENABLED' : 'DISABLED'}
@@ -352,15 +352,15 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
 
         {/* FULL MATRIX TABLE PREVIEW (When in Full Mode) */}
         {matrixViewMode === 'full' && (
-          <div className="mt-6 pt-4 border-t border-slate-800 space-y-3">
-            <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-              <Info className="w-4 h-4 text-sky-400" />
+          <div className="mt-6 pt-4 border-t border-slate-100 space-y-3">
+            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+              <Info className="w-4 h-4 text-[#002B7F]" />
               Complete Council Capability Overview Matrix
             </h4>
 
-            <div className="overflow-x-auto rounded-xl border border-slate-800">
+            <div className="overflow-x-auto rounded-xl border border-slate-200">
               <table className="w-full text-xs text-left">
-                <thead className="bg-[#12151B] text-slate-400 font-mono text-[11px] border-b border-slate-800">
+                <thead className="bg-slate-50 text-slate-700 font-mono text-[11px] border-b border-slate-200">
                   <tr>
                     <th className="py-2.5 px-3">Council Position</th>
                     {PERMISSIONS_LIST.map((p) => (
@@ -370,7 +370,7 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/60 bg-slate-950/40">
+                <tbody className="divide-y divide-slate-100 bg-white">
                   {councilPositions.map((role) => {
                     const rolePerms = getRolePermissions(role);
                     const isCurrentFilter = role === selectedRoleForMatrix;
@@ -379,14 +379,14 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                       <tr
                         key={role}
                         onClick={() => setSelectedRoleForMatrix(role)}
-                        className={`hover:bg-slate-800/40 cursor-pointer transition ${
-                          isCurrentFilter ? 'bg-emerald-950/20' : ''
+                        className={`hover:bg-slate-50 cursor-pointer transition ${
+                          isCurrentFilter ? 'bg-blue-50/50' : ''
                         }`}
                       >
-                        <td className="py-2.5 px-3 font-bold text-slate-200 whitespace-nowrap">
+                        <td className="py-2.5 px-3 font-bold text-slate-900 whitespace-nowrap">
                           {role}
                           {isCurrentFilter && (
-                            <span className="ml-2 text-[10px] text-emerald-400 font-mono">(Editing)</span>
+                            <span className="ml-2 text-[10px] text-[#002B7F] font-mono">(Editing)</span>
                           )}
                         </td>
                         {PERMISSIONS_LIST.map((p) => {
@@ -398,17 +398,17 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                                   e.stopPropagation();
                                   handleTogglePermission(role, p.key);
                                 }}
-                                className={`p-1 rounded transition ${
+                                className={`p-1 rounded transition cursor-pointer ${
                                   has
-                                    ? 'text-emerald-400 hover:bg-emerald-500/20'
-                                    : 'text-slate-600 hover:text-slate-400 hover:bg-slate-800'
+                                    ? 'text-[#006B3F] hover:bg-emerald-50'
+                                    : 'text-slate-300 hover:text-slate-500 hover:bg-slate-100'
                                 }`}
                                 title={`Toggle ${p.label} for ${role}`}
                               >
                                 {has ? (
-                                  <CheckCircle2 className="w-4 h-4 inline-block" />
+                                  <CheckCircle2 className="w-4 h-4 inline-block text-[#006B3F]" />
                                 ) : (
-                                  <XCircle className="w-4 h-4 inline-block opacity-40" />
+                                  <XCircle className="w-4 h-4 inline-block opacity-40 text-slate-400" />
                                 )}
                               </button>
                             </td>
@@ -425,16 +425,16 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
       </div>
 
       {/* 3. ASSIGN COUNCIL ROLES & DELEGATION TO MEMBERS */}
-      <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div>
             <div className="flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-sky-400" />
-              <h3 className="text-base font-bold text-slate-100">
+              <UserCheck className="w-5 h-5 text-[#002B7F]" />
+              <h3 className="text-base font-bold text-slate-900">
                 Assign Council Roles & Active Capabilities to Members
               </h3>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-500 mt-0.5">
               Select who holds each Council position. Assigned members inherit capability permissions immediately.
             </p>
           </div>
@@ -442,13 +442,13 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
           {/* Search & Crew Filters */}
           <div className="flex flex-wrap items-center gap-2 text-xs">
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-500 absolute left-2.5 top-2" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" />
               <input
                 type="text"
                 placeholder="Search member name..."
                 value={assignmentSearch}
                 onChange={(e) => setAssignmentSearch(e.target.value)}
-                className="bg-[#161920] border border-slate-800 rounded-xl pl-8 pr-3 py-1.5 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 text-xs"
+                className="bg-slate-50 border border-slate-300 rounded-xl pl-8 pr-3 py-1.5 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 text-xs"
               />
             </div>
           </div>
@@ -471,28 +471,28 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
               return (
                 <div
                   key={m.id}
-                  className="bg-slate-950/70 border border-slate-800/80 p-3.5 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs hover:border-slate-700 transition"
+                  className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs hover:border-slate-300 transition"
                 >
                   {/* Left Member Info */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-xs text-emerald-400 flex-shrink-0 shadow-sm">
+                    <div className="w-9 h-9 rounded-full bg-blue-50 border border-blue-200 flex items-center justify-center font-bold text-xs text-[#002B7F] flex-shrink-0 shadow-xs">
                       {m.name.charAt(0)}
                     </div>
                     <div className="min-w-0">
-                      <div className="font-bold text-slate-200 text-sm truncate flex items-center gap-2">
+                      <div className="font-bold text-slate-900 text-sm truncate flex items-center gap-2">
                         <span>{m.name}</span>
                         {isCouncil ? (
-                          <span className="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
+                          <span className="bg-blue-100 text-[#002B7F] border border-blue-200 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
                             {m.councilRole}
                           </span>
                         ) : (
-                          <span className="bg-slate-800 text-slate-400 text-[9px] font-medium px-1.5 py-0.2 rounded">
+                          <span className="bg-slate-200 text-slate-600 text-[9px] font-medium px-1.5 py-0.2 rounded">
                             General Member
                           </span>
                         )}
                       </div>
-                      <div className="text-[10px] text-slate-400 mt-0.5">
-                        {m.section} • {m.crewName} • ID: <span className="font-mono text-slate-300">{m.idCard}</span>
+                      <div className="text-[10px] text-slate-500 mt-0.5">
+                        {m.section} • {m.crewName} • ID: <span className="font-mono text-slate-700">{m.idCard}</span>
                       </div>
                     </div>
                   </div>
@@ -506,7 +506,7 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
                         return (
                           <span
                             key={p.key}
-                            className="bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 text-[9px] font-semibold px-2 py-0.5 rounded-md font-mono"
+                            className="bg-emerald-50 text-[#006B3F] border border-emerald-200 text-[9px] font-semibold px-2 py-0.5 rounded-md font-mono"
                           >
                             ✓ {p.label}
                           </span>
@@ -517,11 +517,11 @@ export const CouncilPermissionsManager: React.FC<CouncilPermissionsManagerProps>
 
                   {/* Right Assign Role Selector */}
                   <div className="flex items-center gap-2 flex-shrink-0 self-end md:self-auto">
-                    <span className="text-[10px] text-slate-400">Assigned Role:</span>
+                    <span className="text-[10px] text-slate-500">Assigned Role:</span>
                     <select
                       value={m.councilRole}
                       onChange={(e) => handleAssignRole(m, e.target.value)}
-                      className="bg-[#161920] border border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-200 font-bold focus:outline-none focus:border-emerald-500 cursor-pointer shadow-sm"
+                      className="bg-white border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-900 font-bold focus:outline-none focus:border-blue-500 cursor-pointer shadow-xs"
                     >
                       <option value="Member">Member (Standard Access)</option>
                       <optgroup label="Council Leadership Roles">

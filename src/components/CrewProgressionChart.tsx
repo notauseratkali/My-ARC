@@ -58,7 +58,7 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
     });
 
     members.forEach((m) => {
-      if (!m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.crewId && m.crewId !== 'portal-admin' && !allCrewMap.has(m.crewId)) {
+      if (!m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor' && m.crewId && m.crewId !== 'portal-admin' && !allCrewMap.has(m.crewId)) {
         allCrewMap.set(m.crewId, {
           id: m.crewId,
           name: m.crewName || 'Sub-Crew',
@@ -69,7 +69,7 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
 
     const result = Array.from(allCrewMap.values()).map((crew) => {
       const crewMembers = members.filter(
-        (m) => !m.isSuperAdmin && m.councilRole !== 'Superadmin' && (m.crewId === crew.id || m.crewName === crew.name) && m.status === 'Active'
+        (m) => !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor' && (m.crewId === crew.id || m.crewName === crew.name) && m.status === 'Active'
       );
 
       const explorerMembers = crewMembers.filter((m) => m.section === 'Explorer');
@@ -194,36 +194,36 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
   const COLORS = ['#10B981', '#F59E0B', '#0EA5E9', '#8B5CF6', '#EC4899'];
 
   return (
-    <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-xl space-y-5">
+    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-5">
       {/* Header & Controls */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800/80 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
         <div>
-          <div className="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold uppercase tracking-wider mb-1">
-            <Award className="w-4 h-4 text-emerald-400" />
+          <div className="flex items-center gap-2 text-[#006B3F] font-mono text-xs font-semibold uppercase tracking-wider mb-1">
+            <Award className="w-4 h-4 text-[#006B3F]" />
             <span>Sub-Crew Progression Analytics</span>
           </div>
-          <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
+          <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <span>Progression Award Completion Rates</span>
-            <span className="text-xs font-mono font-medium bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2.5 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-medium bg-emerald-50 text-[#006B3F] border border-emerald-200 px-2.5 py-0.5 rounded-full">
               Avg {averageCompletionPct}% Network Rate
             </span>
           </h3>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-500 mt-0.5">
             President's Scout & Baden-Powell Award syllabus completion rates across sub-crews.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Section Filter */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-1 flex items-center text-xs">
+          <div className="bg-slate-100 border border-slate-200 rounded-xl p-1 flex items-center text-xs">
             {(['All', 'Explorer', 'Rover'] as const).map((sec) => (
               <button
                 key={sec}
                 onClick={() => setSelectedSectionFilter(sec)}
-                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition ${
+                className={`px-2.5 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
                   selectedSectionFilter === sec
-                    ? 'bg-emerald-600 text-white shadow-sm font-semibold'
-                    : 'text-slate-400 hover:text-slate-200'
+                    ? 'bg-[#002B7F] text-white shadow-xs font-semibold'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {sec === 'All' ? 'All Sections' : sec}
@@ -232,14 +232,14 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
           </div>
 
           {/* View Mode Toggle */}
-          <div className="bg-slate-900 border border-slate-800 rounded-xl p-1 flex items-center text-xs">
+          <div className="bg-slate-100 border border-slate-200 rounded-xl p-1 flex items-center text-xs">
             <button
               onClick={() => setActiveView('bar')}
               title="Overall Completion %"
-              className={`p-1.5 rounded-lg transition flex items-center gap-1 ${
+              className={`p-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer ${
                 activeView === 'bar'
-                  ? 'bg-slate-800 text-emerald-400 font-semibold shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white text-[#002B7F] font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <BarChart2 className="w-4 h-4" />
@@ -248,10 +248,10 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
             <button
               onClick={() => setActiveView('grouped')}
               title="Explorer vs Rover Section Breakdown"
-              className={`p-1.5 rounded-lg transition flex items-center gap-1 ${
+              className={`p-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer ${
                 activeView === 'grouped'
-                  ? 'bg-slate-800 text-emerald-400 font-semibold shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white text-[#002B7F] font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Layers className="w-4 h-4" />
@@ -260,10 +260,10 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
             <button
               onClick={() => setActiveView('distribution')}
               title="Overall Status Distribution"
-              className={`p-1.5 rounded-lg transition flex items-center gap-1 ${
+              className={`p-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer ${
                 activeView === 'distribution'
-                  ? 'bg-slate-800 text-emerald-400 font-semibold shadow-sm'
-                  : 'text-slate-400 hover:text-slate-200'
+                  ? 'bg-white text-[#002B7F] font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <PieIcon className="w-4 h-4" />
@@ -281,15 +281,15 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
               data={crewStats}
               margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#2D3748" opacity={0.5} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" opacity={0.7} />
               <XAxis
                 dataKey="name"
-                stroke="#94A3B8"
+                stroke="#64748B"
                 fontSize={12}
                 tickLine={false}
               />
               <YAxis
-                stroke="#94A3B8"
+                stroke="#64748B"
                 fontSize={11}
                 domain={[0, 100]}
                 unit="%"
@@ -300,18 +300,18 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl shadow-xl text-xs space-y-1.5">
-                        <p className="font-bold text-slate-100 flex items-center gap-1.5">
-                          <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-lg text-xs space-y-1.5">
+                        <p className="font-bold text-slate-900 flex items-center gap-1.5">
+                          <span className="w-2 h-2 rounded-full bg-[#006B3F]" />
                           {data.fullName}
                         </p>
-                        <p className="text-slate-300">
+                        <p className="text-slate-700">
                           Overall Award Completion:{' '}
-                          <span className="font-mono font-bold text-emerald-400">
+                          <span className="font-mono font-bold text-[#006B3F]">
                             {data.overallCompletionPct}%
                           </span>
                         </p>
-                        <div className="text-[11px] text-slate-400 border-t border-slate-800 pt-1 space-y-0.5 font-mono">
+                        <div className="text-[11px] text-slate-500 border-t border-slate-100 pt-1 space-y-0.5 font-mono">
                           <p>Active Rovers & Explorers: {data.totalMembers}</p>
                           <p>
                             Tasks Completed: {data.totalTasksCompleted} / {data.totalTasksPossible}
@@ -338,15 +338,15 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
               data={crewStats}
               margin={{ top: 10, right: 20, left: -10, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#2D3748" opacity={0.5} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" opacity={0.7} />
               <XAxis
                 dataKey="name"
-                stroke="#94A3B8"
+                stroke="#64748B"
                 fontSize={12}
                 tickLine={false}
               />
               <YAxis
-                stroke="#94A3B8"
+                stroke="#64748B"
                 fontSize={11}
                 domain={[0, 100]}
                 unit="%"
@@ -357,12 +357,12 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="bg-slate-900 border border-slate-700 p-3 rounded-xl shadow-xl text-xs space-y-1.5">
-                        <p className="font-bold text-slate-100">{data.fullName}</p>
-                        <p className="text-amber-400 font-mono">
+                      <div className="bg-white border border-slate-200 p-3 rounded-xl shadow-lg text-xs space-y-1.5">
+                        <p className="font-bold text-slate-900">{data.fullName}</p>
+                        <p className="text-amber-700 font-mono">
                           Explorer Section Rate: <span className="font-bold">{data.explorerCompletionPct}%</span> ({data.explorerCount} members)
                         </p>
-                        <p className="text-sky-400 font-mono">
+                        <p className="text-[#002B7F] font-mono">
                           Rover Section Rate: <span className="font-bold">{data.roverCompletionPct}%</span> ({data.roverCount} members)
                         </p>
                       </div>
@@ -373,19 +373,19 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
               />
               <Legend
                 formatter={(value) => (
-                  <span className="text-xs text-slate-300 font-medium">{value}</span>
+                  <span className="text-xs text-slate-700 font-medium">{value}</span>
                 )}
               />
               <Bar
                 dataKey="explorerCompletionPct"
                 name="Explorer Section (President's Scout)"
-                fill="#F59E0B"
+                fill="#D97706"
                 radius={[6, 6, 0, 0]}
               />
               <Bar
                 dataKey="roverCompletionPct"
                 name="Rover Section (BP Award)"
-                fill="#0EA5E9"
+                fill="#002B7F"
                 radius={[6, 6, 0, 0]}
               />
             </BarChart>
@@ -409,15 +409,15 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
                   if (active && payload && payload.length) {
                     const data = payload[0].payload;
                     return (
-                      <div className="bg-slate-900 border border-slate-700 p-2.5 rounded-xl shadow-xl text-xs">
-                        <p className="font-bold text-slate-100 flex items-center gap-1.5">
+                      <div className="bg-white border border-slate-200 p-2.5 rounded-xl shadow-lg text-xs">
+                        <p className="font-bold text-slate-900 flex items-center gap-1.5">
                           <span
                             className="w-2.5 h-2.5 rounded-full"
                             style={{ backgroundColor: data.color }}
                           />
                           {data.name}
                         </p>
-                        <p className="text-slate-300 font-mono mt-1">
+                        <p className="text-slate-700 font-mono mt-1">
                           {data.value} Requirements ({Math.round((data.value / (progressList.length || 1)) * 100)}%)
                         </p>
                       </div>
@@ -428,7 +428,7 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
               />
               <Legend
                 formatter={(value) => (
-                  <span className="text-xs text-slate-300 font-medium">{value}</span>
+                  <span className="text-xs text-slate-700 font-medium">{value}</span>
                 )}
               />
             </PieChart>
@@ -437,27 +437,27 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
       </div>
 
       {/* Sub-Crew Metric Pills Footer */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-800/80">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-100">
         {crewStats.map((c) => (
           <div
             key={c.id}
             onClick={() => onNavigateTab && onNavigateTab('syllabus')}
-            className="bg-slate-900/80 border border-slate-800 hover:border-emerald-500/30 p-3 rounded-xl cursor-pointer transition flex items-center justify-between group"
+            className="bg-slate-50 border border-slate-200 hover:border-[#002B7F]/40 p-3 rounded-xl cursor-pointer transition flex items-center justify-between group shadow-2xs"
           >
             <div>
-              <div className="text-xs font-bold text-slate-200 group-hover:text-emerald-400 transition">
+              <div className="text-xs font-bold text-slate-900 group-hover:text-[#002B7F] transition">
                 {c.fullName}
               </div>
-              <div className="text-[11px] text-slate-400 font-mono mt-0.5">
+              <div className="text-[11px] text-slate-500 font-mono mt-0.5">
                 {c.totalMembers} Members • {c.verifiedRequirements} Verified
               </div>
             </div>
 
             <div className="text-right">
-              <div className="text-sm font-bold font-mono text-emerald-400">
+              <div className="text-sm font-bold font-mono text-[#006B3F]">
                 {c.overallCompletionPct}%
               </div>
-              <div className="text-[10px] text-slate-500 font-mono">Completed</div>
+              <div className="text-[10px] text-slate-400 font-mono">Completed</div>
             </div>
           </div>
         ))}

@@ -195,13 +195,13 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn">
       {/* Header Bar */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#1A1E26] border border-slate-800 p-5 rounded-2xl shadow-md">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border-2 border-[#FF9999] p-5 rounded-2xl shadow-sm">
         <div>
-          <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-            <CalendarIcon className="w-6 h-6 text-emerald-400" />
+          <h2 className="text-xl font-bold text-[#800000] flex items-center gap-2">
+            <CalendarIcon className="w-6 h-6 text-[#800000]" />
             Unified Master Calendar & Event Command
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-slate-600 mt-0.5 font-medium">
             Schedule camps, community projects, courses, and assemblies with automated SMS & Email notification logs.
           </p>
         </div>
@@ -210,24 +210,24 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
           <button
             id="calendar-add-event-btn"
             onClick={handleOpenAdd}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition"
+            className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-4 py-2.5 rounded-xl shadow-sm flex items-center gap-2 transition cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-white" />
             <span>Schedule Activity</span>
           </button>
         </div>
       </div>
 
       {/* Filter & View Switcher */}
-      <div className="bg-[#1A1E26] border border-slate-800 p-4 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+      <div className="bg-[#FFF0F0] border border-[#FF9999] p-4 rounded-xl flex flex-wrap items-center justify-between gap-3 text-xs text-slate-700">
         <div className="flex flex-wrap items-center gap-3">
-          <div className="flex items-center gap-1.5">
-            <Filter className="w-3.5 h-3.5" />
-            <span>Event Type:</span>
+          <div className="flex items-center gap-1.5 font-medium">
+            <Filter className="w-3.5 h-3.5 text-[#800000]" />
+            <span className="text-slate-800 font-semibold">Event Type:</span>
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value as any)}
-              className="bg-[#161920] border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-emerald-500"
+              className="bg-white border border-[#FF9999] rounded-lg px-2.5 py-1.5 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
             >
               <option value="All">All Event Categories</option>
               {eventTypes.map((t) => (
@@ -238,12 +238,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
             </select>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <span>Crew Scope:</span>
+          <div className="flex items-center gap-1.5 font-medium">
+            <span className="text-slate-800 font-semibold">Crew Scope:</span>
             <select
               value={crewFilter}
               onChange={(e) => setCrewFilter(e.target.value)}
-              className="bg-[#161920] border border-slate-800 rounded-lg px-2.5 py-1.5 text-slate-200 focus:outline-none focus:border-emerald-500"
+              className="bg-white border border-[#FF9999] rounded-lg px-2.5 py-1.5 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
             >
               <option value="All">All Crews</option>
               {crews.map((c) => (
@@ -255,7 +255,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
           </div>
         </div>
 
-        <span className="text-[11px] font-mono text-emerald-400 font-semibold">
+        <span className="text-[11px] font-mono text-[#800000] font-bold bg-white px-2.5 py-1 rounded-lg border border-[#FF9999]">
           Showing {filteredEvents.length} Scheduled Events
         </span>
       </div>
@@ -263,53 +263,47 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
       {/* Events List */}
       <div className="space-y-4">
         {filteredEvents.length === 0 ? (
-          <div className="py-12 text-center text-slate-400 text-xs bg-[#1A1E26] border border-slate-800 rounded-2xl">
+          <div className="py-12 text-center text-slate-600 text-xs bg-white border border-[#FF9999] rounded-2xl">
             No crew events match the selected category filters.
           </div>
         ) : (
           filteredEvents.map((ev) => (
             <div
               key={ev.id}
-              className="bg-[#1A1E26] border border-slate-800 hover:border-emerald-500/40 rounded-2xl p-5 shadow-lg space-y-4 transition"
+              className="bg-white border border-[#FF9999] hover:border-[#800000] rounded-2xl p-5 shadow-sm space-y-4 transition"
             >
               <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
                     <span
-                      className={`text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono ${
-                        ev.type === 'Camp'
-                          ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                          : ev.type === 'Meeting'
-                          ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
-                          : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                      }`}
+                      className="text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono bg-[#FFF0F0] text-[#800000] border border-[#FF9999]"
                     >
                       {ev.type}
                     </span>
 
                     {ev.isCompulsory ? (
-                      <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold px-2.5 py-0.5 rounded font-mono">
+                      <span className="bg-[#FFF0F0] text-[#FF3333] border border-[#FF9999] text-[10px] font-bold px-2.5 py-0.5 rounded font-mono">
                         Compulsory Attendance
                       </span>
                     ) : (
-                      <span className="bg-[#161920] text-slate-300 text-[10px] font-semibold px-2 py-0.5 rounded border border-slate-800">
+                      <span className="bg-[#FFF0F0] text-slate-700 text-[10px] font-semibold px-2 py-0.5 rounded border border-[#FF9999]">
                         Optional
                       </span>
                     )}
 
-                    <span className="text-xs text-emerald-400 font-semibold">{ev.crewName}</span>
+                    <span className="text-xs text-[#800000] font-bold">{ev.crewName}</span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-slate-100">{ev.title}</h3>
-                  <p className="text-xs text-slate-300 leading-relaxed">{ev.description}</p>
+                  <h3 className="text-lg font-bold text-slate-900">{ev.title}</h3>
+                  <p className="text-xs text-slate-700 leading-relaxed">{ev.description}</p>
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <button
                     onClick={() => handleOpenEdit(ev)}
-                    className="p-1.5 text-slate-400 hover:text-emerald-400 transition rounded-lg hover:bg-slate-800 text-xs flex items-center gap-1"
+                    className="p-1.5 text-[#800000] hover:bg-[#FFF0F0] transition rounded-lg text-xs font-semibold flex items-center gap-1 border border-[#FF9999] cursor-pointer"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-4 h-4 text-[#800000]" />
                     <span>Edit</span>
                   </button>
                   <button
@@ -318,21 +312,21 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
                         onDeleteEvent(ev.id);
                       }
                     }}
-                    className="p-1.5 text-slate-400 hover:text-rose-400 transition rounded-lg hover:bg-slate-800 text-xs flex items-center gap-1"
+                    className="p-1.5 text-[#FF3333] hover:bg-[#FFF0F0] transition rounded-lg text-xs font-semibold flex items-center gap-1 border border-[#FF9999] cursor-pointer"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-4 h-4 text-[#FF3333]" />
                     <span>Remove</span>
                   </button>
                 </div>
               </div>
 
               {/* Event Metadata Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-slate-950/70 p-3 rounded-xl border border-slate-800/80">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs bg-[#FFF0F0] p-3 rounded-xl border border-[#FF9999]">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <Clock className="w-4 h-4 text-[#800000] flex-shrink-0" />
                   <div>
-                    <span className="text-slate-500 text-[10px] block">Schedule</span>
-                    <span className="font-medium text-slate-200">
+                    <span className="text-slate-600 text-[10px] block font-medium">Schedule</span>
+                    <span className="font-bold text-slate-900">
                       {new Date(ev.startDate).toLocaleString(undefined, {
                         month: 'short',
                         day: 'numeric',
@@ -344,42 +338,42 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <MapPin className="w-4 h-4 text-[#800000] flex-shrink-0" />
                   <div>
-                    <span className="text-slate-500 text-[10px] block">Location</span>
-                    <span className="font-medium text-slate-200 truncate">{ev.location}</span>
+                    <span className="text-slate-600 text-[10px] block font-medium">Location</span>
+                    <span className="font-bold text-slate-900 truncate">{ev.location}</span>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                  <Users className="w-4 h-4 text-[#800000] flex-shrink-0" />
                   <div>
-                    <span className="text-slate-500 text-[10px] block">Target Audience Scope</span>
-                    <span className="font-medium text-slate-200">{ev.targetAudience}</span>
+                    <span className="text-slate-600 text-[10px] block font-medium">Target Audience Scope</span>
+                    <span className="font-bold text-slate-900">{ev.targetAudience}</span>
                   </div>
                 </div>
               </div>
 
               {/* Automated SMS & Email Notification Triggering Panel */}
-              <div className="border-t border-slate-800/80 pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="border-t border-[#FF9999]/40 pt-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-amber-400" />
-                  <span className="text-slate-400">Notifications Status:</span>
+                  <Bell className="w-4 h-4 text-[#800000]" />
+                  <span className="text-slate-700 font-medium">Notifications Status:</span>
                   {ev.notificationSent ? (
-                    <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5" /> SMS & Email Dispatched
+                    <span className="text-emerald-700 font-bold flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5 text-emerald-700" /> SMS & Email Dispatched
                     </span>
                   ) : (
-                    <span className="text-amber-400 font-semibold">Pending Notification Dispatch</span>
+                    <span className="text-[#FF3333] font-bold">Pending Notification Dispatch</span>
                   )}
                 </div>
 
                 {isCouncil && (
                   <button
                     onClick={() => onSendNotifications(ev.id)}
-                    className="bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-emerald-300 font-semibold text-xs px-3 py-1.5 rounded-lg flex items-center gap-1.5 transition"
+                    className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white font-bold text-xs px-3.5 py-1.5 rounded-lg flex items-center gap-1.5 transition shadow-xs cursor-pointer"
                   >
-                    <Send className="w-3.5 h-3.5 text-emerald-400" />
+                    <Send className="w-3.5 h-3.5 text-white" />
                     <span>Trigger SMS & Email Alert</span>
                   </button>
                 )}
@@ -387,14 +381,14 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 
               {/* Notification Logs */}
               {ev.notificationLogs && ev.notificationLogs.length > 0 && (
-                <div className="bg-slate-950/90 border border-slate-800/60 p-2.5 rounded-lg text-[11px] text-slate-400 space-y-1">
-                  <span className="font-mono text-emerald-400 font-bold block">Dispatch Logs:</span>
+                <div className="bg-[#FFF0F0] border border-[#FF9999] p-2.5 rounded-lg text-[11px] text-slate-700 space-y-1">
+                  <span className="font-mono text-[#800000] font-bold block">Dispatch Logs:</span>
                   {ev.notificationLogs.map((log, i) => (
                     <div key={i} className="flex items-center justify-between">
                       <span>
                         Channel: <strong>{log.channel}</strong> via Google Integration
                       </span>
-                      <span>
+                      <span className="font-mono text-slate-600">
                         Sent to {log.recipientCount} Members at {log.timestamp}
                       </span>
                     </div>
@@ -408,39 +402,39 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 
       {/* New / Edit Event Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
           <form
             onSubmit={handleSubmit}
-            className="bg-slate-900 border border-slate-800 rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 text-slate-100 space-y-4 animate-fadeIn"
+            className="bg-white border-2 border-[#FF9999] rounded-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl p-6 text-slate-900 space-y-4 animate-fadeIn"
           >
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-              <h3 className="text-lg font-bold font-serif text-slate-100">
+            <div className="flex items-center justify-between border-b border-[#FF9999]/40 pb-3">
+              <h3 className="text-lg font-bold font-serif text-[#800000]">
                 {editingEvent ? 'Edit Activity Schedule' : 'Schedule New Crew Activity'}
               </h3>
-              <button type="button" onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white">
+              <button type="button" onClick={() => setIsModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-[#FFF0F0] cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
               <div className="col-span-full">
-                <label className="block text-slate-300 font-medium mb-1">Event Title *</label>
+                <label className="block text-slate-800 font-bold mb-1">Event Title *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Baa Atoll Survival Expedition"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Event Category</label>
+                <label className="block text-slate-800 font-bold mb-1">Event Category</label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value as EventType })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   {eventTypes.map((t) => (
                     <option key={t} value={t}>
@@ -451,11 +445,11 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Sub-Crew Scope</label>
+                <label className="block text-slate-800 font-bold mb-1">Sub-Crew Scope</label>
                 <select
                   value={formData.crewId}
                   onChange={(e) => setFormData({ ...formData, crewId: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   <option value="all">All Crews (Global Event)</option>
                   {crews.map((c) => (
@@ -467,57 +461,57 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Start Date & Time *</label>
+                <label className="block text-slate-800 font-bold mb-1">Start Date & Time *</label>
                 <input
                   type="datetime-local"
                   required
                   value={formData.startDate}
                   onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000]"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">End Date & Time</label>
+                <label className="block text-slate-800 font-bold mb-1">End Date & Time</label>
                 <input
                   type="datetime-local"
                   value={formData.endDate}
                   onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000]"
                 />
               </div>
 
               <div className="col-span-full">
-                <label className="block text-slate-300 font-medium mb-1">Location *</label>
+                <label className="block text-slate-800 font-bold mb-1">Location *</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Scout HQ / Uninhabited Island"
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000]"
                 />
               </div>
 
               <div className="col-span-full">
-                <label className="block text-slate-300 font-medium mb-1">Target Audience Summary</label>
+                <label className="block text-slate-800 font-bold mb-1">Target Audience Summary</label>
                 <input
                   type="text"
                   placeholder="e.g. Male City Rovers, Female Explorers"
                   value={formData.targetAudience}
                   onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000]"
                 />
               </div>
 
               <div className="col-span-full">
-                <label className="block text-slate-300 font-medium mb-1">Detailed Description</label>
+                <label className="block text-slate-800 font-bold mb-1">Detailed Description</label>
                 <textarea
                   rows={3}
                   placeholder="Activity goals, gear requirements, syllabus milestones..."
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-slate-100 focus:outline-none"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg p-3 text-slate-900 focus:outline-none focus:border-[#800000]"
                 />
               </div>
 
@@ -527,25 +521,25 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
                   id="isCompulsory"
                   checked={formData.isCompulsory}
                   onChange={(e) => setFormData({ ...formData, isCompulsory: e.target.checked })}
-                  className="w-4 h-4 rounded text-emerald-600 bg-slate-950 border-slate-800 focus:ring-emerald-500"
+                  className="w-4 h-4 rounded text-[#800000] bg-white border-[#FF9999] focus:ring-[#800000] cursor-pointer"
                 />
-                <label htmlFor="isCompulsory" className="text-slate-200 font-medium text-xs">
+                <label htmlFor="isCompulsory" className="text-slate-800 font-bold text-xs cursor-pointer">
                   Mark as Compulsory Assembly (Triggers absence tracking for unexcused members)
                 </label>
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-4 border-t border-slate-800">
+            <div className="flex justify-end gap-3 pt-4 border-t border-[#FF9999]/40">
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl transition"
+                className="bg-[#FFF0F0] hover:bg-[#FF9999]/30 text-slate-700 text-xs font-bold px-4 py-2 rounded-xl transition cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-5 py-2 rounded-xl transition shadow-md"
+                className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-sm cursor-pointer"
               >
                 Schedule & Dispatch Notice
               </button>

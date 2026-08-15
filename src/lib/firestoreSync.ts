@@ -11,11 +11,19 @@ import {
 import { db, safeSignOut } from './firebase';
 import {
   Member,
+  Organisation,
+  SyllabusRequirement,
+  MemberRequirementProgress,
   CrewEvent,
   AttendanceRecord,
   JournalEntry,
   DisciplinaryIncident,
   MeetingMinutes,
+  RoverOperatingPolicy,
+  PolicyAmendmentPoll,
+  FeeRequest,
+  CrewPaymentTransaction,
+  AuditLogEntry,
   PortalSettings,
 } from '../types';
 import {
@@ -312,3 +320,137 @@ export async function saveSettingsToFirestore(settings: PortalSettings) {
     handleFirestoreError(err, OperationType.WRITE, 'settings/portal');
   }
 }
+
+export interface MultiModuleSyncPayload {
+  members?: Member[];
+  organisations?: Organisation[];
+  syllabus?: SyllabusRequirement[];
+  progress?: MemberRequirementProgress[];
+  journals?: JournalEntry[];
+  events?: CrewEvent[];
+  attendance?: AttendanceRecord[];
+  minutes?: MeetingMinutes[];
+  policy?: RoverOperatingPolicy;
+  polls?: PolicyAmendmentPoll[];
+  feeRequests?: FeeRequest[];
+  paymentTransactions?: CrewPaymentTransaction[];
+  disciplinary?: DisciplinaryIncident[];
+  auditLogs?: AuditLogEntry[];
+  settings?: PortalSettings;
+}
+
+export interface SyncModuleReport {
+  id: string;
+  name: string;
+  count: number;
+  status: 'Synced' | 'Pending' | 'Error';
+  lastSynced: string;
+}
+
+export async function syncAllPortalModules(payload: MultiModuleSyncPayload): Promise<SyncModuleReport[]> {
+  const reports: SyncModuleReport[] = [];
+  const now = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+
+  // 1. Members Directory
+  if (payload.members && payload.members.length > 0) {
+    await saveBatchToFirestore('members', payload.members);
+    reports.push({ id: 'members', name: 'Members Directory', count: payload.members.length, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'members', name: 'Members Directory', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  // 2. Awards and Syllabus
+  let syllabusCount = 0;
+  if (payload.syllabus && payload.syllabus.length > 0) {
+    await saveBatchToFirestore('syllabus', payload.syllabus);
+    syllabusCount += payload.syllabus.length;
+  }
+  if (payload.progress && payload.progress.length > 0) {
+    await saveBatchToFirestore('progress', payload.progress);
+    syllabusCount += payload.progress.length;
+  }
+  reports.push({ id: 'syllabus', name: 'Awards and Syllabus', count: syllabusCount, status: 'Synced', lastSynced: now });
+
+  // 3. Notebook / Portfolio Journals
+  if (payload.journals && payload.journals.length > 0) {
+    await saveBatchToFirestore('journals', payload.journals);
+    reports.push({ id: 'journals', name: 'Notebook & Journals', count: payload.journals.length, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'journals', name: 'Notebook & Journals', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  // 4. Events and Calendar
+  if (payload.events && payload.events.length > 0) {
+    await saveBatchToFirestore('events', payload.events);
+    reports.push({ id: 'events', name: 'Events and Calendar', count: payload.events.length, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'events', name: 'Events and Calendar', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  // 5. Attendance Records
+  if (payload.attendance && payload.attendance.length > 0) {
+    await saveBatchToFirestore('attendance', payload.attendance);
+    reports.push({ id: 'attendance', name: 'Attendance Records', count: payload.attendance.length, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'attendance', name: 'Attendance Records', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  // 6. Meeting Minutes
+  if (payload.minutes && payload.minutes.length > 0) {
+    await saveBatchToFirestore('minutes', payload.minutes);
+    reports.push({ id: 'minutes', name: 'Meeting Minutes', count: payload.minutes.length, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'minutes', name: 'Meeting Minutes', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  // 7. Operating Policy and Polls
+  let policyCount = 0;
+  if (payload.policy) {
+    await saveDocumentToFirestore('policy', payload.policy);
+    policyCount += 1;
+  }
+  if (payload.polls && payload.polls.length > 0) {
+    await saveBatchToFirestore('polls', payload.polls);
+    policyCount += payload.polls.length;
+  }
+  reports.push({ id: 'policy', name: 'Operating Policy and Polls', count: policyCount, status: 'Synced', lastSynced: now });
+
+  // 8. Payments and Crew Dues
+  let paymentCount = 0;
+  if (payload.feeRequests && payload.feeRequests.length > 0) {
+    await saveBatchToFirestore('fee_requests', payload.feeRequests);
+    paymentCount += payload.feeRequests.length;
+  }
+  if (payload.paymentTransactions && payload.paymentTransactions.length > 0) {
+    await saveBatchToFirestore('payment_transactions', payload.paymentTransactions);
+    paymentCount += payload.paymentTransactions.length;
+  }
+  reports.push({ id: 'payments', name: 'Payments and Crew Dues', count: paymentCount, status: 'Synced', lastSynced: now });
+
+  // 9. Disciplinary Logs
+  if (payload.disciplinary && payload.disciplinary.length > 0) {
+    await saveBatchToFirestore('disciplinary', payload.disciplinary);
+    reports.push({ id: 'disciplinary', name: 'Disciplinary Logs', count: payload.disciplinary.length, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'disciplinary', name: 'Disciplinary Logs', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  // 10. Audit Trails
+  if (payload.auditLogs && payload.auditLogs.length > 0) {
+    await saveBatchToFirestore('audit_logs', payload.auditLogs);
+    reports.push({ id: 'audit_logs', name: 'Audit Trails', count: payload.auditLogs.length, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'audit_logs', name: 'Audit Trails', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  // 11. Settings & Configurations
+  if (payload.settings) {
+    await saveSettingsToFirestore(payload.settings);
+    reports.push({ id: 'settings', name: 'Settings & Configurations', count: 1, status: 'Synced', lastSynced: now });
+  } else {
+    reports.push({ id: 'settings', name: 'Settings & Configurations', count: 0, status: 'Synced', lastSynced: now });
+  }
+
+  return reports;
+}
+

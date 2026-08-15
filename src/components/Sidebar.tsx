@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Member, PortalSettings } from '../types';
-import { UserSwitcher } from './UserSwitcher';
 import {
   LayoutDashboard,
   Users,
@@ -11,25 +10,22 @@ import {
   ShieldAlert,
   Settings,
   Compass,
-  Sparkles,
-  Sun,
-  Moon,
-  ShieldCheck,
   Building2,
-  User,
   ChevronLeft,
   ChevronRight,
   Menu,
   X,
   Lock,
   FileText,
-  MapPin,
   CreditCard,
   History,
+  Crown,
+  ShieldCheck,
+  LogOut,
+  LogIn,
+  Vote,
 } from 'lucide-react';
 import { hasPermission } from '../utils/permissions';
-
-import { Crown, LogOut, LogIn, Vote } from 'lucide-react';
 
 export type TabType =
   | 'superadmin'
@@ -57,20 +53,16 @@ interface SidebarProps {
   settings?: PortalSettings;
   unresolvedIncidentsCount?: number;
   theme?: 'dark' | 'light';
-  onToggleTheme?: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   setActiveTab,
   currentMember,
-  allMembers = [],
-  onSelectMember = (_m: Member) => {},
   onLogout,
   onOpenLoginModal,
   settings = { aiEnabled: true, smsNotificationsEnabled: true, emailNotificationsEnabled: true, activeTerm: '1' },
   theme = 'dark',
-  onToggleTheme,
 }) => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
@@ -91,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const navItems: NavItem[] = [
     ...(isSuperAdmin
-      ? [{ id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-purple-400" />, category: 'Main' as const, badge: 'Portal Admin' }]
+      ? [{ id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-purple-600" />, category: 'Main' as const, badge: 'Portal Admin' }]
       : []),
     { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" />, category: 'Main' },
     { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5" />, category: 'Main' },
@@ -100,12 +92,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5" />, category: 'Operations' },
     { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
     { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
-    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-400" />, category: 'Operations' },
-    { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-400" />, category: 'Operations' },
+    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-600" />, category: 'Operations' },
+    { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-600" />, category: 'Operations' },
     ...((isCouncil || isSuperAdmin)
       ? [
           { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true },
-          { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-indigo-400" />, category: 'Operations' as const },
+          { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-indigo-600" />, category: 'Operations' as const },
         ]
       : []),
     { id: 'settings', label: (isCouncil || isSuperAdmin) ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
@@ -125,78 +117,83 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <>
       {/* Mobile Header Bar with Hamburger */}
-      <div className="lg:hidden bg-[#161920] border-b border-slate-800 p-3 flex items-center justify-between sticky top-0 z-40">
+      <div className="lg:hidden bg-white border-b border-[#FFD0D0] p-3 flex items-center justify-between sticky top-0 z-40 shadow-xs">
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsMobileOpen(true)}
-            className="p-2 text-slate-300 hover:text-white bg-slate-800 rounded-xl"
+            className="p-2 text-slate-800 hover:text-[#800000] bg-[#FFF0F0] hover:bg-[#FFE5E5] rounded-xl transition cursor-pointer"
             aria-label="Open Sidebar Menu"
           >
             <Menu className="w-5 h-5" />
           </button>
           <div className="flex items-center gap-2">
-            <Compass className="w-5 h-5 text-emerald-400" />
-            <span className="font-bold text-sm text-emerald-400">Meyvaa Portal</span>
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#800000] via-[#800000] to-[#FF3333] flex items-center justify-center text-white shadow-xs">
+              <Compass className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-bold text-sm text-[#800000]">Meyvaa Portal</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <UserSwitcher
-            currentMember={currentMember}
-            allMembers={allMembers}
-            onSelectMember={onSelectMember}
-          />
-        </div>
+        {currentMember && (
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="font-semibold text-slate-800 text-xs truncate max-w-[120px]">
+              {currentMember.name.split(' ')[0]}
+            </span>
+            <span className="bg-[#FFF0F0] text-[#800000] border border-[#FFB3B3] text-[10px] font-bold px-1.5 py-0.5 rounded font-mono">
+              {isSuperAdmin ? 'Admin' : currentMember.councilRole}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Mobile Backdrop Overlay */}
       {isMobileOpen && (
         <div
           onClick={() => setIsMobileOpen(false)}
-          className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 lg:hidden"
+          className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 lg:hidden"
         />
       )}
 
       {/* Sidebar Container */}
       <aside
-        className={`fixed lg:sticky top-0 left-0 z-50 h-screen bg-[#161920] border-r border-slate-800 text-slate-200 flex flex-col transition-all duration-300 shadow-xl ${
+        className={`fixed lg:sticky top-0 left-0 z-50 h-screen bg-white border-r border-[#FFD0D0] text-slate-800 flex flex-col transition-all duration-300 shadow-xs ${
           isCollapsed ? 'lg:w-20' : 'lg:w-64'
         } ${
           isMobileOpen ? 'translate-x-0 w-72' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         {/* Sidebar Brand Header */}
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between">
+        <div className="p-4 border-b border-[#FFD0D0] flex items-center justify-between">
           <div className="flex items-center gap-3 overflow-hidden">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#002B7F] via-[#800020] to-[#006B3F] flex items-center justify-center text-white shadow-md border border-[#FFC72C]/40 flex-shrink-0 relative">
-              <Compass className="w-6 h-6 text-amber-300" />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#800000] via-[#800000] to-[#FF3333] text-white border border-[#FF3333]/40 flex items-center justify-center shadow-xs flex-shrink-0 relative">
+              <Compass className="w-6 h-6 text-white" />
             </div>
             {(!isCollapsed || isMobileOpen) && (
               <div className="min-w-0">
-                <h1 className="font-bold text-sm bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent truncate leading-tight">
+                <h1 className="font-bold text-sm text-[#800000] truncate leading-tight">
                   Meyvaa Portal
                 </h1>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   {isSuperAdmin ? (
-                    <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
-                      <Crown className="w-2.5 h-2.5 text-purple-300" />
-                      Superadmin
+                    <span className="bg-[#800000] text-white border border-[#800000] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5 !text-white">
+                      <Crown className="w-2.5 h-2.5 text-white" />
+                      <span className="text-white font-bold !text-white">Superadmin</span>
                     </span>
                   ) : (
                     <>
-                      <span className="text-[10px] text-amber-300/80 font-mono">ASG • Term {settings?.activeTerm || '1'}</span>
+                      <span className="text-[10px] text-[#800000] font-mono font-semibold">ASG • Term {settings?.activeTerm || '1'}</span>
                       {isAdvisor ? (
-                        <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
-                          <Crown className="w-2.5 h-2.5 text-purple-300" />
-                          Rover Advisor
+                        <span className="bg-[#800000] text-white border border-[#800000] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5 !text-white">
+                          <Crown className="w-2.5 h-2.5 text-white" />
+                          <span className="text-white font-bold !text-white">Rover Advisor</span>
                         </span>
                       ) : isCouncil ? (
-                        <span className="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
-                          <ShieldCheck className="w-2.5 h-2.5 text-amber-400" />
+                        <span className="bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
+                          <ShieldCheck className="w-2.5 h-2.5 text-[#FF3333]" />
                           Council
                         </span>
                       ) : (
-                        <span className="bg-sky-500/10 text-sky-300 border border-sky-500/30 text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
+                        <span className="bg-[#FFF0F0] text-[#800000] border border-[#FFB3B3] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
                           Member
                         </span>
                       )}
@@ -210,7 +207,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Desktop Collapse Toggle */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden lg:flex p-1.5 text-slate-400 hover:text-slate-100 hover:bg-slate-800 rounded-lg transition"
+            className="hidden lg:flex p-1.5 text-slate-400 hover:text-[#800000] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
@@ -219,34 +216,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Mobile Close Button */}
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="lg:hidden p-1.5 text-slate-400 hover:text-white rounded-lg"
+            className="lg:hidden p-1.5 text-slate-400 hover:text-[#800000] rounded-lg cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* User Persona Switcher Section */}
-        <div className="p-3 border-b border-slate-800 bg-[#12151B]">
-          <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider mb-1 px-1 flex items-center justify-between">
-            {(!isCollapsed || isMobileOpen) && <span>Logged Persona</span>}
-          </div>
-          <UserSwitcher
-            currentMember={currentMember}
-            allMembers={allMembers}
-            onSelectMember={onSelectMember}
-            onLogout={onLogout}
-            onOpenLoginModal={onOpenLoginModal}
-          />
-        </div>
-
         {/* Navigation Categories & Links */}
-        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6 no-scrollbar">
+        <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 no-scrollbar">
           {categories.map((cat) => {
             const catItems = navItems.filter((item) => item.category === cat);
             return (
               <div key={cat} className="space-y-1">
                 {(!isCollapsed || isMobileOpen) && (
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 px-2 mb-1.5">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#800000]/70 px-2 mb-1">
                     {cat}
                   </div>
                 )}
@@ -260,15 +243,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       key={item.id}
                       onClick={() => handleNavClick(item)}
                       title={isCollapsed && !isMobileOpen ? item.label : undefined}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition group relative ${
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition group relative cursor-pointer ${
                         isActive
-                          ? 'bg-emerald-600/15 text-emerald-400 border border-emerald-500/30 shadow-sm'
+                          ? 'bg-[#FFF0F0] text-[#800000] border border-[#FF9999] shadow-2xs font-bold'
                           : isRestrictedDisabled
-                          ? 'text-slate-500 hover:bg-slate-800/40 cursor-not-allowed opacity-75'
-                          : 'text-slate-400 hover:bg-slate-800/80 hover:text-slate-100'
+                          ? 'text-slate-400 hover:bg-slate-50 cursor-not-allowed opacity-60'
+                          : 'text-slate-700 hover:bg-[#FFF0F0] hover:text-[#800000]'
                       }`}
                     >
-                      <span className={isActive ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'}>
+                      <span className={isActive ? 'text-[#800000]' : 'text-slate-500 group-hover:text-[#800000]'}>
                         {item.icon}
                       </span>
 
@@ -277,13 +260,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       )}
 
                       {(!isCollapsed || isMobileOpen) && item.badge && (
-                        <span className="bg-emerald-500/20 text-emerald-300 text-[9px] font-bold px-1.5 py-0.5 rounded font-mono">
+                        <span className="bg-[#FF3333] text-white text-[9px] font-bold px-1.5 py-0.5 rounded font-mono border border-[#FF3333]">
                           {item.badge}
                         </span>
                       )}
 
                       {item.restricted && (
-                        <Lock className="w-3.5 h-3.5 text-amber-500/80 flex-shrink-0" />
+                        <Lock className="w-3.5 h-3.5 text-[#FF3333] flex-shrink-0" />
                       )}
                     </button>
                   );
@@ -293,45 +276,26 @@ export const Sidebar: React.FC<SidebarProps> = ({
           })}
         </div>
 
-        {/* Sidebar Footer: Theme & Logout */}
-        <div className="p-3 border-t border-slate-800 bg-[#12151B] space-y-2">
+        {/* Minimal Footer */}
+        <div className="p-3 border-t border-[#FFD0D0] bg-white">
           {currentMember && onLogout ? (
             <button
               onClick={onLogout}
-              className="w-full flex items-center justify-center gap-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/30 p-2 rounded-xl transition text-xs font-semibold"
+              className="w-full flex items-center justify-center gap-2 text-slate-700 hover:text-[#800000] hover:bg-[#FFF0F0] border border-[#FFD0D0] hover:border-[#FF9999] p-2 rounded-xl transition text-xs font-semibold cursor-pointer"
               title="Log out of current portal session"
             >
-              <LogOut className="w-4 h-4 text-rose-400" />
+              <LogOut className="w-4 h-4 text-slate-500 group-hover:text-[#800000]" />
               {(!isCollapsed || isMobileOpen) && <span>Log Out Session</span>}
             </button>
           ) : !currentMember && onOpenLoginModal ? (
             <button
               onClick={onOpenLoginModal}
-              className="w-full flex items-center justify-center gap-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold p-2 rounded-xl transition text-xs"
+              className="w-full flex items-center justify-center gap-2 bg-[#800000] hover:bg-[#660000] text-white font-bold p-2 rounded-xl transition text-xs shadow-xs cursor-pointer"
             >
               <LogIn className="w-4 h-4" />
               {(!isCollapsed || isMobileOpen) && <span>Log In Portal</span>}
             </button>
           ) : null}
-
-          {onToggleTheme && (
-            <button
-              onClick={onToggleTheme}
-              className="w-full flex items-center justify-center gap-2 bg-[#1A1E26] hover:bg-slate-800 text-slate-300 border border-slate-800 p-2 rounded-xl transition text-xs font-semibold"
-            >
-              {theme === 'dark' ? (
-                <>
-                  <Sun className="w-4 h-4 text-amber-400" />
-                  {(!isCollapsed || isMobileOpen) && <span>Light Mode</span>}
-                </>
-              ) : (
-                <>
-                  <Moon className="w-4 h-4 text-indigo-400" />
-                  {(!isCollapsed || isMobileOpen) && <span>Dark Mode</span>}
-                </>
-              )}
-            </button>
-          )}
         </div>
       </aside>
     </>

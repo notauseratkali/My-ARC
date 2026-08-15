@@ -1,143 +1,478 @@
 @import "tailwindcss";
 
+:root {
+  /* 4-Color Master Palette */
+  --primary-color: #800000;       /* Primary: Maroon */
+  --secondary-color: #FF3333;     /* Secondary: Vibrant Red */
+  --third-color: #FF9999;         /* Third: Soft Pastel Rose / Red Tint */
+  --fourth-color: #FFFFFF;        /* Fourth: Pure White */
+  
+  --primary-hover: #660000;
+  --secondary-hover: #E61E1E;
+  --third-subtle: #FFF0F0;
+  --third-border: #FFB3B3;
+}
+
 @layer base {
   * {
     font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   }
   body {
-    background-color: #0F1115;
-    color: #E2E8F0;
+    background-color: #FFFFFF;
+    color: #000000;
     font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
   }
 }
 
-/* Custom subtle scrollbar styling */
+/* Custom Palette Utility Classes */
+.bg-primary { background-color: #800000 !important; }
+.text-primary { color: #800000 !important; }
+.border-primary { border-color: #800000 !important; }
+
+.bg-secondary { background-color: #FF3333 !important; }
+.text-secondary { color: #FF3333 !important; }
+.border-secondary { border-color: #FF3333 !important; }
+
+.bg-third { background-color: #FF9999 !important; }
+.text-third { color: #FF9999 !important; }
+.border-third { border-color: #FF9999 !important; }
+.bg-third-subtle { background-color: #FFF0F0 !important; }
+
+.bg-fourth { background-color: #FFFFFF !important; }
+.text-fourth { color: #FFFFFF !important; }
+.border-fourth { border-color: #FFFFFF !important; }
+
+/* Custom subtle scrollbar styling using Palette */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #161920;
+  background: #FFFFFF;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2A303C;
+  background: #FF9999;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #10B981;
+  background: #800000;
 }
 
-/* Light Mode Overrides */
-.light-mode {
+/* ==========================================================================
+   GLOBAL MAPPING OF LEGACY ACCENTS TO 4-COLOR PALETTE
+   Primary: #800000 | Secondary: #FF3333 | Third: #FF9999 | Fourth: #FFFFFF
+   ========================================================================== */
+
+/* ==========================================================================
+   PRIMARY COLOR (#800000) BACKGROUND TEXT & WRITINGS RULE: ALWAYS PURE WHITE
+   ========================================================================== */
+.bg-primary,
+.bg-\[\#800000\],
+.bg-\[\#660000\],
+.bg-\[\#4A0000\],
+.bg-\[\#800020\],
+.bg-\[\#002B7F\],
+.btn-primary,
+[class*="bg-[#800000]"],
+[class*="bg-[#660000]"],
+[class*="bg-[#800020]"],
+[class*="bg-[#002B7F]"] {
+  background-color: #800000 !important;
+  color: #FFFFFF !important;
+}
+
+.bg-primary *,
+.bg-\[\#800000\] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *),
+.bg-\[\#660000\] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *),
+.bg-\[\#4A0000\] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *),
+.bg-\[\#800020\] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *),
+.bg-\[\#002B7F\] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *),
+.btn-primary *,
+[class*="bg-[#800000]"] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *),
+[class*="bg-[#660000]"] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *),
+[class*="bg-[#800020]"] *:not(input):not(select):not(textarea):not(option):not(.bg-white *):not(.bg-\[\#FFFFFF\] *):not([class*="bg-white"] *) {
+  color: #FFFFFF !important;
+}
+
+.bg-primary svg,
+.bg-\[\#800000\] svg:not(.bg-white svg):not([class*="bg-white"] svg),
+.bg-\[\#660000\] svg:not(.bg-white svg):not([class*="bg-white"] svg),
+.bg-\[\#4A0000\] svg:not(.bg-white svg):not([class*="bg-white"] svg),
+.bg-\[\#800020\] svg:not(.bg-white svg):not([class*="bg-white"] svg),
+.bg-\[\#002B7F\] svg:not(.bg-white svg):not([class*="bg-white"] svg),
+.btn-primary svg,
+[class*="bg-[#800000]"] svg:not(.bg-white svg):not([class*="bg-white"] svg),
+[class*="bg-[#660000]"] svg:not(.bg-white svg):not([class*="bg-white"] svg),
+[class*="bg-[#800020]"] svg:not(.bg-white svg):not([class*="bg-white"] svg) {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+/* Primary (#800000) Mappings */
+.text-\[\#002B7F\],
+.text-\[\#800020\],
+.text-\[\#006B3F\] {
+  color: #800000 !important;
+}
+
+.bg-\[\#002B7F\],
+.bg-\[\#800020\],
+.bg-\[\#006B3F\] {
+  background-color: #800000 !important;
+  color: #FFFFFF !important;
+}
+
+.border-\[\#002B7F\],
+.border-\[\#800020\],
+.border-\[\#006B3F\] {
+  border-color: #800000 !important;
+}
+
+/* Secondary (#FF3333) Highlights & Badges */
+.accent-secondary,
+.badge-secondary,
+.btn-secondary-action {
+  background-color: #FF3333 !important;
+  color: #FFFFFF !important;
+}
+
+/* Third (#FF9999) Subtle Insets & Badges */
+.badge-subtle,
+.card-highlight-subtle {
+  background-color: #FFF0F0 !important;
+  color: #800000 !important;
+  border-color: #FF9999 !important;
+}
+
+/* ==========================================================================
+   LIGHT MODE: PURE WHITE BACKGROUNDS (#FFFFFF) & HIGH-CONTRAST PALETTE
+   ========================================================================== */
+.light-mode,
+:root:not(.dark-mode):not(.dark) {
   color-scheme: light;
-  background-color: #F8FAFC !important;
-  color: #0F172A !important;
+  background-color: #FFFFFF !important;
+  color: #000000 !important;
 }
 
 .light-mode body {
-  background-color: #F8FAFC !important;
-  color: #0F172A !important;
-}
-
-.light-mode .bg-\[\#0F1115\] {
-  background-color: #F8FAFC !important;
-}
-
-.light-mode .bg-\[\#161920\],
-.light-mode .bg-\[\#1A1E26\] {
   background-color: #FFFFFF !important;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  color: #000000 !important;
 }
 
+/* Force All Backgrounds in Light Mode to Pure White */
+.light-mode .bg-\[\#F8FAFC\],
+.light-mode .bg-\[\#0F1115\],
+.light-mode .bg-\[\#161920\],
+.light-mode .bg-\[\#1A1E26\],
 .light-mode .bg-\[\#12151B\],
-.light-mode .bg-\[\#161920\]\/95,
-.light-mode .bg-\[\#161920\]\/90,
-.light-mode .bg-\[\#161920\]\/80 {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-}
-
 .light-mode .bg-\[\#111318\],
 .light-mode .bg-\[\#14171F\],
-.light-mode .bg-\[\#161920\] {
+.light-mode .bg-\[\#181B22\],
+.light-mode .bg-slate-900,
+.light-mode .bg-slate-950,
+.light-mode .bg-slate-900\/80,
+.light-mode .bg-slate-900\/50,
+.light-mode .bg-slate-950\/80,
+.light-mode .bg-slate-950\/60,
+.light-mode .bg-slate-100,
+.light-mode .bg-slate-50,
+.light-mode .bg-gray-50,
+.light-mode .bg-gray-100,
+.light-mode .bg-zinc-50,
+.light-mode .bg-zinc-100,
+.light-mode aside,
+.light-mode header,
+.light-mode main,
+.light-mode footer {
   background-color: #FFFFFF !important;
 }
 
-.light-mode .bg-\[\#181B22\],
-.light-mode .bg-slate-900,
-.light-mode .bg-slate-900\/80,
-.light-mode .bg-slate-900\/50,
-.light-mode .bg-slate-950,
-.light-mode .bg-slate-950\/80,
-.light-mode .bg-slate-950\/60 {
-  background-color: #F1F5F9 !important;
+/* Subtle inset background */
+.light-mode .bg-slate-50\/60,
+.light-mode .bg-slate-50\/80,
+.light-mode .bg-subtle-rose {
+  background-color: #FFF8F8 !important;
 }
 
+/* Light Mode: Brand Logos & Primary Badges use Primary #800000 & Secondary #FF3333 */
+.light-mode .app-logo,
+.light-mode .brand-logo,
+.light-mode .header-logo,
+.light-mode .sidebar-logo,
+.light-mode .portal-logo {
+  background-color: #800000 !important;
+  color: #FFFFFF !important;
+  border-color: #800000 !important;
+}
+
+.light-mode .logo-icon,
+.light-mode .app-logo svg,
+.light-mode .brand-logo svg,
+.light-mode .metric-icon-badge svg,
+.light-mode .metric-icon-badge .lucide {
+  color: #FFFFFF !important;
+}
+
+/* Metric icon badge shape */
+.metric-icon-badge {
+  background-color: #800000 !important;
+  border-color: #800000 !important;
+}
+
+/* Light mode crisp borders */
 .light-mode .border-slate-800,
-.light-mode .border-slate-800\/80,
-.light-mode .border-slate-800\/60,
-.light-mode .border-slate-800\/50,
 .light-mode .border-slate-700,
-.light-mode .border-slate-700\/50,
-.light-mode .border-slate-700\/40 {
-  border-color: #E2E8F0 !important;
+.light-mode .border-slate-600,
+.light-mode .border-slate-300,
+.light-mode .border-slate-200,
+.light-mode .border-gray-200,
+.light-mode .border-gray-300 {
+  border-color: #F0D0D0 !important;
 }
 
-.light-mode .text-slate-100,
-.light-mode .text-slate-200,
-.light-mode .text-slate-300,
-.light-mode .text-slate-400,
-.light-mode .text-slate-500,
-.light-mode .text-slate-600,
+/* Light Mode: Logos and glyphs */
+.light-mode svg:not(.superadmin-banner svg):not(.superadmin-banner *):not(.text-white):not([class*="text-white"]):not(.metric-icon-badge *) {
+  color: #800000 !important;
+}
+
+/* High contrast text in light mode */
+.light-mode .text-slate-900,
+.light-mode .text-slate-800,
 .light-mode .text-slate-700,
-.light-mode .text-gray-300,
-.light-mode .text-gray-400,
-.light-mode .text-gray-500,
+.light-mode .text-slate-600,
+.light-mode .text-slate-500,
+.light-mode .text-slate-400,
+.light-mode .text-slate-300,
+.light-mode .text-slate-200,
+.light-mode .text-slate-100,
+.light-mode .text-gray-900,
+.light-mode .text-gray-800,
+.light-mode .text-gray-700,
 .light-mode .text-gray-600,
-.light-mode .text-zinc-300,
+.light-mode .text-gray-500,
+.light-mode .text-gray-400,
+.light-mode .text-zinc-900,
+.light-mode .text-zinc-800,
+.light-mode .text-zinc-700,
+.light-mode .text-zinc-600,
+.light-mode .text-zinc-500,
 .light-mode .text-zinc-400,
-.light-mode .text-zinc-500 {
-  color: #020617 !important; /* Pure high-contrast dark black/slate-950 */
+.light-mode p:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode span:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *):not([class*="text-white"]):not(.text-white):not([class*="text-rose"]):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-blue"]):not([class*="text-purple"]),
+.light-mode label:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode h1:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode h2:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode h3:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode h4:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode h5:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode h6:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode td:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode th:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode a:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode strong:not(.superadmin-banner *):not(.bg-primary *):not([class*="bg-[#800000]"] *):not([class*="bg-[#660000]"] *):not([class*="bg-[#4A0000]"] *):not([class*="bg-[#800020]"] *):not(.btn-primary *):not([class*="bg-[#FF3333]"] *),
+.light-mode button:not(.superadmin-banner *):not(.bg-primary):not([class*="bg-[#800000]"]):not([class*="bg-[#660000]"]):not([class*="bg-[#4A0000]"]):not([class*="bg-[#800020]"]):not(.btn-primary):not([class*="bg-[#FF3333]"]) {
+  color: #000000;
 }
 
-.light-mode .text-slate-400\/80,
-.light-mode .text-slate-500\/80 {
-  color: #1E293B !important;
+/* Superadmin Hero Banner styled with Primary #800000 & Secondary #FF3333 Gradient */
+.superadmin-banner,
+.light-mode .superadmin-banner {
+  background: linear-gradient(135deg, #800000 0%, #4A0000 50%, #2B0000 100%) !important;
+  border-color: #FF3333 !important;
 }
 
-.light-mode .bg-slate-800,
-.light-mode .bg-slate-800\/50,
-.light-mode .bg-slate-800\/40,
-.light-mode .bg-slate-800\/80 {
-  background-color: #E2E8F0 !important;
+.superadmin-banner h1,
+.superadmin-banner p,
+.superadmin-banner label,
+.superadmin-banner .banner-text,
+.light-mode .superadmin-banner h1,
+.light-mode .superadmin-banner p,
+.light-mode .superadmin-banner label,
+.light-mode .superadmin-banner .banner-text,
+.superadmin-banner svg,
+.light-mode .superadmin-banner svg {
+  color: #FFFFFF !important;
 }
 
-.light-mode .hover\:bg-slate-800:hover {
-  background-color: #CBD5E1 !important;
+.superadmin-banner select,
+.light-mode .superadmin-banner select {
+  background-color: #FFFFFF !important;
+  color: #800000 !important;
+  border-color: #FF9999 !important;
 }
 
-.light-mode .hover\:bg-slate-800\/80:hover {
-  background-color: #E2E8F0 !important;
-}
-
-.light-mode .hover\:bg-slate-800\/40:hover {
-  background-color: #F1F5F9 !important;
+.superadmin-banner select option,
+.light-mode .superadmin-banner select option {
+  background-color: #FFFFFF !important;
+  color: #800000 !important;
 }
 
 .light-mode input,
 .light-mode select,
 .light-mode textarea {
   background-color: #FFFFFF !important;
-  color: #0F172A !important;
-  border-color: #CBD5E1 !important;
+  color: #000000 !important;
+  border-color: #FFD0D0 !important;
 }
 
-.light-mode ::-webkit-scrollbar-track {
-  background: #E2E8F0;
+.light-mode input:focus,
+.light-mode select:focus,
+.light-mode textarea:focus {
+  border-color: #FF3333 !important;
+  outline-color: #FF3333 !important;
 }
 
-.light-mode ::-webkit-scrollbar-thumb {
-  background: #94A3B8;
+.light-mode input::placeholder,
+.light-mode textarea::placeholder {
+  color: #996666 !important;
+}
+
+.light-mode .hover\:bg-slate-100:hover,
+.light-mode .hover\:bg-slate-50:hover,
+.light-mode .hover\:bg-slate-200:hover {
+  background-color: #FFF0F0 !important;
+}
+
+/* ==========================================================================
+   DARK MODE: #800000 ACCENTS ON DEEP SURFACES
+   ========================================================================== */
+.dark-mode,
+.dark {
+  color-scheme: dark;
+  background-color: #120000 !important;
+  color: #FFFFFF !important;
+}
+
+.dark-mode body,
+.dark body {
+  background-color: #120000 !important;
+  color: #FFFFFF !important;
+}
+
+.dark-mode .bg-white,
+.dark-mode .bg-\[\#F8FAFC\],
+.dark-mode .bg-\[\#FCFBF8\],
+.dark .bg-white,
+.dark .bg-\[\#F8FAFC\],
+.dark .bg-\[\#FCFBF8\] {
+  background-color: #240505 !important;
+  color: #FFFFFF !important;
+}
+
+.dark-mode aside,
+.dark-mode header,
+.dark-mode footer,
+.dark aside,
+.dark header,
+.dark footer {
+  background-color: #1A0202 !important;
+  border-color: #4D0A0A !important;
+}
+
+.dark-mode .bg-slate-50,
+.dark-mode .bg-slate-100,
+.dark-mode .bg-gray-50,
+.dark-mode .bg-gray-100,
+.dark .bg-slate-50,
+.dark .bg-slate-100,
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+  background-color: #2E0808 !important;
+}
+
+.dark-mode .border-slate-200,
+.dark-mode .border-slate-300,
+.dark-mode .border-gray-200,
+.dark-mode .border-gray-300,
+.dark .border-slate-200,
+.dark .border-slate-300,
+.dark .border-gray-200,
+.dark .border-gray-300 {
+  border-color: #4D0A0A !important;
+}
+
+.dark-mode p,
+.dark-mode span,
+.dark-mode label,
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6,
+.dark-mode td,
+.dark-mode th,
+.dark-mode li,
+.dark-mode a,
+.dark p,
+.dark span,
+.dark label,
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6,
+.dark td,
+.dark th,
+.dark li,
+.dark a {
+  color: #FFFFFF !important;
+}
+
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea,
+.dark input,
+.dark select,
+.dark textarea {
+  background-color: #240505 !important;
+  color: #FFFFFF !important;
+  border-color: #5C1010 !important;
+}
+
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder,
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #FF9999 !important;
+}
+
+.dark-mode .hover\:bg-slate-100:hover,
+.dark-mode .hover\:bg-slate-50:hover,
+.dark-mode .hover\:bg-slate-200:hover,
+.dark .hover\:bg-slate-100:hover,
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-200:hover {
+  background-color: #3D0A0A !important;
+}
+
+/* Primary Button Styling */
+.btn-primary {
+  background-color: #800000 !important;
+  color: #FFFFFF !important;
+  border-color: #800000 !important;
+}
+.btn-primary:hover {
+  background-color: #660000 !important;
+}
+
+/* Secondary Button Styling */
+.btn-secondary {
+  background-color: #FF3333 !important;
+  color: #FFFFFF !important;
+  border-color: #FF3333 !important;
+}
+.btn-secondary:hover {
+  background-color: #E61E1E !important;
+}
+
+/* Third Highlight Pill / Badge */
+.badge-pill-third {
+  background-color: #FFF0F0 !important;
+  color: #800000 !important;
+  border: 1px solid #FF9999 !important;
 }

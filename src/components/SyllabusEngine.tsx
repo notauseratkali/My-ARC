@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { CertificateModal } from './CertificateModal';
 import { AIProgressionAssistant } from './AIProgressionAssistant';
+import { AwardGamificationModule } from './AwardGamificationModule';
 import {
   ResponsiveContainer,
   BarChart,
@@ -102,7 +103,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 }) => {
   const [awardFilter, setAwardFilter] = useState<AwardType | 'All'>('All');
   const [categoryFilter, setCategoryFilter] = useState<CategoryType | 'All'>('All');
-  const [activeTab, setActiveTab] = useState<'catalog' | 'signoffs' | 'presets' | 'analytics' | 'ai-assistant'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'signoffs' | 'presets' | 'gamification' | 'analytics' | 'ai-assistant'>('catalog');
 
   // Search & Filter State for Sign-off Matrix
   const [memberSearchQuery, setMemberSearchQuery] = useState<string>('');
@@ -384,9 +385,9 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
 
     let finalMemberIds: string[] = [];
     if (assignTargetType === 'all') {
-      finalMemberIds = members.filter((m) => m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin').map((m) => m.id);
+      finalMemberIds = members.filter((m) => m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor').map((m) => m.id);
     } else if (assignTargetType === 'crew') {
-      finalMemberIds = members.filter((m) => m.crewId === assignCrewId && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin').map((m) => m.id);
+      finalMemberIds = members.filter((m) => m.crewId === assignCrewId && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor').map((m) => m.id);
     } else {
       finalMemberIds = assignMemberIds;
     }
@@ -693,7 +694,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
   ];
 
   const analyticsCrewData = crewList.map((crew) => {
-    const crewMembers = members.filter((m) => m.crewId === crew.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin');
+    const crewMembers = members.filter((m) => m.crewId === crew.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor');
     const crewMemberIds = crewMembers.map((m) => m.id);
     const crewProgress = progressList.filter((p) => crewMemberIds.includes(p.memberId));
 
@@ -786,6 +787,17 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
             >
               <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
               <span>Tier Analytics</span>
+            </button>
+            <button
+              onClick={() => setActiveTab('gamification')}
+              className={`px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                activeTab === 'gamification'
+                  ? 'bg-gradient-to-r from-amber-500/20 via-purple-500/20 to-emerald-500/20 text-amber-300 border border-amber-500/40 font-bold shadow'
+                  : 'text-amber-400/90 hover:text-amber-200'
+              }`}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <span>🏆 Badges & Leaderboard</span>
             </button>
             <button
               onClick={() => setActiveTab('ai-assistant')}
@@ -1418,6 +1430,19 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Gamification, Badges & Milestone Leaderboard Tab Content */}
+      {activeTab === 'gamification' && (
+        <AwardGamificationModule
+          members={members}
+          currentMember={currentMember}
+          syllabus={syllabus}
+          progressList={progressList}
+          journals={journals}
+          events={events}
+          attendance={attendance}
+        />
       )}
 
       {/* AI Progression Assistant Tab Content */}

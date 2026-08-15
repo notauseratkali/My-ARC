@@ -168,24 +168,23 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
   return (
     <div className="space-y-6">
       {/* Header Banner */}
-      <div className="bg-gradient-to-r from-emerald-950/80 via-slate-900 to-cyan-950/80 border border-emerald-500/30 rounded-2xl p-6 relative overflow-hidden shadow-xl">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-gradient-to-r from-emerald-50 via-white to-blue-50 border border-emerald-200 rounded-2xl p-6 relative overflow-hidden shadow-xs">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-400 shrink-0">
+            <div className="p-3 bg-white border border-emerald-200 rounded-xl text-[#006B3F] shrink-0 shadow-2xs">
               <Bot className="w-8 h-8" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold uppercase tracking-widest text-emerald-400 bg-emerald-950/80 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-semibold uppercase tracking-widest text-[#006B3F] bg-emerald-100/80 border border-emerald-200 px-2.5 py-0.5 rounded-full">
                   AI Scout Progression Coach
                 </span>
-                <span className="text-xs text-slate-400 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Grounded on Real Member Data
+                <span className="text-xs text-slate-600 flex items-center gap-1 font-medium">
+                  <ShieldCheck className="w-3.5 h-3.5 text-[#006B3F]" /> Grounded on Real Member Data
                 </span>
               </div>
-              <h2 className="text-2xl font-bold text-white mt-1">Smart Award & Progression Assistant</h2>
-              <p className="text-slate-300 text-sm mt-1 max-w-2xl">
+              <h2 className="text-2xl font-bold text-slate-900 mt-1">Smart Award & Progression Assistant</h2>
+              <p className="text-slate-600 text-sm mt-1 max-w-2xl">
                 Analyzes portfolio journals, attended events, and current progress logs to suggest next focus badges, pinpoint gaps, and recommend clear next steps.
               </p>
             </div>
@@ -194,7 +193,7 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
           <button
             onClick={runAnalysis}
             disabled={isLoading}
-            className="self-start md:self-auto px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 disabled:bg-slate-700 text-white text-sm font-medium rounded-xl shadow-lg transition-all flex items-center gap-2 shrink-0 border border-emerald-400/30"
+            className="self-start md:self-auto px-4 py-2.5 bg-[#002B7F] hover:bg-blue-900 disabled:bg-slate-300 text-white text-sm font-medium rounded-xl shadow-xs transition-all flex items-center gap-2 shrink-0 cursor-pointer"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
             {isLoading ? 'Analyzing Member Logs...' : 'Re-Run Analysis'}
@@ -205,27 +204,29 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
       {/* Member Selection Controls (for Leadership) & Data Scope Snapshot */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Selector Card */}
-        <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 flex flex-col justify-between">
-          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-            <User className="w-4 h-4 text-emerald-400" />
+        <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between shadow-xs">
+          <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <User className="w-4 h-4 text-[#006B3F]" />
             {isLeadership ? 'Select Member to Analyze' : 'Analyzing Scout Member'}
           </label>
           {isLeadership ? (
             <select
               value={selectedMemberId}
               onChange={(e) => setSelectedMemberId(e.target.value)}
-              className="w-full bg-slate-950 border border-slate-700 text-slate-200 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-sm rounded-lg px-3 py-2 focus:ring-2 focus:ring-[#002B7F] focus:outline-none"
             >
-              {members.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name} ({m.councilRole} • {m.crewName || 'General Crew'})
-                </option>
-              ))}
+              {members
+                .filter((m) => !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor')
+                .map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.name} ({m.section} • {m.crewName || 'General Crew'})
+                  </option>
+                ))}
             </select>
           ) : (
-            <div className="bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-slate-200 text-sm font-medium flex items-center justify-between">
+            <div className="bg-slate-50 border border-slate-200 rounded-lg p-2.5 text-slate-900 text-sm font-medium flex items-center justify-between">
               <span>{activeMember.name}</span>
-              <span className="text-xs bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded">
+              <span className="text-xs bg-emerald-50 text-[#006B3F] border border-emerald-200 px-2 py-0.5 rounded font-bold">
                 {activeMember.councilRole}
               </span>
             </div>
@@ -233,70 +234,70 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
         </div>
 
         {/* Real Data Evidence Snapshot */}
-        <div className="lg:col-span-2 bg-slate-900/90 border border-slate-800 rounded-xl p-4 grid grid-cols-3 gap-3">
-          <div className="bg-slate-950/60 border border-slate-800/80 rounded-lg p-3 text-center">
-            <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mb-1">
-              <BookOpen className="w-3.5 h-3.5 text-cyan-400" /> Journals Analyzed
+        <div className="lg:col-span-2 bg-white border border-slate-200 rounded-xl p-4 grid grid-cols-3 gap-3 shadow-xs">
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-slate-600 text-xs mb-1 font-medium">
+              <BookOpen className="w-3.5 h-3.5 text-blue-600" /> Journals Analyzed
             </div>
-            <div className="text-xl font-bold text-white">{memberJournals.length}</div>
+            <div className="text-xl font-bold text-slate-900">{memberJournals.length}</div>
             <div className="text-[10px] text-slate-500">Portfolio log entries</div>
           </div>
 
-          <div className="bg-slate-950/60 border border-slate-800/80 rounded-lg p-3 text-center">
-            <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mb-1">
-              <Calendar className="w-3.5 h-3.5 text-emerald-400" /> Attended Events
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-slate-600 text-xs mb-1 font-medium">
+              <Calendar className="w-3.5 h-3.5 text-[#006B3F]" /> Attended Events
             </div>
-            <div className="text-xl font-bold text-white">{memberAttendedEvents.length}</div>
+            <div className="text-xl font-bold text-slate-900">{memberAttendedEvents.length}</div>
             <div className="text-[10px] text-slate-500">Present status records</div>
           </div>
 
-          <div className="bg-slate-950/60 border border-slate-800/80 rounded-lg p-3 text-center">
-            <div className="flex items-center justify-center gap-1.5 text-slate-400 text-xs mb-1">
-              <Award className="w-3.5 h-3.5 text-amber-400" /> Active Progresses
+          <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-center">
+            <div className="flex items-center justify-center gap-1.5 text-slate-600 text-xs mb-1 font-medium">
+              <Award className="w-3.5 h-3.5 text-amber-600" /> Active Progresses
             </div>
-            <div className="text-xl font-bold text-white">{memberProgressList.length}</div>
+            <div className="text-xl font-bold text-slate-900">{memberProgressList.length}</div>
             <div className="text-[10px] text-slate-500">Logged requirements</div>
           </div>
         </div>
       </div>
 
       {/* Policy Notice: Strict Non-Hallucination Policy */}
-      <div className="bg-slate-900/50 border border-slate-800/80 rounded-xl px-4 py-2.5 flex items-center gap-2 text-xs text-slate-400">
-        <Info className="w-4 h-4 text-emerald-400 shrink-0" />
+      <div className="bg-emerald-50/60 border border-emerald-200 rounded-xl px-4 py-2.5 flex items-center gap-2 text-xs text-slate-700">
+        <Info className="w-4 h-4 text-[#006B3F] shrink-0" />
         <span>
-          <strong className="text-slate-300">Strict Data Grounding Policy:</strong> AI recommendations are generated by analyzing real journals, attendance records, and active syllabus items. Unverified data or fake badges are strictly prohibited.
+          <strong className="text-slate-900">Strict Data Grounding Policy:</strong> AI recommendations are generated by analyzing real journals, attendance records, and active syllabus items. Unverified data or fake badges are strictly prohibited.
         </span>
       </div>
 
       {/* Loading Skeleton */}
       {isLoading && (
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-8 space-y-6 animate-pulse">
+        <div className="bg-white border border-slate-200 rounded-2xl p-8 space-y-6 animate-pulse">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-slate-800 rounded-xl" />
+            <div className="w-10 h-10 bg-slate-200 rounded-xl" />
             <div className="space-y-2 flex-1">
-              <div className="h-4 bg-slate-800 rounded w-1/3" />
-              <div className="h-3 bg-slate-800/60 rounded w-1/2" />
+              <div className="h-4 bg-slate-200 rounded w-1/3" />
+              <div className="h-3 bg-slate-100 rounded w-1/2" />
             </div>
           </div>
-          <div className="h-20 bg-slate-950/80 rounded-xl" />
+          <div className="h-20 bg-slate-100 rounded-xl" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="h-36 bg-slate-950/80 rounded-xl" />
-            <div className="h-36 bg-slate-950/80 rounded-xl" />
+            <div className="h-36 bg-slate-100 rounded-xl" />
+            <div className="h-36 bg-slate-100 rounded-xl" />
           </div>
         </div>
       )}
 
       {/* Error View */}
       {errorMsg && !isLoading && (
-        <div className="bg-rose-950/40 border border-rose-500/40 rounded-2xl p-6 text-rose-300 space-y-3">
-          <div className="flex items-center gap-2 text-lg font-semibold text-rose-200">
-            <AlertTriangle className="w-5 h-5 text-rose-400" />
+        <div className="bg-rose-50 border border-rose-200 rounded-2xl p-6 text-[#800020] space-y-3">
+          <div className="flex items-center gap-2 text-lg font-semibold text-[#800020]">
+            <AlertTriangle className="w-5 h-5 text-[#800020]" />
             Progression Analysis Interrupted
           </div>
-          <p className="text-sm text-rose-300">{errorMsg}</p>
+          <p className="text-sm text-slate-700">{errorMsg}</p>
           <button
             onClick={runAnalysis}
-            className="px-3.5 py-1.5 bg-rose-900/60 hover:bg-rose-800 border border-rose-500/40 text-rose-100 text-xs font-medium rounded-lg transition-all"
+            className="px-3.5 py-1.5 bg-[#800020] hover:bg-rose-900 text-white text-xs font-medium rounded-lg transition-all cursor-pointer"
           >
             Try Again
           </button>
@@ -307,22 +308,22 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
       {analysis && !isLoading && (
         <div className="space-y-6">
           {/* Executive Summary Card */}
-          <div className="bg-slate-900/95 border border-slate-800 rounded-2xl p-6 space-y-3 relative">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-3 relative shadow-xs">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-emerald-400" />
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-[#006B3F]" />
                 Member Progression Trajectory Summary
               </h3>
               <button
                 onClick={handleCopySummary}
-                className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 border border-slate-700"
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 border border-slate-200 cursor-pointer"
                 title="Copy Full Analysis"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-[#006B3F]" /> : <Copy className="w-3.5 h-3.5" />}
                 {copied ? 'Copied to Clipboard' : 'Copy Summary'}
               </button>
             </div>
-            <p className="text-slate-300 text-sm leading-relaxed bg-slate-950/70 border border-slate-800/80 p-4 rounded-xl">
+            <p className="text-slate-700 text-sm leading-relaxed bg-slate-50 border border-slate-200 p-4 rounded-xl">
               {analysis.executiveSummary}
             </p>
           </div>
@@ -330,11 +331,11 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
           {/* Section 1: Suggested Award Requirements */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                <Target className="w-5 h-5 text-emerald-400" />
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <Target className="w-5 h-5 text-[#006B3F]" />
                 Suggested Next Award Requirements
               </h3>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-500">
                 Matched against member's past experiences
               </span>
             </div>
@@ -343,37 +344,37 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
               {analysis.suggestedRequirements.map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-slate-900/90 hover:bg-slate-900 border border-slate-800 hover:border-emerald-500/40 transition-all rounded-2xl p-5 flex flex-col justify-between space-y-4 group shadow-lg"
+                  className="bg-white hover:bg-slate-50 border border-slate-200 hover:border-[#002B7F]/40 transition-all rounded-2xl p-5 flex flex-col justify-between space-y-4 group shadow-xs"
                 >
                   <div className="space-y-3">
                     <div className="flex items-start justify-between gap-2">
                       <div className="space-y-1">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-400 bg-emerald-950/80 border border-emerald-800/60 px-2 py-0.5 rounded">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#006B3F] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
                           {item.awardType}
                         </span>
-                        <h4 className="text-base font-bold text-white group-hover:text-emerald-300 transition-colors">
+                        <h4 className="text-base font-bold text-slate-900 group-hover:text-[#002B7F] transition-colors">
                           {item.title}
                         </h4>
                       </div>
-                      <span className="text-xs bg-slate-800 text-slate-300 px-2.5 py-1 rounded-full border border-slate-700 shrink-0">
+                      <span className="text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200 shrink-0 font-medium">
                         {item.category}
                       </span>
                     </div>
 
-                    <div className="bg-slate-950/70 border border-slate-800/80 rounded-xl p-3 space-y-1.5">
-                      <div className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
-                        <Sparkles className="w-3 h-3 text-emerald-400" /> Why Suggested (Data Rationale):
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1.5">
+                      <div className="text-[11px] font-semibold text-slate-700 flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-[#006B3F]" /> Why Suggested (Data Rationale):
                       </div>
-                      <p className="text-xs text-slate-300 leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed">
                         {item.matchingRationale}
                       </p>
                     </div>
 
                     <div className="space-y-1">
-                      <div className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
-                        <CheckCircle2 className="w-3 h-3 text-cyan-400" /> Recommended Action:
+                      <div className="text-[11px] font-semibold text-slate-700 flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3 text-blue-600" /> Recommended Action:
                       </div>
-                      <p className="text-xs text-slate-400 leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed">
                         {item.recommendedNextSteps}
                       </p>
                     </div>
@@ -382,7 +383,7 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
                   {onSelectRequirement && (
                     <button
                       onClick={() => onSelectRequirement(item.requirementId)}
-                      className="w-full py-2 bg-slate-800 hover:bg-emerald-600/30 text-emerald-300 hover:text-emerald-200 border border-slate-700 hover:border-emerald-500/50 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-1.5 mt-2"
+                      className="w-full py-2 bg-slate-50 hover:bg-blue-50 text-[#002B7F] hover:text-blue-900 border border-slate-200 hover:border-blue-300 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-1.5 mt-2 cursor-pointer"
                     >
                       Focus on Requirement <ArrowRight className="w-3.5 h-3.5" />
                     </button>
@@ -394,8 +395,8 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
 
           {/* Section 2: Progress Gaps & Documentation Needs */}
           <div className="space-y-4">
-            <h3 className="text-lg font-bold text-white flex items-center gap-2">
-              <AlertTriangle className="w-5 h-5 text-amber-400" />
+            <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-600" />
               Identified Progression Gaps & Guidance
             </h3>
 
@@ -403,23 +404,23 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
               {analysis.progressGaps.map((gap, idx) => (
                 <div
                   key={idx}
-                  className="bg-amber-950/20 border border-amber-500/30 rounded-2xl p-5 space-y-3 relative overflow-hidden"
+                  className="bg-amber-50/50 border border-amber-200 rounded-2xl p-5 space-y-3 relative overflow-hidden"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold uppercase tracking-wider text-amber-400 bg-amber-950/80 border border-amber-500/30 px-2.5 py-0.5 rounded-full">
+                    <span className="text-xs font-bold uppercase tracking-wider text-amber-800 bg-amber-100 border border-amber-200 px-2.5 py-0.5 rounded-full">
                       {gap.category}
                     </span>
-                    <AlertTriangle className="w-4 h-4 text-amber-400" />
+                    <AlertTriangle className="w-4 h-4 text-amber-600" />
                   </div>
 
                   <div>
-                    <h4 className="text-sm font-bold text-slate-100">
+                    <h4 className="text-sm font-bold text-slate-900">
                       {gap.gapDescription}
                     </h4>
                   </div>
 
-                  <div className="bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 leading-relaxed">
-                    <strong className="text-amber-300 block mb-1">Fulfillment Guidance:</strong>
+                  <div className="bg-white border border-amber-200 rounded-xl p-3 text-xs text-slate-700 leading-relaxed">
+                    <strong className="text-amber-800 block mb-1">Fulfillment Guidance:</strong>
                     {gap.guidance}
                   </div>
                 </div>
@@ -428,9 +429,9 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
           </div>
 
           {/* Section 3: Actionable Milestones Checklist */}
-          <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Compass className="w-5 h-5 text-emerald-400" />
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 shadow-xs">
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <Compass className="w-5 h-5 text-[#006B3F]" />
               Immediate Term Milestones Checklist
             </h3>
 
@@ -443,15 +444,15 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
                     onClick={() => toggleMilestone(idx)}
                     className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
                       isChecked
-                        ? 'bg-emerald-950/30 border-emerald-500/40 text-slate-400 line-through'
-                        : 'bg-slate-950/60 border-slate-800 hover:border-slate-700 text-slate-200'
+                        ? 'bg-emerald-50 border-emerald-200 text-slate-500 line-through'
+                        : 'bg-slate-50 border-slate-200 hover:border-slate-300 text-slate-800'
                     }`}
                   >
                     <div
                       className={`w-5 h-5 rounded-md flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
                         isChecked
-                          ? 'bg-emerald-500 text-slate-950'
-                          : 'border border-slate-600 bg-slate-900'
+                          ? 'bg-[#006B3F] text-white'
+                          : 'border border-slate-300 bg-white'
                       }`}
                     >
                       {isChecked && <Check className="w-3.5 h-3.5 stroke-[3]" />}

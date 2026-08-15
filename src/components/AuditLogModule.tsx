@@ -35,10 +35,10 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
 
   if (!isCouncil) {
     return (
-      <div className="bg-rose-500/10 border border-rose-500/30 p-6 rounded-2xl text-center space-y-3">
-        <ShieldAlert className="w-10 h-10 text-rose-400 mx-auto" />
-        <h3 className="text-lg font-bold text-rose-200">Access Restricted</h3>
-        <p className="text-xs text-slate-300 max-w-md mx-auto">
+      <div className="bg-rose-50 border border-rose-200 p-6 rounded-2xl text-center space-y-3 text-slate-900">
+        <ShieldAlert className="w-10 h-10 text-[#800020] mx-auto" />
+        <h3 className="text-lg font-bold text-[#800020]">Access Restricted</h3>
+        <p className="text-xs text-slate-600 max-w-md mx-auto">
           The Organisation Audit Trail is restricted to Executive Council officers to maintain governance transparency and security.
         </p>
       </div>
@@ -65,50 +65,50 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
     switch (category) {
       case 'Member Management':
         return (
-          <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-            <Users className="w-3 h-3 text-emerald-400" />
+          <span className="bg-emerald-50 text-[#006B3F] border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+            <Users className="w-3 h-3 text-[#006B3F]" />
             <span>Member Management</span>
           </span>
         );
       case 'Council Governance':
         return (
-          <span className="bg-purple-500/10 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-            <Shield className="w-3 h-3 text-purple-400" />
+          <span className="bg-blue-50 text-[#002B7F] border border-blue-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+            <Shield className="w-3 h-3 text-[#002B7F]" />
             <span>Council Governance</span>
           </span>
         );
       case 'Finance':
         return (
-          <span className="bg-amber-500/10 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-            <CreditCard className="w-3 h-3 text-amber-400" />
+          <span className="bg-amber-50 text-amber-800 border border-amber-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+            <CreditCard className="w-3 h-3 text-amber-700" />
             <span>Finance & Dues</span>
           </span>
         );
       case 'Policy & Referendums':
         return (
-          <span className="bg-sky-500/10 text-sky-300 border border-sky-500/30 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-            <Vote className="w-3 h-3 text-sky-400" />
+          <span className="bg-blue-50 text-[#002B7F] border border-blue-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+            <Vote className="w-3 h-3 text-[#002B7F]" />
             <span>Policy & Referendums</span>
           </span>
         );
       case 'Disciplinary':
         return (
-          <span className="bg-rose-500/10 text-rose-300 border border-rose-500/30 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-            <ShieldAlert className="w-3 h-3 text-rose-400" />
+          <span className="bg-rose-50 text-[#800020] border border-rose-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+            <ShieldAlert className="w-3 h-3 text-[#800020]" />
             <span>Disciplinary</span>
           </span>
         );
       case 'Events & Attendance':
         return (
-          <span className="bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-            <Calendar className="w-3 h-3 text-indigo-400" />
+          <span className="bg-emerald-50 text-[#006B3F] border border-emerald-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+            <Calendar className="w-3 h-3 text-[#006B3F]" />
             <span>Events & Attendance</span>
           </span>
         );
       default:
         return (
-          <span className="bg-slate-800 text-slate-300 border border-slate-700 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
-            <Settings className="w-3 h-3 text-slate-400" />
+          <span className="bg-slate-100 text-slate-700 border border-slate-200 px-2 py-0.5 rounded text-[10px] font-semibold flex items-center gap-1">
+            <Settings className="w-3 h-3 text-slate-500" />
             <span>System</span>
           </span>
         );
@@ -142,28 +142,28 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
   };
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn text-slate-900">
       {/* Header Banner */}
-      <div className="bg-[#1A1E26] border border-slate-800 p-5 rounded-2xl shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <History className="w-6 h-6 text-indigo-400" />
-            <h2 className="text-xl font-bold text-slate-100 font-serif">
+            <History className="w-6 h-6 text-[#002B7F]" />
+            <h2 className="text-xl font-bold text-slate-900 font-serif">
               Organisation Audit Trail & Change Logs
             </h2>
-            <span className="bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+            <span className="bg-blue-50 text-[#002B7F] border border-blue-200 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
               <Shield className="w-3 h-3" />
               Council Visible
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-1 max-w-2xl">
+          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
             Complete transparency record capturing who changed what in the organisation. All member detail updates, council position edits, financial drives, policy referendums, and disciplinary entries are logged in real-time.
           </p>
         </div>
 
         <button
           onClick={handleExportCSV}
-          className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition self-start md:self-center cursor-pointer"
+          className="bg-[#002B7F] hover:bg-blue-800 text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-2 transition self-start md:self-center cursor-pointer"
         >
           <Download className="w-4 h-4" />
           <span>Export Audit Log (CSV)</span>
@@ -171,7 +171,7 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
       </div>
 
       {/* Filter & Search Bar */}
-      <div className="bg-[#1A1E26] border border-slate-800 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+      <div className="bg-white border border-slate-200 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-xs">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
           <input
@@ -179,7 +179,7 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
             placeholder="Search by officer, action, target, or detail..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full bg-slate-900 border border-slate-800 rounded-xl pl-9 pr-3 py-2 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            className="w-full bg-slate-50 border border-slate-300 rounded-xl pl-9 pr-3 py-2 text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500"
           />
         </div>
 
@@ -188,7 +188,7 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as AuditLogCategory | 'All')}
-            className="bg-slate-900 border border-slate-800 text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-indigo-500 font-semibold w-full sm:w-auto"
+            className="bg-slate-50 border border-slate-300 text-slate-800 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-500 font-semibold w-full sm:w-auto cursor-pointer"
           >
             <option value="All">All Categories ({auditLogs.length})</option>
             <option value="Member Management">Member Management</option>
@@ -203,10 +203,10 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
       </div>
 
       {/* Audit Log Table */}
-      <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
-        <div className="p-4 border-b border-slate-800 flex items-center justify-between text-xs font-semibold text-slate-300">
+      <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+        <div className="p-4 border-b border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-700 bg-slate-50/50">
           <span className="flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-indigo-400" />
+            <Clock className="w-4 h-4 text-[#002B7F]" />
             <span>Audit Records ({filteredLogs.length})</span>
           </span>
           <span className="text-slate-500 font-mono text-[11px]">
@@ -215,47 +215,47 @@ export const AuditLogModule: React.FC<AuditLogModuleProps> = ({
         </div>
 
         {filteredLogs.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 space-y-3">
-            <FileText className="w-10 h-10 text-slate-600 mx-auto" />
+          <div className="p-12 text-center text-slate-500 space-y-3">
+            <FileText className="w-10 h-10 text-slate-400 mx-auto" />
             <p className="text-sm font-medium">No audit log entries found matching filter.</p>
             <p className="text-xs text-slate-500">
               When council members perform actions (editing member details, updating policy, logging payments, etc.), log records will automatically appear here.
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-800/80 max-h-[650px] overflow-y-auto">
+          <div className="divide-y divide-slate-100 max-h-[650px] overflow-y-auto">
             {filteredLogs.map((log) => (
               <div
                 key={log.id}
-                className="p-4 hover:bg-slate-900/60 transition flex flex-col md:flex-row md:items-start justify-between gap-3 text-xs"
+                className="p-4 hover:bg-slate-50 transition flex flex-col md:flex-row md:items-start justify-between gap-3 text-xs"
               >
                 <div className="space-y-1.5 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     {getCategoryBadge(log.category)}
-                    <span className="font-bold text-slate-100 text-sm">{log.action}</span>
+                    <span className="font-bold text-slate-900 text-sm">{log.action}</span>
                     {log.targetName && (
-                      <span className="bg-slate-900 border border-slate-800 text-slate-300 px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
-                        <Users className="w-3 h-3 text-emerald-400" />
-                        Target: <strong className="text-emerald-300">{log.targetName}</strong>
+                      <span className="bg-slate-100 border border-slate-200 text-slate-700 px-2 py-0.5 rounded text-[11px] font-medium flex items-center gap-1">
+                        <Users className="w-3 h-3 text-[#006B3F]" />
+                        Target: <strong className="text-[#006B3F]">{log.targetName}</strong>
                       </span>
                     )}
                   </div>
 
-                  <p className="text-slate-300 bg-slate-950/60 p-2.5 rounded-xl border border-slate-800/80 font-mono text-[11px] leading-relaxed whitespace-pre-wrap">
+                  <p className="text-slate-700 bg-slate-50 p-2.5 rounded-xl border border-slate-200 font-mono text-[11px] leading-relaxed whitespace-pre-wrap">
                     {log.details}
                   </p>
                 </div>
 
                 <div className="md:text-right flex-shrink-0 space-y-1 text-[11px]">
-                  <div className="text-slate-400 flex items-center md:justify-end gap-1">
-                    <UserCheck className="w-3.5 h-3.5 text-indigo-400" />
+                  <div className="text-slate-600 flex items-center md:justify-end gap-1">
+                    <UserCheck className="w-3.5 h-3.5 text-[#002B7F]" />
                     <span>By: </span>
-                    <strong className="text-slate-200">{log.performedByMemberName}</strong>
-                    <span className="text-purple-300 font-mono text-[10px] bg-purple-500/10 px-1.5 py-0.2 rounded border border-purple-500/20">
+                    <strong className="text-slate-900">{log.performedByMemberName}</strong>
+                    <span className="text-[#800020] font-mono text-[10px] bg-rose-50 px-1.5 py-0.2 rounded border border-rose-200">
                       ({log.performedByRole})
                     </span>
                   </div>
-                  <div className="text-slate-500 font-mono flex items-center md:justify-end gap-1">
+                  <div className="text-slate-400 font-mono flex items-center md:justify-end gap-1">
                     <Clock className="w-3 h-3" />
                     <span>{log.timestamp}</span>
                   </div>

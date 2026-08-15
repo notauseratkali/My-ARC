@@ -79,55 +79,55 @@ export const Header: React.FC<HeaderProps> = ({
   ];
 
   return (
-    <header className="bg-[#161920] border-b border-slate-800 text-slate-100 sticky top-0 z-30 backdrop-blur-md bg-opacity-95">
+    <header className="bg-white border-b border-[#FFD0D0] text-slate-900 sticky top-0 z-30 backdrop-blur-md shadow-xs">
       {/* Top Branding Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
         {/* Logo and App Title */}
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#002B7F] via-[#800020] to-[#006B3F] flex items-center justify-center text-white shadow-md shadow-black/40 border border-[#FFC72C]/40 relative group">
-            <Compass className="w-6 h-6 text-amber-300" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#800000] via-[#800000] to-[#FF3333] text-white border border-[#FF3333]/40 flex items-center justify-center relative shadow-sm">
+            <Compass className="w-6 h-6 text-white" />
             <span className="absolute -bottom-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FFC72C] border border-slate-900"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF3333] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-[#FF3333] border border-white"></span>
             </span>
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="font-bold text-lg bg-gradient-to-r from-amber-300 via-emerald-400 to-sky-400 bg-clip-text text-transparent tracking-tight leading-none">
+              <h1 className="font-bold text-lg text-[#800000] tracking-tight leading-none">
                 My Rovers
               </h1>
               {isSuperAdmin ? (
-                <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
-                  <Crown className="w-3 h-3 text-purple-300" />
+                <span className="bg-[#800000] text-white border border-[#800000] text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
+                  <Crown className="w-3 h-3 text-white" />
                   <span>Superadmin</span>
                 </span>
               ) : (
                 <>
-                  <span className="bg-[#002B7F]/30 text-amber-300 border border-[#FFC72C]/30 text-[10px] font-semibold px-2 py-0.5 rounded-full">
+                  <span className="bg-[#FFF0F0] text-[#800000] border border-[#FFB3B3] text-[10px] font-bold px-2 py-0.5 rounded-full">
                     ASG • Term {settings?.activeTerm || '1'}
                   </span>
 
                   {/* Council vs Member Access Indicator Badge */}
                   {isAdvisor ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 bg-purple-500/20 text-purple-300 border border-purple-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono">
-                      <Crown className="w-3 h-3 text-purple-300" />
+                    <span className="hidden sm:inline-flex items-center gap-1 bg-[#800000] text-white border border-[#800000] text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono">
+                      <Crown className="w-3 h-3 text-white" />
                       <span>Rover Advisor • Supreme Admin</span>
                     </span>
                   ) : isCouncil ? (
-                    <span className="hidden sm:inline-flex items-center gap-1 bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
-                      <ShieldCheck className="w-3 h-3 text-amber-400" />
+                    <span className="hidden sm:inline-flex items-center gap-1 bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono">
+                      <ShieldCheck className="w-3 h-3 text-[#FF3333]" />
                       <span>Council Admin Mode</span>
                     </span>
                   ) : (
-                    <span className="hidden sm:inline-flex items-center gap-1 bg-sky-500/10 text-sky-300 border border-sky-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full font-mono">
-                      <User className="w-3 h-3 text-sky-400" />
+                    <span className="hidden sm:inline-flex items-center gap-1 bg-[#FFF0F0] text-[#800000] border border-[#FFB3B3] text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono">
+                      <User className="w-3 h-3 text-[#800000]" />
                       <span>Personal Assigned View</span>
                     </span>
                   )}
                 </>
               )}
             </div>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-slate-600 mt-0.5">
               {isSuperAdmin
                 ? 'Portal Administration'
                 : 'Rover Operating Policy • Explorers & Rovers Management System'}
@@ -142,17 +142,17 @@ export const Header: React.FC<HeaderProps> = ({
               onClick={onToggleTheme}
               id="theme-toggle-btn"
               title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode`}
-              className="flex items-center gap-1.5 bg-[#1A1E26] hover:bg-slate-800 text-amber-400 border border-slate-800 hover:border-slate-700 text-xs px-2.5 py-1.5 rounded-lg transition font-medium shadow-sm"
+              className="flex items-center gap-1.5 bg-[#FFF0F0] hover:bg-[#FFE5E5] text-[#800000] border border-[#FFB3B3] text-xs px-2.5 py-1.5 rounded-lg transition font-bold shadow-xs cursor-pointer"
             >
               {theme === 'dark' ? (
                 <>
-                  <Sun className="w-4 h-4 text-amber-400" />
-                  <span className="hidden md:inline text-slate-300">Light</span>
+                  <Sun className="w-4 h-4 text-[#FF3333]" />
+                  <span className="hidden md:inline text-[#800000]">Light</span>
                 </>
               ) : (
                 <>
-                  <Moon className="w-4 h-4 text-indigo-400" />
-                  <span className="hidden md:inline text-slate-700">Dark</span>
+                  <Moon className="w-4 h-4 text-[#800000]" />
+                  <span className="hidden md:inline text-[#800000]">Dark</span>
                 </>
               )}
             </button>
@@ -179,7 +179,7 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Navigation Tabs */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar border-t border-slate-800 pt-1 pb-1">
+        <nav className="flex items-center gap-1 overflow-x-auto no-scrollbar border-t border-[#FFD0D0] pt-1 pb-1">
           {navItems.map((item) => {
             const isActive = activeTab === item.id;
             const isDisciplinaryDisabled = item.restricted && !isCouncil;
@@ -195,33 +195,33 @@ export const Header: React.FC<HeaderProps> = ({
                   }
                   setActiveTab(item.id);
                 }}
-                className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-xs font-medium transition whitespace-nowrap relative ${
+                className={`flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold transition whitespace-nowrap relative cursor-pointer ${
                   isActive
-                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-semibold'
+                    ? 'bg-[#FFF0F0] text-[#800000] border border-[#FF9999] font-bold shadow-xs'
                     : isDisciplinaryDisabled
-                    ? 'text-slate-500 hover:bg-slate-800/40 cursor-not-allowed opacity-75'
-                    : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                    ? 'text-slate-400 hover:bg-slate-50 cursor-not-allowed opacity-60'
+                    : 'text-slate-700 hover:bg-[#FFF0F0] hover:text-[#800000]'
                 }`}
               >
-                <span className={isActive ? 'text-emerald-400' : 'text-slate-400'}>
+                <span className={isActive ? 'text-[#800000]' : 'text-slate-500'}>
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
 
                 {item.badge && (
-                  <span className="bg-teal-900/80 text-teal-300 text-[9px] font-semibold px-1.5 py-0.2 rounded font-mono">
+                  <span className="bg-[#FF3333] text-white border border-[#FF3333] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
                     {item.badge}
                   </span>
                 )}
 
                 {item.restricted && (
                   <span title="Executive Council Restricted">
-                    <Lock className="w-3 h-3 text-amber-500/80 inline ml-0.5" />
+                    <Lock className="w-3 h-3 text-[#FF3333] inline ml-0.5" />
                   </span>
                 )}
 
                 {isActive && (
-                  <div className="absolute bottom-0 left-3 right-3 h-0.5 bg-emerald-500 rounded-full" />
+                  <div className="absolute bottom-0 left-2 right-2 h-0.5 bg-[#800000] rounded-full" />
                 )}
               </button>
             );

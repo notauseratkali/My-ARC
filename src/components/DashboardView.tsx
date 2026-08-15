@@ -78,10 +78,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   const isAdvisor = currentMember?.councilRole === 'Rover Advisor';
   const isCouncil = !!currentMember && currentMember.councilRole !== 'Member';
 
-  const activeMembers = members.filter((m) => m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin');
-  const explorers = members.filter((m) => m.section === 'Explorer' && m.status === 'Active' && !m.isSuperAdmin);
-  const rovers = members.filter((m) => m.section === 'Rover' && m.status === 'Active' && !m.isSuperAdmin);
-  const onboardingMembers = members.filter((m) => m.status === 'Onboarding');
+  const activeMembers = members.filter((m) => m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor');
+  const explorers = members.filter((m) => m.section === 'Explorer' && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor');
+  const rovers = members.filter((m) => m.section === 'Rover' && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor');
+  const onboardingMembers = members.filter((m) => m.status === 'Onboarding' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor');
 
   // Find members turning 18 or recently turned 18 for transition alert
   const transitionCandidates = members.filter(
@@ -174,37 +174,37 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   }, [isCouncil, nearCompletionItems, progressList, currentMember, syllabus]);
 
   return (
-    <div className="space-y-6 animate-fadeIn">
+    <div className="space-y-6 animate-fadeIn text-slate-900">
       {/* Welcome Banner */}
-      <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
-            <div className="flex items-center gap-2 text-emerald-400 font-mono text-xs font-semibold uppercase tracking-wider mb-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+            <div className="flex items-center gap-2 text-[#006B3F] font-mono text-xs font-semibold uppercase tracking-wider mb-1">
+              <span className="w-2 h-2 rounded-full bg-[#006B3F] animate-ping" />
               {isAdvisor
                 ? 'Rover Advisor • Network & Crew Administration'
                 : isCouncil
                 ? 'Rover Operational Command Portal'
                 : 'My Rover & Explorer Workspace'}
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 tracking-tight flex items-center gap-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <span>Welcome back, {currentMember ? currentMember.name : 'Scout'}</span>
               {isAdvisor && (
-                <span className="bg-purple-500/20 text-purple-300 border border-purple-500/40 text-xs px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
-                  <Crown className="w-3.5 h-3.5 text-purple-300" />
+                <span className="bg-purple-50 text-purple-700 border border-purple-200 text-xs px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
+                  <Crown className="w-3.5 h-3.5 text-purple-700" />
                   <span>Rover Advisor</span>
                 </span>
               )}
             </h2>
-            <p className="text-slate-400 text-sm mt-1 max-w-2xl">
+            <p className="text-slate-600 text-sm mt-1 max-w-2xl">
               {isAdvisor ? (
-                <>Operating with supreme authority over <span className="text-purple-300 font-semibold">{settings?.networkName || 'Meyvaa Scouting Network'}</span>. Administering scout group decisions, executive council governance, and overall Scout operations through Meyvaa Portal across {crews.length} decentralized crews.</>
+                <>Operating with supreme authority over <span className="text-purple-700 font-semibold">{settings?.networkName || 'Meyvaa Scouting Network'}</span>. Administering scout group decisions, executive council governance, and overall Scout operations through Meyvaa Portal across {crews.length} decentralized crews.</>
               ) : isCouncil ? (
-                <>Operating via <span className="text-emerald-400 font-semibold">Meyvaa Portal</span> for <span className="text-emerald-300 font-semibold">{settings?.networkName || 'Scout Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-[#002B7F] font-semibold">Meyvaa Portal</span> for <span className="text-[#006B3F] font-semibold">{settings?.networkName || 'Scout Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               ) : (
-                <>Operating via <span className="text-emerald-400 font-semibold">Meyvaa Portal</span> for <span className="text-emerald-300 font-semibold">{currentMember?.crewName || settings?.crewName || 'Scout Group Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-[#002B7F] font-semibold">Meyvaa Portal</span> for <span className="text-[#006B3F] font-semibold">{currentMember?.crewName || settings?.crewName || 'Scout Group Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               )}
             </p>
           </div>
@@ -214,28 +214,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               <button
                 id="dashboard-new-member-btn"
                 onClick={onOpenNewMemberModal}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition"
+                className="bg-[#800000] hover:bg-[#660000] text-white text-xs font-semibold px-4 py-2.5 rounded-xl shadow-xs flex items-center gap-2 transition cursor-pointer !text-white"
               >
-                <UserPlus className="w-4 h-4" />
-                <span>Onboard Member</span>
+                <UserPlus className="w-4 h-4 text-white" />
+                <span className="text-white font-semibold !text-white">Onboard Member</span>
               </button>
             )}
             <button
               id="dashboard-new-journal-btn"
               onClick={onOpenNewJournalModal}
-              className="bg-[#161920] hover:bg-slate-800 text-slate-200 text-xs font-medium px-4 py-2.5 rounded-xl border border-slate-800 shadow-sm flex items-center gap-2 transition"
+              className="bg-[#FFF0F0] hover:bg-[#FFE5E5] text-[#800000] text-xs font-semibold px-4 py-2.5 rounded-xl border border-[#FF9999] shadow-xs flex items-center gap-2 transition cursor-pointer"
             >
-              <FileText className="w-4 h-4 text-emerald-400" />
+              <FileText className="w-4 h-4 text-[#800000]" />
               <span>Log Journal</span>
             </button>
             {isCouncil && (
               <button
                 id="dashboard-new-event-btn"
                 onClick={onOpenNewEventModal}
-                className="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-medium px-4 py-2.5 rounded-xl flex items-center gap-2 transition"
+                className="bg-[#800000] hover:bg-[#660000] text-white border border-[#800000] text-xs font-semibold px-4 py-2.5 rounded-xl flex items-center gap-2 transition cursor-pointer shadow-xs !text-white"
               >
-                <PlusCircle className="w-4 h-4" />
-                <span>Schedule Event</span>
+                <PlusCircle className="w-4 h-4 text-white" />
+                <span className="text-white font-semibold !text-white">Schedule Event</span>
               </button>
             )}
           </div>
@@ -243,19 +243,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       </div>
 
       {/* AI Progression Coach Banner */}
-      <div className="bg-gradient-to-r from-emerald-950/70 via-slate-900 to-cyan-950/70 border border-emerald-500/30 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-lg">
+      <div className="bg-[#FFF0F0] border border-[#FF9999] p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-400 shrink-0">
-            <Sparkles className="w-5 h-5" />
+          <div className="p-2.5 bg-white border border-[#FFB3B3] rounded-xl text-[#800000] shrink-0">
+            <Sparkles className="w-5 h-5 text-[#800000]" />
           </div>
           <div>
-            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+            <h4 className="text-sm font-bold text-[#800000] flex items-center gap-2">
               AI Progression & Award Assistant
-              <span className="text-[10px] font-semibold uppercase bg-emerald-950 text-emerald-400 border border-emerald-800 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-semibold uppercase bg-white text-[#800000] border border-[#FFB3B3] px-2 py-0.5 rounded-full">
                 Grounded on User Logs
               </span>
             </h4>
-            <p className="text-xs text-slate-300 mt-0.5">
+            <p className="text-xs text-slate-700 mt-0.5">
               Analyzes portfolio journals, attended events, and active badges to suggest next award requirements & identify progress gaps.
             </p>
           </div>
@@ -263,32 +263,32 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
         <button
           onClick={() => onNavigateTabActual('syllabus')}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 border border-emerald-400/30 shadow-md"
+          className="bg-[#800000] hover:bg-[#660000] text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer !text-white"
         >
-          <span>Launch AI Coach</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <span className="text-white font-semibold !text-white">Launch AI Coach</span>
+          <ArrowRight className="w-3.5 h-3.5 text-white" />
         </button>
       </div>
 
       {/* Transition Alert Banner (If any members turn 18 and council or user is involved) */}
-      {transitionCandidates.length > 0 && (isCouncil || transitionCandidates.some(c => c.id === currentMember.id)) && (
-        <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex items-center justify-between gap-4 text-amber-200 text-xs">
+      {transitionCandidates.length > 0 && (isCouncil || transitionCandidates.some(c => c.id === currentMember?.id)) && (
+        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-4 text-amber-900 text-xs shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-amber-500/20 text-amber-300">
+            <div className="p-2 rounded-lg bg-amber-100 text-amber-700">
               <AlertCircle className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-semibold text-amber-100">
+              <p className="font-semibold text-amber-900">
                 Automated Section Transition Alert ({transitionCandidates.length} Member)
               </p>
-              <p className="text-amber-300/80">
+              <p className="text-amber-700">
                 {transitionCandidates.map((c) => `${c.name} (Age ${c.age})`).join(', ')} has turned 18 and is eligible to transition from Explorer (President Scout) to Rover Section (Baden-Powell BP Award).
               </p>
             </div>
           </div>
           <button
             onClick={() => onNavigateTabActual('members')}
-            className="bg-amber-600 hover:bg-amber-500 text-white px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 flex-shrink-0 transition"
+            className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 flex-shrink-0 transition cursor-pointer"
           >
             <span>Review Profile</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -301,19 +301,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Total Active Members */}
         <div
           onClick={() => onNavigateTabActual('members')}
-          className="bg-[#1A1E26] border border-slate-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition shadow-md group"
+          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Total Active Crew</span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center justify-center group-hover:scale-105 transition">
+            <span className="text-xs font-medium text-slate-500">Total Active Crew</span>
+            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#006B3F] border border-emerald-200 flex items-center justify-center group-hover:scale-105 transition">
               <Users className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-slate-100">{activeMembers.length}</span>
-            <span className="text-xs text-emerald-400 font-mono font-medium">Target: 150</span>
+            <span className="text-3xl font-bold text-slate-900">{activeMembers.length}</span>
+            <span className="text-xs text-[#006B3F] font-mono font-medium">Target: 150</span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-400 flex items-center justify-between border-t border-slate-800 pt-2">
+          <div className="mt-2 text-[11px] text-slate-500 flex items-center justify-between border-t border-slate-100 pt-2">
             <span>{explorers.length} Explorers</span>
             <span>{rovers.length} Rovers</span>
           </div>
@@ -322,79 +322,79 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Multi-Crews Count */}
         <div
           onClick={() => onNavigateTabActual('settings')}
-          className="bg-[#1A1E26] border border-slate-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition shadow-md group"
+          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">Sub-Crew Units</span>
-            <div className="w-9 h-9 rounded-xl bg-sky-500/10 text-sky-400 border border-sky-500/20 flex items-center justify-center group-hover:scale-105 transition">
+            <span className="text-xs font-medium text-slate-500">Sub-Crew Units</span>
+            <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#002B7F] border border-blue-200 flex items-center justify-center group-hover:scale-105 transition">
               <MapPin className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-slate-100">{crews.length}</span>
-            <span className="text-xs text-sky-400 font-mono">Decentralized</span>
+            <span className="text-3xl font-bold text-slate-900">{crews.length}</span>
+            <span className="text-xs text-[#002B7F] font-mono">Decentralized</span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-400 border-t border-slate-800 pt-2 flex items-center justify-between">
+          <div className="mt-2 text-[11px] text-slate-500 border-t border-slate-100 pt-2 flex items-center justify-between">
             <span>Male • Hulhumale • Villimale</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           </div>
         </div>
 
         {/* Awards Progression */}
         <div
           onClick={() => onNavigateTabActual('syllabus')}
-          className="bg-[#1A1E26] border border-slate-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition shadow-md group"
+          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-500">
               {isCouncil ? 'Award Milestones' : 'My Active Syllabus'}
             </span>
-            <div className="w-9 h-9 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center group-hover:scale-105 transition">
+            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center group-hover:scale-105 transition">
               <Award className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-slate-100">
-              {isCouncil ? syllabus.length : progressList.filter((p) => p.memberId === currentMember.id && p.status !== 'Not Started').length}
+            <span className="text-3xl font-bold text-slate-900">
+              {isCouncil ? syllabus.length : progressList.filter((p) => p.memberId === currentMember?.id && p.status !== 'Not Started').length}
             </span>
-            <span className="text-xs text-amber-400 font-mono">
+            <span className="text-xs text-amber-700 font-mono">
               {displayedNearCompletionItems.length > 0 ? `${displayedNearCompletionItems.length} Active Requirements` : 'President & BP'}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-400 border-t border-slate-800 pt-2 flex items-center justify-between">
+          <div className="mt-2 text-[11px] text-slate-500 border-t border-slate-100 pt-2 flex items-center justify-between">
             <span>
-              {progressList.filter((p) => (isCouncil ? true : p.memberId === currentMember.id) && (p.status === 'Completed' || p.status === 'Verified')).length} Verified
+              {progressList.filter((p) => (isCouncil ? true : p.memberId === currentMember?.id) && (p.status === 'Completed' || p.status === 'Verified')).length} Verified
             </span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           </div>
         </div>
 
         {/* Governance & Review Card */}
         <div
           onClick={() => onNavigateTabActual(isCouncil ? 'disciplinary' : 'attendance')}
-          className="bg-[#1A1E26] border border-slate-800 hover:border-emerald-500/40 p-5 rounded-2xl cursor-pointer transition shadow-md group"
+          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-slate-500">
               {isCouncil ? 'Governance & Review' : 'My Standing & Roll'}
             </span>
             <div className={`w-9 h-9 rounded-xl flex items-center justify-center group-hover:scale-105 transition ${
-              isCouncil ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+              isCouncil ? 'bg-rose-50 text-[#800020] border border-rose-200' : 'bg-emerald-50 text-[#006B3F] border border-emerald-200'
             }`}>
               <ShieldAlert className="w-5 h-5" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
-            <span className="text-3xl font-bold text-slate-100">
-              {isCouncil ? onboardingMembers.length + openDisciplinaryCount : currentMember.attendanceUnexcused}
+            <span className="text-3xl font-bold text-slate-900">
+              {isCouncil ? onboardingMembers.length + openDisciplinaryCount : currentMember?.attendanceUnexcused || 0}
             </span>
-            <span className={`text-xs font-mono ${isCouncil ? 'text-rose-400' : 'text-emerald-400'}`}>
+            <span className={`text-xs font-mono ${isCouncil ? 'text-[#800020]' : 'text-[#006B3F]'}`}>
               {isCouncil ? 'Action Items' : 'Unexcused Absences'}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-400 border-t border-slate-800 pt-2 flex items-center justify-between">
+          <div className="mt-2 text-[11px] text-slate-500 border-t border-slate-100 pt-2 flex items-center justify-between">
             <span>{isCouncil ? `${onboardingMembers.length} Onboarding • ${openDisciplinaryCount} Cases` : 'Good Standing • Active Status'}</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-500" />
+            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           </div>
         </div>
       </div>
@@ -423,24 +423,24 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       />
 
       {/* Near Completion Syllabus Notification Block */}
-      <div className="bg-[#1A1E26] border border-amber-500/30 rounded-2xl p-5 shadow-xl relative overflow-hidden space-y-4">
+      <div className="bg-white border border-amber-200 rounded-2xl p-5 shadow-xs relative overflow-hidden space-y-4">
         <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-3 relative z-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 shadow-inner">
-              <Zap className="w-5 h-5 fill-amber-400/20" />
+            <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 shadow-xs">
+              <Zap className="w-5 h-5 fill-amber-500/20" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-base font-bold text-slate-100">
+                <h3 className="text-base font-bold text-slate-900">
                   {isCouncil ? "Syllabus 'Near Completion' Notifications" : "My Active Syllabus & Award Progress"}
                 </h3>
-                <span className="bg-amber-500/10 text-amber-300 border border-amber-500/30 text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full">
+                <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full">
                   {displayedNearCompletionItems.length} {isCouncil ? `Member${displayedNearCompletionItems.length !== 1 ? 's' : ''} Flagged` : 'Active Item'}
                 </span>
               </div>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5">
                 {isCouncil
                   ? "Rovers & Explorers with high requirement progress or pending Council award verification."
                   : "Track your assigned requirements, completion percentages, and verification status."}
@@ -450,7 +450,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <button
             onClick={() => onNavigateTabActual('syllabus')}
-            className="text-xs text-amber-300 hover:text-amber-200 font-medium flex items-center gap-1.5 self-start sm:self-auto bg-amber-500/10 hover:bg-amber-500/20 px-3.5 py-2 rounded-xl border border-amber-500/30 transition shadow-sm"
+            className="text-xs text-amber-800 hover:text-amber-900 font-medium flex items-center gap-1.5 self-start sm:self-auto bg-amber-50 hover:bg-amber-100 px-3.5 py-2 rounded-xl border border-amber-200 transition shadow-xs cursor-pointer"
           >
             <span>Review in Syllabus Engine</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -458,7 +458,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         </div>
 
         {displayedNearCompletionItems.length === 0 ? (
-          <p className="text-xs text-slate-400 italic py-4 text-center">
+          <p className="text-xs text-slate-500 italic py-4 text-center">
             {isCouncil ? "No active members are currently flagged as near completion." : "You have no active requirements registered yet."}
           </p>
         ) : (
@@ -466,7 +466,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {displayedNearCompletionItems.map((item) => (
               <div
                 key={item.progressId}
-                className="bg-[#161920] border border-slate-800 hover:border-amber-500/40 p-4 rounded-xl flex flex-col justify-between space-y-3 transition shadow-sm group"
+                className="bg-slate-50 border border-slate-200 hover:border-amber-300 p-4 rounded-xl flex flex-col justify-between space-y-3 transition shadow-xs group"
               >
                 <div>
                   {/* Member Info Header */}
@@ -476,18 +476,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <img
                           src={item.member.avatar}
                           alt={item.member.name}
-                          className="w-8 h-8 rounded-full object-cover border border-amber-500/30 flex-shrink-0"
+                          className="w-8 h-8 rounded-full object-cover border border-amber-300 flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-amber-400 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-xs font-bold text-amber-700 flex-shrink-0">
                           {item.member.name.charAt(0)}
                         </div>
                       )}
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-slate-100 truncate group-hover:text-amber-300 transition">
+                        <p className="text-xs font-bold text-slate-900 truncate group-hover:text-amber-800 transition">
                           {item.member.name}
                         </p>
-                        <p className="text-[10px] text-slate-400 truncate">
+                        <p className="text-[10px] text-slate-500 truncate">
                           {item.member.section} • {item.member.crewName}
                         </p>
                       </div>
@@ -496,8 +496,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono flex-shrink-0 ${
                         item.prog.status === 'Submitted'
-                          ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
-                          : 'bg-amber-500/10 text-amber-300 border border-amber-500/30 animate-pulse'
+                          ? 'bg-blue-50 text-[#002B7F] border border-blue-200'
+                          : 'bg-amber-50 text-amber-800 border border-amber-200 animate-pulse'
                       }`}
                     >
                       {item.statusLabel}
@@ -506,10 +506,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   {/* Requirement Title */}
                   <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-emerald-400">
+                    <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-[#006B3F]">
                       {item.req.awardType}
                     </span>
-                    <h5 className="text-xs font-bold text-slate-200 line-clamp-1">
+                    <h5 className="text-xs font-bold text-slate-800 line-clamp-1">
                       {item.req.title}
                     </h5>
                   </div>
@@ -517,19 +517,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   {/* Progress Bar */}
                   <div className="mt-2.5 space-y-1">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="text-slate-400 font-mono">
+                      <span className="text-slate-500 font-mono">
                         {item.completedTasksCount} / {item.totalTasks} Tasks Done
                       </span>
-                      <span className="font-bold font-mono text-amber-400">
+                      <span className="font-bold font-mono text-amber-700">
                         {item.pct}%
                       </span>
                     </div>
-                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden p-0.5 border border-slate-700/50">
+                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden p-0.5 border border-slate-300">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           item.prog.status === 'Submitted'
-                            ? 'bg-sky-400'
-                            : 'bg-gradient-to-r from-amber-500 to-emerald-400'
+                            ? 'bg-[#002B7F]'
+                            : 'bg-gradient-to-r from-amber-500 to-emerald-500'
                         }`}
                         style={{ width: `${item.pct}%` }}
                       />
@@ -538,14 +538,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   {/* Remaining Task Note */}
                   {item.remainingTasks.length > 0 ? (
-                    <div className="mt-2.5 pt-2 border-t border-slate-800/80 flex items-start gap-1.5 text-[11px] text-slate-300">
-                      <Clock className="w-3.5 h-3.5 text-amber-400 flex-shrink-0 mt-0.5" />
-                      <span className="line-clamp-1 italic text-slate-400">
+                    <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-start gap-1.5 text-[11px] text-slate-700">
+                      <Clock className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                      <span className="line-clamp-1 italic text-slate-500">
                         Pending: {item.remainingTasks[0].text}
                       </span>
                     </div>
                   ) : item.prog.notes ? (
-                    <div className="mt-2.5 pt-2 border-t border-slate-800/80 text-[11px] text-slate-400 italic line-clamp-1">
+                    <div className="mt-2.5 pt-2 border-t border-slate-200 text-[11px] text-slate-500 italic line-clamp-1">
                       "{item.prog.notes}"
                     </div>
                   ) : null}
@@ -554,9 +554,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Quick Action Button */}
                 <button
                   onClick={() => onNavigateTabActual('syllabus')}
-                  className="w-full mt-2 bg-[#1A1E26] hover:bg-amber-500/10 hover:border-amber-500/30 text-slate-300 hover:text-amber-300 border border-slate-800 text-[11px] font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition"
+                  className="w-full mt-2 bg-white hover:bg-amber-50 hover:border-amber-300 text-slate-700 hover:text-amber-800 border border-slate-200 text-[11px] font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer"
                 >
-                  <CheckSquare className="w-3.5 h-3.5 text-amber-400" />
+                  <CheckSquare className="w-3.5 h-3.5 text-amber-600" />
                   <span>Verify Progress in Syllabus</span>
                 </button>
               </div>
@@ -570,17 +570,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Left Column: Upcoming Camps & Events (2 cols on large screens) */}
         <div className="lg:col-span-2 space-y-6">
           {/* Upcoming Events Box */}
-          <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg">
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-base font-bold text-slate-100">
+                <Calendar className="w-5 h-5 text-[#006B3F]" />
+                <h3 className="text-base font-bold text-slate-900">
                   Upcoming Crew Camps & Events
                 </h3>
               </div>
               <button
                 onClick={() => onNavigateTabActual('events')}
-                className="text-xs text-emerald-400 hover:text-emerald-300 font-medium flex items-center gap-1 transition"
+                className="text-xs text-[#002B7F] hover:text-blue-800 font-semibold flex items-center gap-1 transition cursor-pointer"
               >
                 <span>Master Calendar</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -589,44 +589,44 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <div className="space-y-3">
               {upcomingEvents.length === 0 ? (
-                <p className="text-xs text-slate-400 italic py-4 text-center">No upcoming events scheduled.</p>
+                <p className="text-xs text-slate-500 italic py-4 text-center">No upcoming events scheduled.</p>
               ) : (
                 upcomingEvents.map((ev) => (
                   <div
                     key={ev.id}
-                    className="bg-[#161920] border border-slate-800 hover:border-slate-700 rounded-xl p-4 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className="bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl p-4 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
                             ev.type === 'Camp'
-                              ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
                               : ev.type === 'Meeting'
-                              ? 'bg-sky-500/10 text-sky-400 border border-sky-500/20'
-                              : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                              ? 'bg-blue-50 text-[#002B7F] border border-blue-200'
+                              : 'bg-emerald-50 text-[#006B3F] border border-emerald-200'
                           }`}
                         >
                           {ev.type}
                         </span>
                         {ev.isCompulsory && (
-                          <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-semibold px-2 py-0.5 rounded">
+                          <span className="bg-rose-50 text-[#800020] border border-rose-200 text-[10px] font-semibold px-2 py-0.5 rounded">
                             Compulsory
                           </span>
                         )}
-                        <span className="text-slate-400 text-xs">{ev.crewName}</span>
+                        <span className="text-slate-500 text-xs">{ev.crewName}</span>
                       </div>
-                      <h4 className="text-sm font-semibold text-slate-100">{ev.title}</h4>
-                      <p className="text-xs text-slate-400 line-clamp-1">{ev.description}</p>
+                      <h4 className="text-sm font-bold text-slate-900">{ev.title}</h4>
+                      <p className="text-xs text-slate-600 line-clamp-1">{ev.description}</p>
                     </div>
 
-                    <div className="text-right flex sm:flex-col justify-between items-end gap-1 text-xs text-slate-400 border-t sm:border-t-0 border-slate-800 pt-2 sm:pt-0">
-                      <div className="flex items-center gap-1 text-emerald-400 font-medium">
-                        <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                    <div className="text-right flex sm:flex-col justify-between items-end gap-1 text-xs text-slate-500 border-t sm:border-t-0 border-slate-200 pt-2 sm:pt-0">
+                      <div className="flex items-center gap-1 text-[#006B3F] font-semibold">
+                        <Clock className="w-3.5 h-3.5 text-[#006B3F]" />
                         <span>{new Date(ev.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
-                      <div className="flex items-center gap-1 text-slate-400">
-                        <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                      <div className="flex items-center gap-1 text-slate-500">
+                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
                         <span className="truncate max-w-[140px]">{ev.location}</span>
                       </div>
                     </div>
@@ -637,17 +637,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Section Progression Summary (Explorers vs Rovers) */}
-          <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg">
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-400" />
-                <h3 className="text-base font-bold text-slate-100">
+                <Award className="w-5 h-5 text-amber-600" />
+                <h3 className="text-base font-bold text-slate-900">
                   Section Progression & Syllabus Overview
                 </h3>
               </div>
               <button
                 onClick={() => onNavigateTabActual('syllabus')}
-                className="text-xs text-amber-400 hover:text-amber-300 font-medium flex items-center gap-1 transition"
+                className="text-xs text-[#002B7F] hover:text-blue-800 font-semibold flex items-center gap-1 transition cursor-pointer"
               >
                 <span>Manage Syllabus</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -656,40 +656,40 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Explorer Section Block */}
-              <div className="bg-[#161920] border border-slate-800 p-4 rounded-xl space-y-3">
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
+                  <span className="bg-emerald-50 text-[#006B3F] border border-emerald-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
                     Explorer Section (&lt;18)
                   </span>
-                  <span className="text-xs font-semibold text-slate-300">{explorers.length} Active Members</span>
+                  <span className="text-xs font-semibold text-slate-700">{explorers.length} Active Members</span>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-100">President's Scout Award</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">Focus: Leadership Patrols, Wilderness Navigation, Island Community Projects.</p>
+                  <h4 className="text-sm font-bold text-slate-900">President's Scout Award</h4>
+                  <p className="text-xs text-slate-600 mt-0.5">Focus: Leadership Patrols, Wilderness Navigation, Island Community Projects.</p>
                 </div>
-                <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-                  <span className="text-slate-400">Core Modules:</span>
-                  <span className="font-mono text-emerald-400 font-semibold">
+                <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                  <span className="text-slate-500">Core Modules:</span>
+                  <span className="font-mono text-[#006B3F] font-bold">
                     {syllabus.filter((s) => s.awardType === "President's Scout Award").length} Requirements
                   </span>
                 </div>
               </div>
 
               {/* Rover Section Block */}
-              <div className="bg-[#161920] border border-slate-800 p-4 rounded-xl space-y-3">
+              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="bg-sky-500/10 text-sky-400 border border-sky-500/20 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
+                  <span className="bg-blue-50 text-[#002B7F] border border-blue-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
                     Rover Section (Ages 18-26)
                   </span>
-                  <span className="text-xs font-semibold text-slate-300">{rovers.length} Active Members</span>
+                  <span className="text-xs font-semibold text-slate-700">{rovers.length} Active Members</span>
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-100">Baden-Powell Award</h4>
-                  <p className="text-xs text-slate-400 mt-0.5">Focus: Rover Crew Administration, 100km Maritime Expedition, Sustainable Community Service.</p>
+                  <h4 className="text-sm font-bold text-slate-900">Baden-Powell Award</h4>
+                  <p className="text-xs text-slate-600 mt-0.5">Focus: Rover Crew Administration, 100km Maritime Expedition, Sustainable Community Service.</p>
                 </div>
-                <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-xs">
-                  <span className="text-slate-400">Core Modules:</span>
-                  <span className="font-mono text-sky-400 font-semibold">
+                <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                  <span className="text-slate-500">Core Modules:</span>
+                  <span className="font-mono text-[#002B7F] font-bold">
                     {syllabus.filter((s) => s.awardType === 'Baden-Powell Award').length} Requirements
                   </span>
                 </div>
@@ -701,17 +701,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Right Column: Recent Journals & Sub-Crew Stats */}
         <div className="space-y-6">
           {/* Recent Member Journal Logs */}
-          <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg">
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-base font-bold text-slate-100">
+                <BookOpen className="w-5 h-5 text-[#006B3F]" />
+                <h3 className="text-base font-bold text-slate-900">
                   Member Activity Journals
                 </h3>
               </div>
               <button
                 onClick={() => onNavigateTabActual('journals')}
-                className="text-xs text-emerald-400 hover:text-emerald-300 font-medium transition"
+                className="text-xs text-[#002B7F] hover:text-blue-800 font-semibold transition cursor-pointer"
               >
                 View All
               </button>
@@ -721,15 +721,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {recentJournals.map((j) => {
                 const author = members.find((m) => m.id === j.memberId);
                 return (
-                  <div key={j.id} className="bg-[#161920] border border-slate-800 p-3.5 rounded-xl space-y-1.5">
+                  <div key={j.id} className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1.5 shadow-2xs">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-semibold text-emerald-400">{author?.name || 'Rover Member'}</span>
-                      <span className="text-slate-500">{j.date}</span>
+                      <span className="font-semibold text-[#006B3F]">{author?.name || 'Rover Member'}</span>
+                      <span className="text-slate-400">{j.date}</span>
                     </div>
-                    <h5 className="text-xs font-bold text-slate-100 line-clamp-1">{j.title}</h5>
-                    <p className="text-[11px] text-slate-400 line-clamp-2">{j.content}</p>
+                    <h5 className="text-xs font-bold text-slate-900 line-clamp-1">{j.title}</h5>
+                    <p className="text-[11px] text-slate-600 line-clamp-2">{j.content}</p>
                     {j.aiPolished && (
-                      <div className="pt-1 flex items-center gap-1 text-[10px] text-emerald-400 font-medium">
+                      <div className="pt-1 flex items-center gap-1 text-[10px] text-[#006B3F] font-semibold">
                         <Sparkles className="w-3 h-3" />
                         <span>AI Formatted Log</span>
                       </div>
@@ -741,22 +741,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Sub-Crews Overview Box */}
-          <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-slate-100">Sub-Crew Deployment</h3>
-              <span className="text-xs font-mono text-emerald-400">Multi-Location</span>
+              <h3 className="text-base font-bold text-slate-900">Sub-Crew Deployment</h3>
+              <span className="text-xs font-mono text-[#006B3F] font-bold">Multi-Location</span>
             </div>
 
             <div className="space-y-2.5">
               {crews.map((c) => {
-                const crewMemberCount = members.filter((m) => m.crewId === c.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin').length;
+                const crewMemberCount = members.filter((m) => m.crewId === c.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor').length;
                 return (
-                  <div key={c.id} className="bg-[#161920] border border-slate-800 p-3 rounded-xl flex items-center justify-between">
+                  <div key={c.id} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between">
                     <div>
-                      <p className="text-xs font-bold text-slate-100">{c.name}</p>
-                      <p className="text-[10px] text-slate-400">{c.location} • Leader: {c.crewLeaderName || 'Unassigned'}</p>
+                      <p className="text-xs font-bold text-slate-900">{c.name}</p>
+                      <p className="text-[10px] text-slate-500">{c.location} • Leader: {c.crewLeaderName || 'Unassigned'}</p>
                     </div>
-                    <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono text-xs font-bold px-2.5 py-1 rounded-lg">
+                    <span className="bg-emerald-50 text-[#006B3F] border border-emerald-200 font-mono text-xs font-bold px-2.5 py-1 rounded-lg">
                       {crewMemberCount} Members
                     </span>
                   </div>
