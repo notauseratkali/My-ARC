@@ -162,9 +162,9 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold py-2.5 rounded-xl transition flex items-center justify-center gap-2"
+                  className="w-full bg-[#FFF0F0] hover:bg-white text-[#800000] border border-[#FF9999] text-xs font-bold py-2.5 rounded-xl transition flex items-center justify-center gap-2 cursor-pointer shadow-xs"
                 >
-                  <LogOut className="w-4 h-4 text-rose-400" />
+                  <LogOut className="w-4 h-4 text-[#800000]" />
                   <span>Sign Out of Google Account</span>
                 </button>
               </div>

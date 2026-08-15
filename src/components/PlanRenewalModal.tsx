@@ -122,9 +122,9 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition cursor-pointer"
+            className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-xl transition cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-[#800000]" />
           </button>
         </div>
 
@@ -315,9 +315,9 @@ export const PlanRenewalModal: React.FC<PlanRenewalModalProps> = ({
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-[#002B7F] hover:bg-blue-800 text-white font-bold py-3 rounded-2xl transition shadow-md flex items-center justify-center gap-2 text-xs cursor-pointer mt-2"
+              className="w-full bg-[#800000] hover:bg-[#6b0000] text-white !text-white font-bold py-3 rounded-2xl transition shadow-md flex items-center justify-center gap-2 text-xs cursor-pointer mt-2"
             >
-              <Upload className="w-4 h-4" />
+              <Upload className="w-4 h-4 text-white" />
               <span>Submit Renewal Receipt for Superadmin Verification</span>
             </button>
           </form>

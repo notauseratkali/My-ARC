@@ -150,9 +150,9 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition cursor-pointer"
+            className="p-2 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-xl transition cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-[#800000]" />
           </button>
         </div>
 
@@ -484,9 +484,9 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
 
             <button
               type="submit"
-              className="w-full bg-[#002B7F] hover:bg-blue-800 text-white font-bold py-3 rounded-2xl transition shadow-md text-sm flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full bg-[#800000] hover:bg-[#6b0000] text-white !text-white font-bold py-3 rounded-2xl transition shadow-md text-sm flex items-center justify-center gap-2 cursor-pointer"
             >
-              <Building2 className="w-4 h-4" />
+              <Building2 className="w-4 h-4 text-white" />
               <span>Submit Organisation Registration Request</span>
             </button>
 
@@ -498,7 +498,7 @@ export const OrganisationSignupModal: React.FC<OrganisationSignupModalProps> = (
                     onClose();
                     onOpenLogin();
                   }}
-                  className="text-xs text-[#002B7F] hover:underline font-semibold transition cursor-pointer"
+                  className="text-xs text-[#800000] hover:underline font-bold transition cursor-pointer"
                 >
                   Already registered or have an account? Log In here
                 </button>

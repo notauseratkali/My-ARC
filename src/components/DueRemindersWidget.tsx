@@ -289,33 +289,33 @@ export const DueRemindersWidget: React.FC<DueRemindersWidgetProps> = ({
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-[11px] font-mono font-bold">
                     {item.category === 'Syllabus' && (
-                      <span className="text-[#006B3F] bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 flex items-center gap-1">
-                        <Award className="w-3 h-3" /> Syllabus
+                      <span className="text-[#800000] bg-[#FFF0F0] px-2 py-0.5 rounded border border-[#FF9999] flex items-center gap-1">
+                        <Award className="w-3 h-3 text-[#800000]" /> Syllabus
                       </span>
                     )}
                     {item.category === 'Event' && (
-                      <span className="text-[#002B7F] bg-blue-50 px-2 py-0.5 rounded border border-blue-200 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" /> Event
+                      <span className="text-[#800000] bg-[#FFF0F0] px-2 py-0.5 rounded border border-[#FF9999] flex items-center gap-1">
+                        <Calendar className="w-3 h-3 text-[#800000]" /> Event
                       </span>
                     )}
                     {item.category === 'Attendance' && (
-                      <span className="text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 flex items-center gap-1">
-                        <CheckSquare className="w-3 h-3" /> Attendance
+                      <span className="text-[#800000] bg-[#FFF0F0] px-2 py-0.5 rounded border border-[#FF9999] flex items-center gap-1">
+                        <CheckSquare className="w-3 h-3 text-[#800000]" /> Attendance
                       </span>
                     )}
                     {item.category === 'Disciplinary' && (
-                      <span className="text-[#800020] bg-rose-50 px-2 py-0.5 rounded border border-rose-200 flex items-center gap-1">
-                        <ShieldAlert className="w-3 h-3" /> Disciplinary
+                      <span className="text-[#800000] bg-rose-50 px-2 py-0.5 rounded border border-rose-300 flex items-center gap-1">
+                        <ShieldAlert className="w-3 h-3 text-[#800000]" /> Disciplinary
                       </span>
                     )}
                     {item.category === 'Journal' && (
-                      <span className="text-purple-700 bg-purple-50 px-2 py-0.5 rounded border border-purple-200 flex items-center gap-1">
-                        <BookOpen className="w-3 h-3" /> Notebook
+                      <span className="text-[#800000] bg-[#FFF0F0] px-2 py-0.5 rounded border border-[#FF9999] flex items-center gap-1">
+                        <BookOpen className="w-3 h-3 text-[#800000]" /> Notebook
                       </span>
                     )}
                     {item.category === 'Administrative' && (
-                      <span className="text-blue-800 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 flex items-center gap-1">
-                        <Sparkles className="w-3 h-3" /> Policy
+                      <span className="text-[#800000] bg-[#FFF0F0] px-2 py-0.5 rounded border border-[#FF9999] flex items-center gap-1">
+                        <Sparkles className="w-3 h-3 text-[#800000]" /> Policy
                       </span>
                     )}
                   </div>
@@ -323,17 +323,17 @@ export const DueRemindersWidget: React.FC<DueRemindersWidgetProps> = ({
                   <span
                     className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold border ${
                       item.isOverdue
-                        ? 'bg-rose-100 text-[#800020] border-rose-300'
+                        ? 'bg-rose-100 text-[#800000] border-rose-300'
                         : item.priority === 'High'
-                        ? 'bg-blue-100 text-[#002B7F] border-blue-300'
-                        : 'bg-white text-slate-600 border-slate-200'
+                        ? 'bg-[#FFF0F0] text-[#800000] border-[#FF9999]'
+                        : 'bg-white text-[#800000] border-[#FFD0D0]'
                     }`}
                   >
                     {item.dueDateLabel}
                   </span>
                 </div>
 
-                <h4 className="text-xs font-bold text-slate-900 group-hover:text-[#002B7F] transition leading-snug">
+                <h4 className="text-xs font-bold text-slate-900 group-hover:text-[#800000] transition leading-snug">
                   {item.title}
                 </h4>
 
@@ -355,7 +355,7 @@ export const DueRemindersWidget: React.FC<DueRemindersWidgetProps> = ({
 
                 <button
                   onClick={() => onNavigateTab(item.targetTab)}
-                  className="flex items-center gap-1 text-xs font-bold text-[#002B7F] hover:text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200 px-2.5 py-1 rounded-lg transition cursor-pointer"
+                  className="flex items-center gap-1 text-xs font-bold text-[#800000] hover:text-white bg-[#FFF0F0] hover:bg-[#800000] border border-[#FF9999] px-2.5 py-1 rounded-lg transition cursor-pointer shadow-xs"
                 >
                   <span>{item.actionText}</span>
                   <ChevronRight className="w-3.5 h-3.5" />

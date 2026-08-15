@@ -16,6 +16,10 @@ import {
   CrewPaymentTransaction,
   DisciplinaryIncident,
   AuditLogEntry,
+  SubCrew,
+  Section,
+  Gender,
+  MemberStatus,
 } from '../types';
 import {
   syncAllPortalModules,
@@ -45,6 +49,7 @@ import {
   Landmark,
   Save,
   User,
+  UserPlus,
   RefreshCw,
   Calendar,
   Edit3,
@@ -66,6 +71,7 @@ import {
 interface SuperAdminDashboardProps {
   organisations: Organisation[];
   members: Member[];
+  crews?: SubCrew[];
   onApproveOrg: (orgId: string, initialValidity?: string) => void;
   onRejectOrg: (orgId: string) => void;
   onAddDirectOrg: (newOrg: Omit<Organisation, 'id' | 'createdAt' | 'approvedAt'>) => void;
@@ -77,7 +83,11 @@ interface SuperAdminDashboardProps {
   onRejectOrgRenewal?: (orgId: string) => void;
   onUpdateOrg?: (updatedOrg: Organisation) => void;
   onDeleteOrg?: (orgId: string) => void;
+  onAddMember?: (newMember: Omit<Member, 'id' | 'attendanceUnexcused' | 'attendanceExcused'>) => void;
   onUpdateMember?: (updatedMember: Member) => void;
+  onDeleteMember?: (id: string) => void;
+  onTriggerSync?: () => void;
+  onLogAudit?: (action: string, category: any, details: string, targetId?: string, targetName?: string) => void;
   syllabus?: SyllabusRequirement[];
   progressList?: MemberRequirementProgress[];
   journals?: JournalEntry[];
@@ -95,6 +105,7 @@ interface SuperAdminDashboardProps {
 export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
   organisations,
   members,
+  crews = [],
   onApproveOrg,
   onRejectOrg,
   onAddDirectOrg,
@@ -106,7 +117,11 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
   onRejectOrgRenewal,
   onUpdateOrg,
   onDeleteOrg,
+  onAddMember,
   onUpdateMember,
+  onDeleteMember,
+  onTriggerSync,
+  onLogAudit,
   syllabus = [],
   progressList = [],
   journals = [],
@@ -240,6 +255,175 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
   const [userSearchQuery, setUserSearchQuery] = useState<string>('');
   const [userOrgFilter, setUserOrgFilter] = useState<string>('all');
   const [userRoleFilter, setUserRoleFilter] = useState<string>('all');
+
+  // New Member Onboarding Modal State
+  const [isNewUserModalOpen, setIsNewUserModalOpen] = useState<boolean>(false);
+  const [newUserForm, setNewUserForm] = useState({
+    name: '',
+    idCard: '',
+    dob: '',
+    gender: 'Male' as Gender,
+    section: 'Explorer' as Section,
+    organisationId: organisations[0]?.id || 'org-meyvaa',
+    crewId: crews?.[0]?.id || 'crew-1',
+    councilRole: 'Member',
+    investitureDate: new Date().toISOString().split('T')[0],
+    status: 'Active' as MemberStatus,
+    term: '2025-2026',
+    email: '',
+    mobile: '',
+    phone: '',
+    permAddress: '',
+    currAddress: '',
+    telegram: '',
+    whatsapp: '',
+    instagram: '',
+    emergencyContactName: '',
+    emergencyContactNumber: '',
+    password: '123456',
+    mustChangePassword: true,
+  });
+
+  // Edit Member Profile Modal State
+  const [isEditUserModalOpen, setIsEditUserModalOpen] = useState<boolean>(false);
+  const [editUserData, setEditUserData] = useState<Member | null>(null);
+  const [deletingUserMember, setDeletingUserMember] = useState<Member | null>(null);
+
+  const handleOpenNewUserModal = () => {
+    setNewUserForm({
+      name: '',
+      idCard: '',
+      dob: '',
+      gender: 'Male' as Gender,
+      section: 'Explorer' as Section,
+      organisationId: organisations[0]?.id || 'org-meyvaa',
+      crewId: crews?.[0]?.id || 'crew-1',
+      councilRole: 'Member',
+      investitureDate: new Date().toISOString().split('T')[0],
+      status: 'Active' as MemberStatus,
+      term: '2025-2026',
+      email: '',
+      mobile: '',
+      phone: '',
+      permAddress: '',
+      currAddress: '',
+      telegram: '',
+      whatsapp: '',
+      instagram: '',
+      emergencyContactName: '',
+      emergencyContactNumber: '',
+      password: '123456',
+      mustChangePassword: true,
+    });
+    setIsNewUserModalOpen(true);
+  };
+
+  const handleSaveNewUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newUserForm.name.trim() || !newUserForm.idCard.trim()) {
+      alert('Please provide member full name and national ID card.');
+      return;
+    }
+
+    const assignedCrew = crews.find((c) => c.id === newUserForm.crewId);
+    const org = organisations.find((o) => o.id === newUserForm.organisationId);
+
+    // Calculate age from DOB if present
+    let age = 18;
+    if (newUserForm.dob) {
+      const birth = new Date(newUserForm.dob);
+      const diff = Date.now() - birth.getTime();
+      age = Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
+    }
+
+    const newMemberData: Omit<Member, 'id' | 'attendanceUnexcused' | 'attendanceExcused'> = {
+      name: newUserForm.name.trim(),
+      idCard: newUserForm.idCard.trim().toUpperCase(),
+      dob: newUserForm.dob,
+      age: isNaN(age) || age < 1 ? 18 : age,
+      gender: newUserForm.gender,
+      section: newUserForm.section,
+      organisationId: newUserForm.organisationId,
+      crewId: newUserForm.crewId,
+      crewName: assignedCrew ? assignedCrew.name : 'Unassigned Crew',
+      councilRole: newUserForm.councilRole,
+      investitureDate: newUserForm.investitureDate,
+      status: newUserForm.status,
+      term: newUserForm.term,
+      email: newUserForm.email.trim(),
+      mobile: newUserForm.mobile.trim(),
+      phone: newUserForm.phone.trim() || newUserForm.mobile.trim(),
+      permAddress: newUserForm.permAddress.trim(),
+      currAddress: newUserForm.currAddress.trim(),
+      telegram: newUserForm.telegram.trim(),
+      whatsapp: newUserForm.whatsapp.trim(),
+      instagram: newUserForm.instagram.trim(),
+      emergencyContactName: newUserForm.emergencyContactName.trim(),
+      emergencyContactNumber: newUserForm.emergencyContactNumber.trim(),
+      isSuperAdmin: newUserForm.councilRole === 'Superadmin',
+      password: newUserForm.password.trim() || '123456',
+      mustChangePassword: newUserForm.mustChangePassword,
+    };
+
+    if (onAddMember) {
+      onAddMember(newMemberData);
+    }
+    if (onLogAudit) {
+      onLogAudit(
+        'Onboard Member',
+        'Member Management',
+        `Superadmin registered new member ${newUserForm.name} (${newUserForm.idCard}) in org ${org?.name || newUserForm.organisationId}.`,
+        newUserForm.idCard,
+        newUserForm.name
+      );
+    }
+    setIsNewUserModalOpen(false);
+  };
+
+  const handleOpenEditUser = (member: Member) => {
+    setEditUserData({ ...member });
+    setIsEditUserModalOpen(true);
+  };
+
+  const handleSaveEditUser = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editUserData || !onUpdateMember) return;
+
+    const assignedCrew = crews.find((c) => c.id === editUserData.crewId);
+    const updatedMember: Member = {
+      ...editUserData,
+      crewName: assignedCrew ? assignedCrew.name : editUserData.crewName,
+      isSuperAdmin: editUserData.councilRole === 'Superadmin' || editUserData.isSuperAdmin,
+    };
+
+    onUpdateMember(updatedMember);
+    if (onLogAudit) {
+      onLogAudit(
+        'Update Member Profile',
+        'Member Management',
+        `Superadmin updated member profile for ${updatedMember.name} (${updatedMember.idCard}).`,
+        updatedMember.id,
+        updatedMember.name
+      );
+    }
+    setIsEditUserModalOpen(false);
+    setEditUserData(null);
+  };
+
+  const handleConfirmDeleteUser = () => {
+    if (!deletingUserMember || !onDeleteMember) return;
+    onDeleteMember(deletingUserMember.id);
+    if (onLogAudit) {
+      onLogAudit(
+        'Delete Member',
+        'Member Management',
+        `Superadmin deleted member record for ${deletingUserMember.name} (${deletingUserMember.idCard}).`,
+        deletingUserMember.id,
+        deletingUserMember.name
+      );
+    }
+    setDeletingUserMember(null);
+  };
 
   const handleOpenPasswordModal = (member: Member) => {
     setPasswordModalMember(member);
@@ -1530,6 +1714,38 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
           </div>
 
           {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#FFF0F0] border border-[#FF9999] p-3.5 rounded-2xl">
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={handleOpenNewUserModal}
+                className="bg-[#800000] hover:bg-[#6b0000] text-white px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-md hover:scale-[1.02] !text-white"
+              >
+                <UserPlus className="w-4 h-4 text-white" />
+                <span>Onboard New Member</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  if (onTriggerSync) onTriggerSync();
+                  handleRunFullModuleSync('members');
+                }}
+                disabled={syncingModuleId === 'members'}
+                className="bg-white hover:bg-[#FFF0F0] text-[#800000] border border-[#FF9999] px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-xs"
+              >
+                <RefreshCw className={`w-3.5 h-3.5 text-[#800000] ${syncingModuleId === 'members' ? 'animate-spin' : ''}`} />
+                <span>Sync with Members Page</span>
+              </button>
+            </div>
+
+            <div className="text-[11px] text-slate-700 font-medium flex items-center gap-2 self-end sm:self-auto">
+              <span className="bg-white text-[#800000] border border-[#FF9999] px-2.5 py-1 rounded-lg font-bold">
+                Total Registered: {members.length} Users
+              </span>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="relative">
               <Search className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
@@ -1617,7 +1833,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                         <th className="py-3.5 px-4 font-bold text-white">Organisation Context</th>
                         <th className="py-3.5 px-4 font-bold text-white">Role & Section</th>
                         <th className="py-3.5 px-4 font-bold text-white">Password Status</th>
-                        <th className="py-3.5 px-4 font-bold text-white text-right">Action</th>
+                        <th className="py-3.5 px-4 font-bold text-white text-right">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-[#FF9999]/30 bg-white">
@@ -1708,14 +1924,38 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                             </td>
 
                             <td className="py-3.5 px-4 text-right">
-                              <button
-                                type="button"
-                                onClick={() => handleOpenPasswordModal(user)}
-                                className="bg-[#800000] hover:bg-[#6b0000] text-white px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ml-auto cursor-pointer shadow-sm hover:scale-[1.02] !text-white"
-                              >
-                                <Key className="w-3.5 h-3.5 text-white" />
-                                <span>Change Password</span>
-                              </button>
+                              <div className="flex items-center justify-end gap-1.5">
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenEditUser(user)}
+                                  className="bg-white hover:bg-[#FFF0F0] text-slate-800 border border-[#FF9999] px-2.5 py-1.5 rounded-xl text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                                  title="Edit Member Profile"
+                                >
+                                  <Edit3 className="w-3 h-3 text-[#800000]" />
+                                  <span>Edit</span>
+                                </button>
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenPasswordModal(user)}
+                                  className="bg-[#800000] hover:bg-[#6b0000] text-white px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shadow-xs !text-white"
+                                  title="Change Password"
+                                >
+                                  <Key className="w-3 h-3 text-white" />
+                                  <span>Password</span>
+                                </button>
+
+                                {onDeleteMember && !isSuper && (
+                                  <button
+                                    type="button"
+                                    onClick={() => setDeletingUserMember(user)}
+                                    className="bg-white hover:bg-rose-50 text-rose-700 border border-rose-300 px-2 py-1.5 rounded-xl text-[11px] font-semibold transition flex items-center gap-1 cursor-pointer"
+                                    title="Delete Member"
+                                  >
+                                    <Trash2 className="w-3 h-3 text-rose-600" />
+                                  </button>
+                                )}
+                              </div>
                             </td>
                           </tr>
                         );
@@ -2261,6 +2501,409 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 </div>
               </form>
             )}
+          </div>
+        </div>
+      )}
+      {/* Superadmin Onboard New Member Modal */}
+      {isNewUserModalOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-[#FF9999] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4 relative shadow-2xl animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-[#FF9999]/40 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#800000] text-white flex items-center justify-center font-bold shadow-xs">
+                  <UserPlus className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#800000] text-sm">Superadmin Member Onboarding</h3>
+                  <p className="text-[11px] text-slate-600">Register new member directly into active database & directory</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsNewUserModalOpen(false)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-[#FFF0F0] cursor-pointer"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveNewUser} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Full Name *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Ahmed Ali"
+                    value={newUserForm.name}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, name: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">National ID Card (NID) *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. A123456"
+                    value={newUserForm.idCard}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, idCard: e.target.value.toUpperCase() })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs font-mono focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Date of Birth</label>
+                  <input
+                    type="date"
+                    value={newUserForm.dob}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, dob: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Gender</label>
+                  <select
+                    value={newUserForm.gender}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, gender: e.target.value as Gender })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Scout Section</label>
+                  <select
+                    value={newUserForm.section}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, section: e.target.value as Section })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    <option value="Explorer">Explorer Section (&lt;18)</option>
+                    <option value="Rover">Rover Section (18-26)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Organisation Unit</label>
+                  <select
+                    value={newUserForm.organisationId}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, organisationId: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    {organisations.map((org) => (
+                      <option key={org.id} value={org.id}>
+                        {org.name} ({org.code})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Sub-Crew Assignment</label>
+                  <select
+                    value={newUserForm.crewId}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, crewId: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    {crews.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Council / Leadership Role</label>
+                  <select
+                    value={newUserForm.councilRole}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, councilRole: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    <option value="Member">General Member</option>
+                    <option value="Crew Leader">Crew Leader</option>
+                    <option value="Assistant Crew Leader">Assistant Crew Leader</option>
+                    <option value="Scribe">Scribe</option>
+                    <option value="Quartermaster">Quartermaster</option>
+                    <option value="Rover Advisor">Rover Advisor</option>
+                    <option value="Superadmin">Superadmin</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Email Address</label>
+                  <input
+                    type="email"
+                    placeholder="member@example.com"
+                    value={newUserForm.email}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, email: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Mobile Phone</label>
+                  <input
+                    type="tel"
+                    placeholder="e.g. 7771234"
+                    value={newUserForm.mobile}
+                    onChange={(e) => setNewUserForm({ ...newUserForm, mobile: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+              </div>
+
+              <div className="bg-[#FFF0F0] p-3.5 rounded-2xl border border-[#FF9999] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold text-slate-900">Initial Login Password</span>
+                  <span className="font-mono text-slate-600">Default: 123456</span>
+                </div>
+                <input
+                  type="text"
+                  value={newUserForm.password}
+                  onChange={(e) => setNewUserForm({ ...newUserForm, password: e.target.value })}
+                  placeholder="Set initial password"
+                  className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs font-mono focus:outline-none focus:border-[#800000]"
+                />
+              </div>
+
+              <div className="flex items-center gap-2 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 bg-[#800000] hover:bg-[#6b0000] text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer !text-white"
+                >
+                  <UserPlus className="w-4 h-4 text-white" />
+                  <span>Onboard & Save to Live Sync</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsNewUserModalOpen(false)}
+                  className="bg-[#FFF0F0] text-slate-700 hover:bg-[#FF9999]/30 px-4 py-2.5 rounded-xl text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Superadmin Edit Member Profile Modal */}
+      {isEditUserModalOpen && editUserData && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-[#FF9999] rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4 relative shadow-2xl animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-[#FF9999]/40 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#800000] text-white flex items-center justify-center font-bold shadow-xs">
+                  <Edit3 className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#800000] text-sm">Edit Member Profile</h3>
+                  <p className="text-[11px] text-slate-600 font-mono">{editUserData.name} ({editUserData.idCard})</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setIsEditUserModalOpen(false);
+                  setEditUserData(null);
+                }}
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-[#FFF0F0] cursor-pointer"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEditUser} className="space-y-4 text-xs">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Full Name</label>
+                  <input
+                    type="text"
+                    required
+                    value={editUserData.name}
+                    onChange={(e) => setEditUserData({ ...editUserData, name: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">National ID Card (NID)</label>
+                  <input
+                    type="text"
+                    required
+                    value={editUserData.idCard}
+                    onChange={(e) => setEditUserData({ ...editUserData, idCard: e.target.value.toUpperCase() })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs font-mono focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Email Address</label>
+                  <input
+                    type="email"
+                    value={editUserData.email || ''}
+                    onChange={(e) => setEditUserData({ ...editUserData, email: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Mobile Phone</label>
+                  <input
+                    type="tel"
+                    value={editUserData.mobile || ''}
+                    onChange={(e) => setEditUserData({ ...editUserData, mobile: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Section</label>
+                  <select
+                    value={editUserData.section}
+                    onChange={(e) => setEditUserData({ ...editUserData, section: e.target.value as Section })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    <option value="Explorer">Explorer Section (&lt;18)</option>
+                    <option value="Rover">Rover Section (18-26)</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Lifecycle Status</label>
+                  <select
+                    value={editUserData.status}
+                    onChange={(e) => setEditUserData({ ...editUserData, status: e.target.value as MemberStatus })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    <option value="Active">Active</option>
+                    <option value="Onboarding">Onboarding</option>
+                    <option value="Suspended">Suspended</option>
+                    <option value="Alumni">Alumni</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Organisation</label>
+                  <select
+                    value={editUserData.organisationId}
+                    onChange={(e) => setEditUserData({ ...editUserData, organisationId: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    {organisations.map((org) => (
+                      <option key={org.id} value={org.id}>
+                        {org.name} ({org.code})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-slate-800 font-bold">Council Role</label>
+                  <select
+                    value={editUserData.councilRole || 'Member'}
+                    onChange={(e) => setEditUserData({ ...editUserData, councilRole: e.target.value })}
+                    className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-[#800000]"
+                  >
+                    <option value="Member">General Member</option>
+                    <option value="Crew Leader">Crew Leader</option>
+                    <option value="Assistant Crew Leader">Assistant Crew Leader</option>
+                    <option value="Scribe">Scribe</option>
+                    <option value="Quartermaster">Quartermaster</option>
+                    <option value="Rover Advisor">Rover Advisor</option>
+                    <option value="Superadmin">Superadmin</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-2">
+                <button
+                  type="submit"
+                  className="flex-1 bg-[#800000] hover:bg-[#6b0000] text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md flex items-center justify-center gap-1.5 cursor-pointer !text-white"
+                >
+                  <Save className="w-4 h-4 text-white" />
+                  <span>Save Member Changes</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsEditUserModalOpen(false);
+                    setEditUserData(null);
+                  }}
+                  className="bg-[#FFF0F0] text-slate-700 hover:bg-[#FF9999]/30 px-4 py-2.5 rounded-xl text-xs font-semibold cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Superadmin Delete Member Confirmation Modal */}
+      {deletingUserMember && (
+        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border-2 border-[#FF3333] rounded-3xl max-w-md w-full p-6 space-y-4 relative shadow-2xl animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-[#FF9999]/40 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-[#800000] text-white flex items-center justify-center font-bold shadow-xs">
+                  <Trash2 className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-[#800000] text-sm">Delete Member</h3>
+                  <p className="text-[11px] text-slate-600 font-mono">{deletingUserMember.name} ({deletingUserMember.idCard})</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDeletingUserMember(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-[#FFF0F0] cursor-pointer"
+              >
+                <XCircle className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="bg-[#FFF0F0] p-4 rounded-2xl border border-[#FF9999] space-y-2 text-xs text-slate-800">
+              <p className="text-slate-900 font-bold">
+                Are you sure you want to permanently delete member record for <strong className="text-[#800000]">{deletingUserMember.name}</strong>?
+              </p>
+              <div className="bg-white p-3 rounded-xl border border-[#FF9999] text-[11px] text-slate-600 space-y-1 shadow-2xs">
+                <div className="flex justify-between">
+                  <span>NID Card:</span>
+                  <strong className="text-[#800000] font-mono">{deletingUserMember.idCard}</strong>
+                </div>
+                <div className="flex justify-between">
+                  <span>Role &amp; Section:</span>
+                  <strong className="text-slate-900">{deletingUserMember.councilRole || deletingUserMember.section}</strong>
+                </div>
+              </div>
+              <p className="text-[11px] text-[#FF3333] font-semibold">
+                This action will permanently delete this member's credentials, records, and directory entry across the entire portal.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 pt-2">
+              <button
+                type="button"
+                onClick={handleConfirmDeleteUser}
+                className="flex-1 bg-[#800000] hover:bg-[#6b0000] text-white font-bold py-2.5 rounded-xl text-xs transition shadow-md cursor-pointer flex items-center justify-center gap-1.5 !text-white"
+              >
+                <Trash2 className="w-4 h-4 text-white" />
+                <span>Delete Member</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setDeletingUserMember(null)}
+                className="bg-[#FFF0F0] text-slate-700 hover:bg-[#FF9999]/30 px-4 py-2.5 rounded-xl text-xs font-semibold cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}

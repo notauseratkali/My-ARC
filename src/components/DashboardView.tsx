@@ -176,13 +176,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn text-slate-900">
       {/* Welcome Banner */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-white border border-[#FFD0D0] rounded-2xl p-6 shadow-xs relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#FF9999]/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div>
-            <div className="flex items-center gap-2 text-[#006B3F] font-mono text-xs font-semibold uppercase tracking-wider mb-1">
-              <span className="w-2 h-2 rounded-full bg-[#006B3F] animate-ping" />
+            <div className="flex items-center gap-2 text-[#800000] font-mono text-xs font-semibold uppercase tracking-wider mb-1">
+              <span className="w-2 h-2 rounded-full bg-[#FF3333] animate-ping" />
               {isAdvisor
                 ? 'Rover Advisor • Network & Crew Administration'
                 : isCouncil
@@ -192,19 +192,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
               <span>Welcome back, {currentMember ? currentMember.name : 'Scout'}</span>
               {isAdvisor && (
-                <span className="bg-purple-50 text-purple-700 border border-purple-200 text-xs px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1">
-                  <Crown className="w-3.5 h-3.5 text-purple-700" />
-                  <span>Rover Advisor</span>
+                <span className="bg-[#800000] text-white border border-[#800000] text-xs px-2.5 py-0.5 rounded-full font-mono flex items-center gap-1 !text-white">
+                  <Crown className="w-3.5 h-3.5 text-white" />
+                  <span className="text-white font-bold !text-white">Rover Advisor</span>
                 </span>
               )}
             </h2>
             <p className="text-slate-600 text-sm mt-1 max-w-2xl">
               {isAdvisor ? (
-                <>Operating with supreme authority over <span className="text-purple-700 font-semibold">{settings?.networkName || 'Meyvaa Scouting Network'}</span>. Administering scout group decisions, executive council governance, and overall Scout operations through Meyvaa Portal across {crews.length} decentralized crews.</>
+                <>Operating with supreme authority over <span className="text-[#800000] font-semibold">{settings?.networkName || 'Meyvaa Scouting Network'}</span>. Administering scout group decisions, executive council governance, and overall Scout operations through Meyvaa Portal across {crews.length} decentralized crews.</>
               ) : isCouncil ? (
-                <>Operating via <span className="text-[#002B7F] font-semibold">Meyvaa Portal</span> for <span className="text-[#006B3F] font-semibold">{settings?.networkName || 'Scout Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-[#800000] font-semibold">Meyvaa Portal</span> for <span className="text-[#800000] font-semibold">{settings?.networkName || 'Scout Network'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               ) : (
-                <>Operating via <span className="text-[#002B7F] font-semibold">Meyvaa Portal</span> for <span className="text-[#006B3F] font-semibold">{currentMember?.crewName || settings?.crewName || 'Scout Group Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
+                <>Operating via <span className="text-[#800000] font-semibold">Meyvaa Portal</span> for <span className="text-[#800000] font-semibold">{currentMember?.crewName || settings?.crewName || 'Scout Group Crew'}</span>. Managing {activeMembers.length} active Rovers & Explorers across {crews.length} decentralized crews.</>
               )}
             </p>
           </div>
@@ -272,26 +272,26 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       {/* Transition Alert Banner (If any members turn 18 and council or user is involved) */}
       {transitionCandidates.length > 0 && (isCouncil || transitionCandidates.some(c => c.id === currentMember?.id)) && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center justify-between gap-4 text-amber-900 text-xs shadow-xs">
+        <div className="bg-[#FFF0F0] border border-[#FF9999] rounded-xl p-4 flex items-center justify-between gap-4 text-[#800000] text-xs shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-amber-100 text-amber-700">
+            <div className="p-2 rounded-lg bg-white text-[#FF3333] border border-[#FF9999]">
               <AlertCircle className="w-5 h-5" />
             </div>
             <div>
-              <p className="font-semibold text-amber-900">
+              <p className="font-semibold text-[#800000]">
                 Automated Section Transition Alert ({transitionCandidates.length} Member)
               </p>
-              <p className="text-amber-700">
+              <p className="text-slate-700">
                 {transitionCandidates.map((c) => `${c.name} (Age ${c.age})`).join(', ')} has turned 18 and is eligible to transition from Explorer (President Scout) to Rover Section (Baden-Powell BP Award).
               </p>
             </div>
           </div>
           <button
             onClick={() => onNavigateTabActual('members')}
-            className="bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 flex-shrink-0 transition cursor-pointer"
+            className="bg-[#800000] hover:bg-[#660000] text-white px-3 py-1.5 rounded-lg font-medium flex items-center gap-1 flex-shrink-0 transition cursor-pointer !text-white"
           >
-            <span>Review Profile</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span className="text-white font-semibold !text-white">Review Profile</span>
+            <ArrowRight className="w-3.5 h-3.5 text-white" />
           </button>
         </div>
       )}
@@ -301,19 +301,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Total Active Members */}
         <div
           onClick={() => onNavigateTabActual('members')}
-          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
+          className="bg-white border border-[#FFD0D0] hover:border-[#FF9999] p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500">Total Active Crew</span>
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 text-[#006B3F] border border-emerald-200 flex items-center justify-center group-hover:scale-105 transition">
-              <Users className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-[#FFF0F0] text-[#800000] border border-[#FF9999] flex items-center justify-center group-hover:scale-105 transition">
+              <Users className="w-5 h-5 text-[#800000]" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
             <span className="text-3xl font-bold text-slate-900">{activeMembers.length}</span>
-            <span className="text-xs text-[#006B3F] font-mono font-medium">Target: 150</span>
+            <span className="text-xs text-[#800000] font-mono font-medium">Target: 150</span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-500 flex items-center justify-between border-t border-slate-100 pt-2">
+          <div className="mt-2 text-[11px] text-slate-500 flex items-center justify-between border-t border-[#FFD0D0]/50 pt-2">
             <span>{explorers.length} Explorers</span>
             <span>{rovers.length} Rovers</span>
           </div>
@@ -322,19 +322,19 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Multi-Crews Count */}
         <div
           onClick={() => onNavigateTabActual('settings')}
-          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
+          className="bg-white border border-[#FFD0D0] hover:border-[#FF9999] p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500">Sub-Crew Units</span>
-            <div className="w-9 h-9 rounded-xl bg-blue-50 text-[#002B7F] border border-blue-200 flex items-center justify-center group-hover:scale-105 transition">
-              <MapPin className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-[#FFF0F0] text-[#800000] border border-[#FF9999] flex items-center justify-center group-hover:scale-105 transition">
+              <MapPin className="w-5 h-5 text-[#800000]" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
             <span className="text-3xl font-bold text-slate-900">{crews.length}</span>
-            <span className="text-xs text-[#002B7F] font-mono">Decentralized</span>
+            <span className="text-xs text-[#800000] font-mono">Decentralized</span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-500 border-t border-slate-100 pt-2 flex items-center justify-between">
+          <div className="mt-2 text-[11px] text-slate-500 border-t border-[#FFD0D0]/50 pt-2 flex items-center justify-between">
             <span>Male • Hulhumale • Villimale</span>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           </div>
@@ -343,25 +343,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Awards Progression */}
         <div
           onClick={() => onNavigateTabActual('syllabus')}
-          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
+          className="bg-white border border-[#FFD0D0] hover:border-[#FF9999] p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500">
               {isCouncil ? 'Award Milestones' : 'My Active Syllabus'}
             </span>
-            <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center group-hover:scale-105 transition">
-              <Award className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-[#FFF0F0] text-[#800000] border border-[#FF9999] flex items-center justify-center group-hover:scale-105 transition">
+              <Award className="w-5 h-5 text-[#800000]" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
             <span className="text-3xl font-bold text-slate-900">
               {isCouncil ? syllabus.length : progressList.filter((p) => p.memberId === currentMember?.id && p.status !== 'Not Started').length}
             </span>
-            <span className="text-xs text-amber-700 font-mono">
+            <span className="text-xs text-[#800000] font-mono">
               {displayedNearCompletionItems.length > 0 ? `${displayedNearCompletionItems.length} Active Requirements` : 'President & BP'}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-500 border-t border-slate-100 pt-2 flex items-center justify-between">
+          <div className="mt-2 text-[11px] text-slate-500 border-t border-[#FFD0D0]/50 pt-2 flex items-center justify-between">
             <span>
               {progressList.filter((p) => (isCouncil ? true : p.memberId === currentMember?.id) && (p.status === 'Completed' || p.status === 'Verified')).length} Verified
             </span>
@@ -372,27 +372,25 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Governance & Review Card */}
         <div
           onClick={() => onNavigateTabActual(isCouncil ? 'disciplinary' : 'attendance')}
-          className="bg-white border border-slate-200 hover:border-[#002B7F]/40 p-5 rounded-2xl cursor-pointer transition shadow-xs group"
+          className="bg-white border border-[#FFD0D0] hover:border-[#FF9999] p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-slate-500">
               {isCouncil ? 'Governance & Review' : 'My Standing & Roll'}
             </span>
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center group-hover:scale-105 transition ${
-              isCouncil ? 'bg-rose-50 text-[#800020] border border-rose-200' : 'bg-emerald-50 text-[#006B3F] border border-emerald-200'
-            }`}>
-              <ShieldAlert className="w-5 h-5" />
+            <div className="w-9 h-9 rounded-xl bg-[#FFF0F0] text-[#800000] border border-[#FF9999] flex items-center justify-center group-hover:scale-105 transition">
+              <ShieldAlert className="w-5 h-5 text-[#800000]" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
             <span className="text-3xl font-bold text-slate-900">
               {isCouncil ? onboardingMembers.length + openDisciplinaryCount : currentMember?.attendanceUnexcused || 0}
             </span>
-            <span className={`text-xs font-mono ${isCouncil ? 'text-[#800020]' : 'text-[#006B3F]'}`}>
+            <span className="text-xs font-mono text-[#800000]">
               {isCouncil ? 'Action Items' : 'Unexcused Absences'}
             </span>
           </div>
-          <div className="mt-2 text-[11px] text-slate-500 border-t border-slate-100 pt-2 flex items-center justify-between">
+          <div className="mt-2 text-[11px] text-slate-500 border-t border-[#FFD0D0]/50 pt-2 flex items-center justify-between">
             <span>{isCouncil ? `${onboardingMembers.length} Onboarding • ${openDisciplinaryCount} Cases` : 'Good Standing • Active Status'}</span>
             <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
           </div>
@@ -423,20 +421,20 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       />
 
       {/* Near Completion Syllabus Notification Block */}
-      <div className="bg-white border border-amber-200 rounded-2xl p-5 shadow-xs relative overflow-hidden space-y-4">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="bg-white border border-[#FFD0D0] rounded-2xl p-5 shadow-xs relative overflow-hidden space-y-4">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-[#FF9999]/10 rounded-full blur-3xl pointer-events-none" />
 
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3 relative z-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#FFD0D0] pb-3 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-700 shadow-xs">
-              <Zap className="w-5 h-5 fill-amber-500/20" />
+            <div className="p-2.5 rounded-xl bg-[#FFF0F0] border border-[#FF9999] text-[#800000] shadow-xs">
+              <Zap className="w-5 h-5 text-[#800000]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-bold text-slate-900">
                   {isCouncil ? "Syllabus 'Near Completion' Notifications" : "My Active Syllabus & Award Progress"}
                 </h3>
-                <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full">
+                <span className="bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[10px] font-bold font-mono px-2.5 py-0.5 rounded-full">
                   {displayedNearCompletionItems.length} {isCouncil ? `Member${displayedNearCompletionItems.length !== 1 ? 's' : ''} Flagged` : 'Active Item'}
                 </span>
               </div>
@@ -450,10 +448,10 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
           <button
             onClick={() => onNavigateTabActual('syllabus')}
-            className="text-xs text-amber-800 hover:text-amber-900 font-medium flex items-center gap-1.5 self-start sm:self-auto bg-amber-50 hover:bg-amber-100 px-3.5 py-2 rounded-xl border border-amber-200 transition shadow-xs cursor-pointer"
+            className="text-xs text-[#800000] hover:text-[#660000] font-semibold flex items-center gap-1.5 self-start sm:self-auto bg-[#FFF0F0] hover:bg-[#FFE5E5] px-3.5 py-2 rounded-xl border border-[#FF9999] transition shadow-xs cursor-pointer"
           >
             <span>Review in Syllabus Engine</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#800000]" />
           </button>
         </div>
 
@@ -466,7 +464,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             {displayedNearCompletionItems.map((item) => (
               <div
                 key={item.progressId}
-                className="bg-slate-50 border border-slate-200 hover:border-amber-300 p-4 rounded-xl flex flex-col justify-between space-y-3 transition shadow-xs group"
+                className="bg-white border border-[#FFD0D0] hover:border-[#FF9999] p-4 rounded-xl flex flex-col justify-between space-y-3 transition shadow-xs group"
               >
                 <div>
                   {/* Member Info Header */}
@@ -476,15 +474,15 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <img
                           src={item.member.avatar}
                           alt={item.member.name}
-                          className="w-8 h-8 rounded-full object-cover border border-amber-300 flex-shrink-0"
+                          className="w-8 h-8 rounded-full object-cover border border-[#FF9999] flex-shrink-0"
                         />
                       ) : (
-                        <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-300 flex items-center justify-center text-xs font-bold text-amber-700 flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-[#FFF0F0] border border-[#FF9999] flex items-center justify-center text-xs font-bold text-[#800000] flex-shrink-0">
                           {item.member.name.charAt(0)}
                         </div>
                       )}
                       <div className="min-w-0">
-                        <p className="text-xs font-bold text-slate-900 truncate group-hover:text-amber-800 transition">
+                        <p className="text-xs font-bold text-slate-900 truncate group-hover:text-[#800000] transition">
                           {item.member.name}
                         </p>
                         <p className="text-[10px] text-slate-500 truncate">
@@ -494,11 +492,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                     </div>
 
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono flex-shrink-0 ${
-                        item.prog.status === 'Submitted'
-                          ? 'bg-blue-50 text-[#002B7F] border border-blue-200'
-                          : 'bg-amber-50 text-amber-800 border border-amber-200 animate-pulse'
-                      }`}
+                      className="text-[10px] font-bold px-2 py-0.5 rounded font-mono flex-shrink-0 bg-[#FFF0F0] text-[#800000] border border-[#FF9999]"
                     >
                       {item.statusLabel}
                     </span>
@@ -506,7 +500,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   {/* Requirement Title */}
                   <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-[#006B3F]">
+                    <span className="text-[10px] uppercase font-mono tracking-wider font-semibold text-[#800000]">
                       {item.req.awardType}
                     </span>
                     <h5 className="text-xs font-bold text-slate-800 line-clamp-1">
@@ -520,17 +514,13 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <span className="text-slate-500 font-mono">
                         {item.completedTasksCount} / {item.totalTasks} Tasks Done
                       </span>
-                      <span className="font-bold font-mono text-amber-700">
+                      <span className="font-bold font-mono text-[#800000]">
                         {item.pct}%
                       </span>
                     </div>
-                    <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden p-0.5 border border-slate-300">
+                    <div className="w-full bg-[#FFF0F0] h-2 rounded-full overflow-hidden p-0.5 border border-[#FFD0D0]">
                       <div
-                        className={`h-full rounded-full transition-all duration-500 ${
-                          item.prog.status === 'Submitted'
-                            ? 'bg-[#002B7F]'
-                            : 'bg-gradient-to-r from-amber-500 to-emerald-500'
-                        }`}
+                        className="h-full rounded-full transition-all duration-500 bg-gradient-to-r from-[#800000] to-[#FF3333]"
                         style={{ width: `${item.pct}%` }}
                       />
                     </div>
@@ -538,14 +528,14 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
                   {/* Remaining Task Note */}
                   {item.remainingTasks.length > 0 ? (
-                    <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-start gap-1.5 text-[11px] text-slate-700">
-                      <Clock className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div className="mt-2.5 pt-2 border-t border-[#FFD0D0] flex items-start gap-1.5 text-[11px] text-slate-700">
+                      <Clock className="w-3.5 h-3.5 text-[#800000] flex-shrink-0 mt-0.5" />
                       <span className="line-clamp-1 italic text-slate-500">
                         Pending: {item.remainingTasks[0].text}
                       </span>
                     </div>
                   ) : item.prog.notes ? (
-                    <div className="mt-2.5 pt-2 border-t border-slate-200 text-[11px] text-slate-500 italic line-clamp-1">
+                    <div className="mt-2.5 pt-2 border-t border-[#FFD0D0] text-[11px] text-slate-500 italic line-clamp-1">
                       "{item.prog.notes}"
                     </div>
                   ) : null}
@@ -554,9 +544,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 {/* Quick Action Button */}
                 <button
                   onClick={() => onNavigateTabActual('syllabus')}
-                  className="w-full mt-2 bg-white hover:bg-amber-50 hover:border-amber-300 text-slate-700 hover:text-amber-800 border border-slate-200 text-[11px] font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer"
+                  className="w-full mt-2 bg-white hover:bg-[#FFF0F0] hover:border-[#FF9999] text-slate-700 hover:text-[#800000] border border-[#FFD0D0] text-[11px] font-medium py-1.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer"
                 >
-                  <CheckSquare className="w-3.5 h-3.5 text-amber-600" />
+                  <CheckSquare className="w-3.5 h-3.5 text-[#800000]" />
                   <span>Verify Progress in Syllabus</span>
                 </button>
               </div>
@@ -567,23 +557,23 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
 
       {/* Main Grid Section */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column: Upcoming Camps & Events (2 cols on large screens) */}
+        {/* Left Column: Upcoming Camps & Events */}
         <div className="lg:col-span-2 space-y-6">
           {/* Upcoming Events Box */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+          <div className="bg-white border border-[#FFD0D0] rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-[#006B3F]" />
+                <Calendar className="w-5 h-5 text-[#800000]" />
                 <h3 className="text-base font-bold text-slate-900">
                   Upcoming Crew Camps & Events
                 </h3>
               </div>
               <button
                 onClick={() => onNavigateTabActual('events')}
-                className="text-xs text-[#002B7F] hover:text-blue-800 font-semibold flex items-center gap-1 transition cursor-pointer"
+                className="text-xs text-[#800000] hover:text-[#660000] font-semibold flex items-center gap-1 transition cursor-pointer"
               >
                 <span>Master Calendar</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#800000]" />
               </button>
             </div>
 
@@ -594,23 +584,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                 upcomingEvents.map((ev) => (
                   <div
                     key={ev.id}
-                    className="bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl p-4 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs"
+                    className="bg-white border border-[#FFD0D0] hover:border-[#FF9999] rounded-xl p-4 transition flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs"
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
-                            ev.type === 'Camp'
-                              ? 'bg-amber-50 text-amber-800 border border-amber-200'
-                              : ev.type === 'Meeting'
-                              ? 'bg-blue-50 text-[#002B7F] border border-blue-200'
-                              : 'bg-emerald-50 text-[#006B3F] border border-emerald-200'
-                          }`}
+                          className="text-[10px] font-bold px-2 py-0.5 rounded font-mono bg-[#FFF0F0] text-[#800000] border border-[#FF9999]"
                         >
                           {ev.type}
                         </span>
                         {ev.isCompulsory && (
-                          <span className="bg-rose-50 text-[#800020] border border-rose-200 text-[10px] font-semibold px-2 py-0.5 rounded">
+                          <span className="bg-[#800000] text-white border border-[#800000] text-[10px] font-semibold px-2 py-0.5 rounded !text-white">
                             Compulsory
                           </span>
                         )}
@@ -620,9 +604,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                       <p className="text-xs text-slate-600 line-clamp-1">{ev.description}</p>
                     </div>
 
-                    <div className="text-right flex sm:flex-col justify-between items-end gap-1 text-xs text-slate-500 border-t sm:border-t-0 border-slate-200 pt-2 sm:pt-0">
-                      <div className="flex items-center gap-1 text-[#006B3F] font-semibold">
-                        <Clock className="w-3.5 h-3.5 text-[#006B3F]" />
+                    <div className="text-right flex sm:flex-col justify-between items-end gap-1 text-xs text-slate-500 border-t sm:border-t-0 border-[#FFD0D0] pt-2 sm:pt-0">
+                      <div className="flex items-center gap-1 text-[#800000] font-semibold">
+                        <Clock className="w-3.5 h-3.5 text-[#800000]" />
                         <span>{new Date(ev.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
                       <div className="flex items-center gap-1 text-slate-500">
@@ -637,28 +621,28 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Section Progression Summary (Explorers vs Rovers) */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+          <div className="bg-white border border-[#FFD0D0] rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-600" />
+                <Award className="w-5 h-5 text-[#800000]" />
                 <h3 className="text-base font-bold text-slate-900">
                   Section Progression & Syllabus Overview
                 </h3>
               </div>
               <button
                 onClick={() => onNavigateTabActual('syllabus')}
-                className="text-xs text-[#002B7F] hover:text-blue-800 font-semibold flex items-center gap-1 transition cursor-pointer"
+                className="text-xs text-[#800000] hover:text-[#660000] font-semibold flex items-center gap-1 transition cursor-pointer"
               >
                 <span>Manage Syllabus</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-[#800000]" />
               </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* Explorer Section Block */}
-              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-4 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="bg-emerald-50 text-[#006B3F] border border-emerald-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
+                  <span className="bg-white text-[#800000] border border-[#FFB3B3] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
                     Explorer Section (&lt;18)
                   </span>
                   <span className="text-xs font-semibold text-slate-700">{explorers.length} Active Members</span>
@@ -667,18 +651,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <h4 className="text-sm font-bold text-slate-900">President's Scout Award</h4>
                   <p className="text-xs text-slate-600 mt-0.5">Focus: Leadership Patrols, Wilderness Navigation, Island Community Projects.</p>
                 </div>
-                <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                <div className="pt-2 border-t border-[#FFD0D0] flex items-center justify-between text-xs">
                   <span className="text-slate-500">Core Modules:</span>
-                  <span className="font-mono text-[#006B3F] font-bold">
+                  <span className="font-mono text-[#800000] font-bold">
                     {syllabus.filter((s) => s.awardType === "President's Scout Award").length} Requirements
                   </span>
                 </div>
               </div>
 
               {/* Rover Section Block */}
-              <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-3">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-4 rounded-xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="bg-blue-50 text-[#002B7F] border border-blue-200 text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
+                  <span className="bg-white text-[#800000] border border-[#FFB3B3] text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider font-mono">
                     Rover Section (Ages 18-26)
                   </span>
                   <span className="text-xs font-semibold text-slate-700">{rovers.length} Active Members</span>
@@ -687,9 +671,9 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                   <h4 className="text-sm font-bold text-slate-900">Baden-Powell Award</h4>
                   <p className="text-xs text-slate-600 mt-0.5">Focus: Rover Crew Administration, 100km Maritime Expedition, Sustainable Community Service.</p>
                 </div>
-                <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
+                <div className="pt-2 border-t border-[#FFD0D0] flex items-center justify-between text-xs">
                   <span className="text-slate-500">Core Modules:</span>
-                  <span className="font-mono text-[#002B7F] font-bold">
+                  <span className="font-mono text-[#800000] font-bold">
                     {syllabus.filter((s) => s.awardType === 'Baden-Powell Award').length} Requirements
                   </span>
                 </div>
@@ -701,17 +685,17 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
         {/* Right Column: Recent Journals & Sub-Crew Stats */}
         <div className="space-y-6">
           {/* Recent Member Journal Logs */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs">
+          <div className="bg-white border border-[#FFD0D0] rounded-2xl p-5 shadow-xs">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#006B3F]" />
+                <BookOpen className="w-5 h-5 text-[#800000]" />
                 <h3 className="text-base font-bold text-slate-900">
                   Member Activity Journals
                 </h3>
               </div>
               <button
                 onClick={() => onNavigateTabActual('journals')}
-                className="text-xs text-[#002B7F] hover:text-blue-800 font-semibold transition cursor-pointer"
+                className="text-xs text-[#800000] hover:text-[#660000] font-semibold transition cursor-pointer"
               >
                 View All
               </button>
@@ -721,16 +705,16 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
               {recentJournals.map((j) => {
                 const author = members.find((m) => m.id === j.memberId);
                 return (
-                  <div key={j.id} className="bg-slate-50 border border-slate-200 p-3.5 rounded-xl space-y-1.5 shadow-2xs">
+                  <div key={j.id} className="bg-[#FFF0F0] border border-[#FF9999] p-3.5 rounded-xl space-y-1.5 shadow-2xs">
                     <div className="flex items-center justify-between text-[11px]">
-                      <span className="font-semibold text-[#006B3F]">{author?.name || 'Rover Member'}</span>
+                      <span className="font-semibold text-[#800000]">{author?.name || 'Rover Member'}</span>
                       <span className="text-slate-400">{j.date}</span>
                     </div>
                     <h5 className="text-xs font-bold text-slate-900 line-clamp-1">{j.title}</h5>
                     <p className="text-[11px] text-slate-600 line-clamp-2">{j.content}</p>
                     {j.aiPolished && (
-                      <div className="pt-1 flex items-center gap-1 text-[10px] text-[#006B3F] font-semibold">
-                        <Sparkles className="w-3 h-3" />
+                      <div className="pt-1 flex items-center gap-1 text-[10px] text-[#800000] font-semibold">
+                        <Sparkles className="w-3 h-3 text-[#800000]" />
                         <span>AI Formatted Log</span>
                       </div>
                     )}
@@ -741,22 +725,22 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
 
           {/* Sub-Crews Overview Box */}
-          <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs space-y-4">
+          <div className="bg-white border border-[#FFD0D0] rounded-2xl p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="text-base font-bold text-slate-900">Sub-Crew Deployment</h3>
-              <span className="text-xs font-mono text-[#006B3F] font-bold">Multi-Location</span>
+              <span className="text-xs font-mono text-[#800000] font-bold">Multi-Location</span>
             </div>
 
             <div className="space-y-2.5">
               {crews.map((c) => {
                 const crewMemberCount = members.filter((m) => m.crewId === c.id && m.status === 'Active' && !m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor').length;
                 return (
-                  <div key={c.id} className="bg-slate-50 border border-slate-200 p-3 rounded-xl flex items-center justify-between">
+                  <div key={c.id} className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-slate-900">{c.name}</p>
                       <p className="text-[10px] text-slate-500">{c.location} • Leader: {c.crewLeaderName || 'Unassigned'}</p>
                     </div>
-                    <span className="bg-emerald-50 text-[#006B3F] border border-emerald-200 font-mono text-xs font-bold px-2.5 py-1 rounded-lg">
+                    <span className="bg-white text-[#800000] border border-[#FFB3B3] font-mono text-xs font-bold px-2.5 py-1 rounded-lg">
                       {crewMemberCount} Members
                     </span>
                   </div>

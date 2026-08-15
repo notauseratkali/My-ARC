@@ -307,7 +307,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white border border-slate-200 p-5 rounded-2xl shadow-xs">
         <div>
           <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Settings className="w-6 h-6 text-[#002B7F]" />
+            <Settings className="w-6 h-6 text-[#800000]" />
             {isCouncil ? 'Crew Settings & Administration' : 'Personal Settings & Profile'}
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -319,13 +319,13 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
 
         {/* Tab Switcher for Council Members */}
         {isCouncil ? (
-          <div className="flex items-center gap-2 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+          <div className="flex items-center gap-2 bg-[#FFF0F0] p-1.5 rounded-xl border border-[#FF9999]">
             <button
               onClick={() => setActiveTab('admin')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
                 activeTab === 'admin'
-                  ? 'bg-[#002B7F] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#800000] text-white !text-white shadow-xs'
+                  : 'text-[#800000] hover:text-[#FF3333]'
               }`}
             >
               <Shield className="w-4 h-4" />
@@ -333,10 +333,10 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
             </button>
             <button
               onClick={() => setActiveTab('personal')}
-              className={`px-4 py-2 rounded-lg text-xs font-semibold transition flex items-center gap-2 cursor-pointer ${
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
                 activeTab === 'personal'
-                  ? 'bg-[#002B7F] text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-[#800000] text-white !text-white shadow-xs'
+                  : 'text-[#800000] hover:text-[#FF3333]'
               }`}
             >
               <User className="w-4 h-4" />
@@ -344,8 +344,8 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
             </button>
           </div>
         ) : (
-          <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 text-[#002B7F] text-xs px-3 py-1.5 rounded-xl font-medium">
-            <User className="w-4 h-4" />
+          <div className="flex items-center gap-2 bg-[#FFF0F0] border border-[#FF9999] text-[#800000] text-xs px-3 py-1.5 rounded-xl font-bold">
+            <User className="w-4 h-4 text-[#800000]" />
             <span>Member Personal Portal</span>
           </div>
         )}
@@ -422,9 +422,9 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 <button
                   id="settings-add-crew-btn"
                   onClick={() => setIsCrewModalOpen(true)}
-                  className="bg-[#002B7F] hover:bg-blue-800 text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
+                  className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Plus className="w-4 h-4" />
+                  <Plus className="w-4 h-4 text-white" />
                   <span>Provision Sub-Crew</span>
                 </button>
               </div>
@@ -1021,9 +1021,9 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 <div className="flex justify-end pt-4 border-t border-slate-100">
                   <button
                     type="submit"
-                    className="bg-[#002B7F] hover:bg-blue-800 text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
+                    className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white font-bold text-xs px-6 py-2.5 rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
                   >
-                    <Save className="w-4 h-4" />
+                    <Save className="w-4 h-4 text-white" />
                     <span>Save Personal Settings</span>
                   </button>
                 </div>
@@ -1109,13 +1109,13 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
               <button
                 type="button"
                 onClick={() => setIsCrewModalOpen(false)}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-4 py-2 rounded-xl transition cursor-pointer"
+                className="bg-[#FFF0F0] hover:bg-white text-[#800000] text-xs font-bold px-4 py-2 rounded-xl transition border border-[#FF9999] cursor-pointer shadow-xs"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="bg-[#002B7F] hover:bg-blue-800 text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-xs cursor-pointer"
+                className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-xs cursor-pointer"
               >
                 Provision Sub-Crew
               </button>
@@ -1166,13 +1166,13 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsRoleModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 font-medium hover:bg-slate-200 transition cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#FFF0F0] text-[#800000] font-bold border border-[#FF9999] hover:bg-white transition cursor-pointer shadow-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-xl bg-[#002B7F] text-white font-semibold hover:bg-blue-800 transition shadow-xs cursor-pointer"
+                  className="px-4 py-2 rounded-xl bg-[#800000] text-white !text-white font-bold hover:bg-[#6b0000] transition shadow-xs cursor-pointer"
                 >
                   {editingRoleIndex !== null ? 'Save Changes' : 'Create Role'}
                 </button>

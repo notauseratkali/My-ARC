@@ -524,7 +524,7 @@ export const PortfolioJournal: React.FC<PortfolioJournalProps> = ({
                   <button
                     type="button"
                     onClick={handleAddMediaUrl}
-                    className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs px-3 py-2 rounded-lg font-medium transition border border-slate-200 cursor-pointer"
+                    className="bg-[#FFF0F0] hover:bg-white text-[#800000] text-xs px-3 py-2 rounded-lg font-bold transition border border-[#FF9999] cursor-pointer shadow-xs"
                   >
                     Attach Link
                   </button>
@@ -556,13 +556,13 @@ export const PortfolioJournal: React.FC<PortfolioJournalProps> = ({
               <button
                 type="button"
                 onClick={() => setIsModalOpen(false)}
-                className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold px-4 py-2 rounded-xl transition cursor-pointer"
+                className="bg-[#FFF0F0] hover:bg-white text-[#800000] text-xs font-bold px-4 py-2 rounded-xl transition border border-[#FF9999] cursor-pointer shadow-xs"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="bg-[#002B7F] hover:bg-blue-900 text-white text-xs font-semibold px-5 py-2 rounded-xl transition shadow-xs cursor-pointer"
+                className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-xs cursor-pointer"
               >
                 Save Portfolio Entry
               </button>

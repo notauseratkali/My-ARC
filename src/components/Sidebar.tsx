@@ -83,7 +83,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const navItems: NavItem[] = [
     ...(isSuperAdmin
-      ? [{ id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-purple-600" />, category: 'Main' as const, badge: 'Portal Admin' }]
+      ? [{ id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-[#800000]" />, category: 'Main' as const, badge: 'Portal Admin' }]
       : []),
     { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" />, category: 'Main' },
     { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5" />, category: 'Main' },
@@ -92,12 +92,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5" />, category: 'Operations' },
     { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
     { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
-    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-amber-600" />, category: 'Operations' },
-    { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-emerald-600" />, category: 'Operations' },
+    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-[#FF3333]" />, category: 'Operations' },
+    { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-[#800000]" />, category: 'Operations' },
     ...((isCouncil || isSuperAdmin)
       ? [
           { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true },
-          { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-indigo-600" />, category: 'Operations' as const },
+          { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-[#800000]" />, category: 'Operations' as const },
         ]
       : []),
     { id: 'settings', label: (isCouncil || isSuperAdmin) ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
@@ -281,10 +281,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {currentMember && onLogout ? (
             <button
               onClick={onLogout}
-              className="w-full flex items-center justify-center gap-2 text-slate-700 hover:text-[#800000] hover:bg-[#FFF0F0] border border-[#FFD0D0] hover:border-[#FF9999] p-2 rounded-xl transition text-xs font-semibold cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 text-[#800000] bg-[#FFF0F0] hover:bg-white border border-[#FF9999] p-2 rounded-xl transition text-xs font-bold cursor-pointer shadow-xs"
               title="Log out of current portal session"
             >
-              <LogOut className="w-4 h-4 text-slate-500 group-hover:text-[#800000]" />
+              <LogOut className="w-4 h-4 text-[#800000]" />
               {(!isCollapsed || isMobileOpen) && <span>Log Out Session</span>}
             </button>
           ) : !currentMember && onOpenLoginModal ? (

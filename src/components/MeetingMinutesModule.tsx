@@ -414,7 +414,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
                 <div className="flex items-center gap-2 print:hidden">
                   <button
                     onClick={handlePrintMinutes}
-                    className="p-2.5 bg-[#FFF0F0] hover:bg-white text-slate-800 border border-[#FF9999] rounded-xl transition flex items-center gap-1.5 text-xs font-bold cursor-pointer"
+                    className="p-2.5 bg-[#FFF0F0] hover:bg-white text-[#800000] border border-[#FF9999] rounded-xl transition flex items-center gap-1.5 text-xs font-bold cursor-pointer shadow-xs"
                     title="Print / Save to PDF"
                   >
                     <Printer className="w-4 h-4 text-[#800000]" />
@@ -474,7 +474,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
 
                 {selectedMinutes.absenteeList && selectedMinutes.absenteeList.length > 0 && (
                   <div className="bg-[#FFF0F0]/70 border border-[#FF9999] p-3.5 rounded-xl space-y-2">
-                    <div className="flex items-center gap-1.5 font-bold text-amber-800">
+                    <div className="flex items-center gap-1.5 font-bold text-[#FF3333]">
                       <UserX className="w-4 h-4" />
                       <span>Absentees / Apologies</span>
                     </div>

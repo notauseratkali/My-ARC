@@ -1080,26 +1080,26 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
           </div>
 
           {/* Active Crew Trends */}
-          <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-5">
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="bg-white border border-[#FF9999] rounded-2xl p-5 shadow-sm space-y-5">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#FF9999] pb-4">
               <div>
-                <h3 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                  <BarChart2 className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-base font-bold text-[#800000] flex items-center gap-2">
+                  <BarChart2 className="w-5 h-5 text-[#800000]" />
                   Active Crew Turnout Visualizer
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-600 mt-0.5">
                   Analyze attendance breakdown over custom time frames.
                 </p>
               </div>
 
               <div className="flex flex-wrap items-center gap-2.5 text-xs">
-                <div className="flex items-center gap-1.5 bg-[#161920] border border-slate-800 px-3 py-1.5 rounded-xl">
-                  <Users className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-slate-400 hidden sm:inline">Crew:</span>
+                <div className="flex items-center gap-1.5 bg-[#FFF0F0] border border-[#FF9999] px-3 py-1.5 rounded-xl">
+                  <Users className="w-3.5 h-3.5 text-[#800000]" />
+                  <span className="text-slate-600 hidden sm:inline">Crew:</span>
                   <select
                     value={chartCrewId}
                     onChange={(e) => setChartCrewId(e.target.value)}
-                    className="bg-transparent text-slate-200 font-semibold focus:outline-none cursor-pointer"
+                    className="bg-transparent text-slate-900 font-semibold focus:outline-none cursor-pointer"
                   >
                     <option value="All">All Crews</option>
                     {crews.map((c) => (
@@ -1110,13 +1110,13 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                   </select>
                 </div>
 
-                <div className="flex items-center gap-1.5 bg-[#161920] border border-slate-800 px-3 py-1.5 rounded-xl">
-                  <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                  <span className="text-slate-400 hidden sm:inline">Period:</span>
+                <div className="flex items-center gap-1.5 bg-[#FFF0F0] border border-[#FF9999] px-3 py-1.5 rounded-xl">
+                  <Calendar className="w-3.5 h-3.5 text-[#800000]" />
+                  <span className="text-slate-600 hidden sm:inline">Period:</span>
                   <select
                     value={timePeriod}
                     onChange={(e) => setTimePeriod(e.target.value as any)}
-                    className="bg-transparent text-slate-200 font-semibold focus:outline-none cursor-pointer"
+                    className="bg-transparent text-slate-900 font-semibold focus:outline-none cursor-pointer"
                   >
                     <option value="30days">Last 30 Days</option>
                     <option value="90days">Last 90 Days</option>
@@ -1129,7 +1129,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <button
                   type="button"
                   onClick={() => setChartType(chartType === 'stacked' ? 'grouped' : 'stacked')}
-                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium transition text-xs border border-slate-700 cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-white hover:bg-[#FFF0F0] text-slate-700 font-semibold transition text-xs border border-[#FF9999] cursor-pointer"
                 >
                   {chartType === 'stacked' ? 'Stacked Bars' : 'Grouped Bars'}
                 </button>
@@ -1137,62 +1137,62 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
             </div>
 
             {timePeriod === 'custom' && (
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl flex flex-wrap items-center gap-4 text-xs">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl flex flex-wrap items-center gap-4 text-xs">
                 <div className="flex items-center gap-2">
-                  <label className="text-slate-400 font-medium">Start Date:</label>
+                  <label className="text-slate-700 font-medium">Start Date:</label>
                   <input
                     type="date"
                     value={customStartDate}
                     onChange={(e) => setCustomStartDate(e.target.value)}
-                    className="bg-[#1A1E26] border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none font-mono"
+                    className="bg-white border border-[#FF9999] rounded-lg px-2.5 py-1 text-slate-900 focus:outline-none font-mono"
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-slate-400 font-medium">End Date:</label>
+                  <label className="text-slate-700 font-medium">End Date:</label>
                   <input
                     type="date"
                     value={customEndDate}
                     onChange={(e) => setCustomEndDate(e.target.value)}
-                    className="bg-[#1A1E26] border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none font-mono"
+                    className="bg-white border border-[#FF9999] rounded-lg px-2.5 py-1 text-slate-900 focus:outline-none font-mono"
                   />
                 </div>
               </div>
             )}
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Assemblies in Scope</span>
-                <span className="text-lg font-bold text-slate-100 font-mono">{periodStats.totalEvents}</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Assemblies in Scope</span>
+                <span className="text-lg font-bold text-[#800000] font-mono">{periodStats.totalEvents}</span>
               </div>
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Overall Turnout</span>
-                <span className="text-lg font-bold text-emerald-400 font-mono">{periodStats.overallPresentRate}%</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Overall Turnout</span>
+                <span className="text-lg font-bold text-emerald-700 font-mono">{periodStats.overallPresentRate}%</span>
               </div>
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Avg Present / Event</span>
-                <span className="text-lg font-bold text-sky-400 font-mono">{periodStats.avgAttendancePerEvent}</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Avg Present / Event</span>
+                <span className="text-lg font-bold text-[#800000] font-mono">{periodStats.avgAttendancePerEvent}</span>
               </div>
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Unexcused Rate</span>
-                <span className="text-lg font-bold text-rose-400 font-mono">{periodStats.overallUnexcusedRate}%</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Unexcused Rate</span>
+                <span className="text-lg font-bold text-rose-700 font-mono">{periodStats.overallUnexcusedRate}%</span>
               </div>
             </div>
 
-            <div className="w-full h-[260px] bg-slate-950/60 border border-slate-800/80 rounded-xl p-3 pt-5">
+            <div className="w-full h-[260px] bg-[#FFF0F0]/50 border border-[#FF9999] rounded-xl p-3 pt-5">
               {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 25 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#334155" opacity={0.4} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#FF9999" opacity={0.5} />
                     <XAxis
                       dataKey="displayLabel"
-                      stroke="#94a3b8"
+                      stroke="#475569"
                       fontSize={11}
                       tickLine={false}
                       interval={0}
                       angle={-12}
                       textAnchor="end"
                     />
-                    <YAxis stroke="#94a3b8" fontSize={11} tickLine={false} allowDecimals={false} />
+                    <YAxis stroke="#475569" fontSize={11} tickLine={false} allowDecimals={false} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend wrapperStyle={{ fontSize: '11px', paddingTop: '10px' }} />
                     <Bar
@@ -1223,22 +1223,22 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 </ResponsiveContainer>
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-center text-slate-500 text-xs">
-                  <Calendar className="w-8 h-8 mb-2 opacity-50 text-slate-400" />
-                  <p className="font-semibold text-slate-400">No event records found for the selected filter.</p>
+                  <Calendar className="w-8 h-8 mb-2 opacity-50 text-[#800000]" />
+                  <p className="font-semibold text-slate-600">No event records found for the selected filter.</p>
                 </div>
               )}
             </div>
           </div>
 
           {/* Event Selector & Filter Bar */}
-          <div className="bg-[#1A1E26] border border-slate-800 p-4 rounded-xl space-y-3">
+          <div className="bg-white border border-[#FF9999] p-4 rounded-xl space-y-3 shadow-sm">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Select Event / Assembly *</label>
+                <label className="block text-slate-700 font-bold mb-1">Select Event / Assembly *</label>
                 <select
                   value={selectedEventId}
                   onChange={(e) => setSelectedEventId(e.target.value)}
-                  className="w-full bg-[#161920] border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-medium focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-[#FFF0F0] border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 font-medium focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   {events.map((ev) => (
                     <option key={ev.id} value={ev.id}>
@@ -1249,11 +1249,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Filter Sheet by Sub-Crew</label>
+                <label className="block text-slate-700 font-bold mb-1">Filter Sheet by Sub-Crew</label>
                 <select
                   value={filterCrewId}
                   onChange={(e) => setFilterCrewId(e.target.value)}
-                  className="w-full bg-[#161920] border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-[#FFF0F0] border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   <option value="All">All Crews</option>
                   {crews.map((c) => (
@@ -1265,11 +1265,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Filter Sheet by Section</label>
+                <label className="block text-slate-700 font-bold mb-1">Filter Sheet by Section</label>
                 <select
                   value={filterSection}
                   onChange={(e) => setFilterSection(e.target.value as any)}
-                  className="w-full bg-[#161920] border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-[#FFF0F0] border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   <option value="All">All Age Sections</option>
                   <option value="Explorer">Explorer Section (&lt;18)</option>
@@ -1279,17 +1279,17 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
             </div>
 
             {selectedEvent && (
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-lg text-xs flex flex-wrap items-center justify-between gap-3">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-lg text-xs flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <span className="font-bold text-emerald-400">{selectedEvent.title}</span>
-                  <span className="text-slate-400 ml-2">Location: {selectedEvent.location}</span>
+                  <span className="font-bold text-[#800000]">{selectedEvent.title}</span>
+                  <span className="text-slate-600 ml-2">Location: {selectedEvent.location}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="bg-[#1A1E26] text-slate-300 px-2 py-0.5 rounded font-mono text-[10px] border border-slate-800">
+                  <span className="bg-white text-slate-800 px-2 py-0.5 rounded font-mono text-[10px] border border-[#FF9999]">
                     Target: {selectedEvent.targetAudience}
                   </span>
                   {selectedEvent.isCompulsory && (
-                    <span className="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-bold px-2 py-0.5 rounded">
+                    <span className="bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-bold px-2 py-0.5 rounded">
                       Compulsory Assembly
                     </span>
                   )}
@@ -1299,38 +1299,38 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
           </div>
 
           {/* Attendance Roll Sheet Table */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-lg overflow-hidden">
+          <div className="bg-white border border-[#FF9999] rounded-2xl shadow-sm overflow-hidden">
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-200">
-                <thead className="bg-slate-950 text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+              <table className="w-full text-left text-xs text-slate-800">
+                <thead className="bg-[#FFF0F0] text-[#800000] font-mono text-[11px] uppercase border-b border-[#FF9999]">
                   <tr>
-                    <th className="py-3.5 px-4 font-semibold">Member Name</th>
-                    <th className="py-3.5 px-4 font-semibold">Sub-Crew & Section</th>
-                    <th className="py-3.5 px-4 font-semibold">Attendance Status</th>
-                    <th className="py-3.5 px-4 font-semibold">Exemption / Remarks</th>
+                    <th className="py-3.5 px-4 font-bold">Member Name</th>
+                    <th className="py-3.5 px-4 font-bold">Sub-Crew & Section</th>
+                    <th className="py-3.5 px-4 font-bold">Attendance Status</th>
+                    <th className="py-3.5 px-4 font-bold">Exemption / Remarks</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80">
+                <tbody className="divide-y divide-[#FF9999]/50">
                   {displayMembers.map((m) => {
                     const currentData = localAttendanceMap[m.id] || { status: 'Present' };
 
                     return (
-                      <tr key={m.id} className="hover:bg-slate-950/60 transition">
-                        <td className="py-3 px-4 font-medium text-slate-100">
+                      <tr key={m.id} className="hover:bg-[#FFF0F0]/50 transition">
+                        <td className="py-3 px-4 font-medium text-slate-900">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-7 h-7 rounded-full bg-slate-800 border border-emerald-700/50 flex items-center justify-center font-bold text-xs text-emerald-300">
+                            <div className="w-7 h-7 rounded-full bg-[#FFF0F0] border border-[#FF9999] flex items-center justify-center font-bold text-xs text-[#800000]">
                               {m.name.charAt(0)}
                             </div>
                             <div>
-                              <div>{m.name}</div>
-                              <div className="text-[10px] font-mono text-slate-400">ID: {m.idCard}</div>
+                              <div className="font-semibold text-slate-900">{m.name}</div>
+                              <div className="text-[10px] font-mono text-slate-500">ID: {m.idCard}</div>
                             </div>
                           </div>
                         </td>
 
-                        <td className="py-3 px-4 text-slate-300">
-                          <div>{m.crewName}</div>
-                          <div className="text-[10px] text-emerald-400 font-semibold">{m.section}</div>
+                        <td className="py-3 px-4 text-slate-700">
+                          <div className="font-semibold">{m.crewName}</div>
+                          <div className="text-[10px] text-[#800000] font-semibold">{m.section}</div>
                         </td>
 
                         <td className="py-3 px-4">
@@ -1339,10 +1339,10 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                               type="button"
                               disabled={!isCouncil && m.id !== currentMember.id}
                               onClick={() => handleStatusChange(m.id, 'Present')}
-                              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer border ${
                                 currentData.status === 'Present'
-                                  ? 'bg-emerald-600 text-white font-bold shadow'
-                                  : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                                  ? 'bg-emerald-600 text-white font-bold shadow border-emerald-600'
+                                  : 'bg-white text-slate-600 border-[#FF9999] hover:bg-[#FFF0F0]'
                               } ${!isCouncil && m.id !== currentMember.id ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
                               Present
@@ -1352,10 +1352,10 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                               type="button"
                               disabled={!isCouncil && m.id !== currentMember.id}
                               onClick={() => handleStatusChange(m.id, 'Excused')}
-                              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer border ${
                                 currentData.status === 'Excused'
-                                  ? 'bg-blue-600 text-white font-bold shadow'
-                                  : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                                  ? 'bg-blue-600 text-white font-bold shadow border-blue-600'
+                                  : 'bg-white text-slate-600 border-[#FF9999] hover:bg-[#FFF0F0]'
                               } ${!isCouncil && m.id !== currentMember.id ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
                               Excused
@@ -1365,10 +1365,10 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                               type="button"
                               disabled={!isCouncil && m.id !== currentMember.id}
                               onClick={() => handleStatusChange(m.id, 'Unexcused')}
-                              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer border ${
                                 currentData.status === 'Unexcused'
-                                  ? 'bg-rose-600 text-white font-bold shadow'
-                                  : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                                  ? 'bg-rose-600 text-white font-bold shadow border-rose-600'
+                                  : 'bg-white text-slate-600 border-[#FF9999] hover:bg-[#FFF0F0]'
                               } ${!isCouncil && m.id !== currentMember.id ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
                               Unexcused
@@ -1378,10 +1378,10 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                               type="button"
                               disabled={!isCouncil && m.id !== currentMember.id}
                               onClick={() => handleStatusChange(m.id, 'Exempt')}
-                              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition cursor-pointer ${
+                              className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer border ${
                                 currentData.status === 'Exempt'
-                                  ? 'bg-amber-600 text-slate-950 font-bold shadow'
-                                  : 'bg-slate-800 text-slate-400 hover:text-slate-200'
+                                  ? 'bg-amber-500 text-slate-950 font-bold shadow border-amber-500'
+                                  : 'bg-white text-slate-600 border-[#FF9999] hover:bg-[#FFF0F0]'
                               } ${!isCouncil && m.id !== currentMember.id ? 'opacity-70 cursor-not-allowed' : ''}`}
                             >
                               Exempt
@@ -1389,11 +1389,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                           </div>
                         </td>
 
-                        <td className="py-3 px-4 text-slate-400 text-[11px]">
+                        <td className="py-3 px-4 text-slate-600 text-[11px]">
                           {currentData.reason ? (
-                            <span className="italic text-amber-300">{currentData.reason}</span>
+                            <span className="italic text-amber-700 font-medium">{currentData.reason}</span>
                           ) : (
-                            <span className="text-slate-600">--</span>
+                            <span className="text-slate-400">--</span>
                           )}
                         </td>
                       </tr>
@@ -1414,26 +1414,23 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
           {/* =========================================================================
               AUTOMATED LOW ATTENDANCE GENERATOR & COUNCIL GOVERNANCE HUB
              ========================================================================= */}
-          <div className="bg-[#181B22] border border-amber-500/30 rounded-2xl p-5 shadow-xl space-y-4 relative overflow-hidden">
-            {/* Subtle background glow */}
-            <div className="absolute -top-10 -right-10 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="bg-white border-2 border-[#FF9999] rounded-2xl p-5 shadow-sm space-y-4 relative overflow-hidden">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#FF9999] pb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                    <Zap className="w-3 h-3" /> Automated Generator
+                  <span className="bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-[#800000]" /> Automated Generator
                   </span>
-                  <span className="bg-purple-500/10 text-purple-400 border border-purple-500/30 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                    <Shield className="w-3 h-3" /> Council Governance
+                  <span className="bg-[#800000] text-white text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1 shadow-xs">
+                    <Shield className="w-3 h-3 text-white" /> Council Governance
                   </span>
                 </div>
-                <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-                  <ShieldAlert className="w-5 h-5 text-amber-400" />
+                <h3 className="text-lg font-bold text-[#800000] flex items-center gap-2">
+                  <ShieldAlert className="w-5 h-5 text-[#800000]" />
                   Low Attendance Automated Flagging & Council Review Generator
                 </h3>
-                <p className="text-xs text-slate-400 max-w-2xl">
-                  Scans all assembly turnout records, automatically flags members whose attendance drops below the configurable threshold (<span className="text-amber-400 font-bold">&lt;{attendanceThreshold}%</span>), and routes them to the Council Review queue for counseling or formal notices.
+                <p className="text-xs text-slate-700 max-w-2xl">
+                  Scans all assembly turnout records, automatically flags members whose attendance drops below the configurable threshold (<span className="text-rose-700 font-bold">&lt;{attendanceThreshold}%</span>), and routes them to the Council Review queue for counseling or formal notices.
                 </p>
               </div>
 
@@ -1442,27 +1439,27 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <button
                   type="button"
                   onClick={handleBatchFlagLowAttendance}
-                  className="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-bold px-4 py-2 rounded-xl shadow-lg transition flex items-center gap-2 cursor-pointer"
+                  className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer"
                 >
-                  <Zap className="w-4 h-4" />
+                  <Zap className="w-4 h-4 text-white" />
                   <span>Batch Flag All (&lt;{attendanceThreshold}%)</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleExportLowAttendanceCSV}
-                  className="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-2 cursor-pointer"
+                  className="bg-white hover:bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 text-[#800000]" />
                   <span>Export Low Attendance CSV</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleCopyCouncilGovernanceReport}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-bold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-2 cursor-pointer"
+                  className="bg-white hover:bg-[#FFF0F0] border border-[#FF9999] text-[#800000] text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
                 >
-                  <Copy className="w-4 h-4 text-amber-400" />
+                  <Copy className="w-4 h-4 text-[#800000]" />
                   <span>Copy Council Summary</span>
                 </button>
               </div>
@@ -1472,11 +1469,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
             <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pt-1">
               {/* Cutoff Threshold Selector */}
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                  <Sliders className="w-4 h-4 text-emerald-400" />
+                <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                  <Sliders className="w-4 h-4 text-[#800000]" />
                   Attendance Cutoff Threshold:
                 </span>
-                <div className="flex items-center gap-1.5 bg-[#12151B] p-1 rounded-xl border border-slate-800">
+                <div className="flex items-center gap-1.5 bg-[#FFF0F0] p-1 rounded-xl border border-[#FF9999]">
                   {[30, 50, 60, 75].map((val) => (
                     <button
                       key={val}
@@ -1484,8 +1481,8 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                       onClick={() => setAttendanceThreshold(val)}
                       className={`px-3 py-1 rounded-lg text-xs font-mono font-bold transition cursor-pointer ${
                         attendanceThreshold === val
-                          ? 'bg-amber-500 text-slate-950 shadow'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                          ? 'bg-[#800000] text-white !text-white shadow-xs'
+                          : 'text-slate-700 hover:text-[#800000] hover:bg-white'
                       }`}
                     >
                       &lt;{val}%
@@ -1493,27 +1490,27 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                   ))}
                 </div>
                 <div className="flex items-center gap-1.5 text-xs">
-                  <label className="text-slate-400 font-mono text-[11px]">Custom %:</label>
+                  <label className="text-slate-600 font-mono text-[11px]">Custom %:</label>
                   <input
                     type="number"
                     min="10"
                     max="90"
                     value={attendanceThreshold}
                     onChange={(e) => setAttendanceThreshold(Math.max(10, Math.min(90, Number(e.target.value) || 50)))}
-                    className="w-16 bg-[#12151B] border border-slate-800 text-amber-400 font-mono font-bold text-center text-xs rounded-lg py-1 px-1 focus:outline-none focus:border-amber-500"
+                    className="w-16 bg-white border border-[#FF9999] text-[#800000] font-mono font-bold text-center text-xs rounded-lg py-1 px-1 focus:outline-none focus:border-[#800000]"
                   />
                 </div>
               </div>
 
               {/* View Filter Mode Tabs */}
-              <div className="flex items-center gap-1 bg-[#12151B] p-1 rounded-xl border border-slate-800 text-xs font-medium">
+              <div className="flex items-center gap-1 bg-[#FFF0F0] p-1 rounded-xl border border-[#FF9999] text-xs font-medium">
                 <button
                   type="button"
                   onClick={() => setReportViewFilter('all')}
-                  className={`px-3 py-1.5 rounded-lg transition cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition cursor-pointer font-bold ${
                     reportViewFilter === 'all'
-                      ? 'bg-slate-800 text-slate-100 font-bold shadow'
-                      : 'text-slate-400 hover:text-slate-200'
+                      ? 'bg-[#800000] text-white !text-white shadow-xs'
+                      : 'text-slate-700 hover:text-[#800000]'
                   }`}
                 >
                   All ({memberReportList.length})
@@ -1522,14 +1519,16 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <button
                   type="button"
                   onClick={() => setReportViewFilter('low_attendance')}
-                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer font-bold ${
                     reportViewFilter === 'low_attendance'
-                      ? 'bg-rose-500/20 text-rose-300 font-bold border border-rose-500/30'
-                      : 'text-slate-400 hover:text-rose-300'
+                      ? 'bg-[#800000] text-white !text-white shadow-xs'
+                      : 'text-rose-700 hover:bg-rose-100/60'
                   }`}
                 >
                   <span>Low Attendance (&lt;{attendanceThreshold}%)</span>
-                  <span className="bg-rose-500/20 text-rose-300 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    reportViewFilter === 'low_attendance' ? 'bg-white text-[#800000]' : 'bg-rose-100 text-rose-800'
+                  }`}>
                     {lowAttendanceCount}
                   </span>
                 </button>
@@ -1537,14 +1536,16 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <button
                   type="button"
                   onClick={() => setReportViewFilter('flagged_only')}
-                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer font-bold ${
                     reportViewFilter === 'flagged_only'
-                      ? 'bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30'
-                      : 'text-slate-400 hover:text-purple-300'
+                      ? 'bg-[#800000] text-white !text-white shadow-xs'
+                      : 'text-[#800000] hover:bg-[#FFE5E5]'
                   }`}
                 >
                   <span>Flagged for Council</span>
-                  <span className="bg-purple-500/20 text-purple-300 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    reportViewFilter === 'flagged_only' ? 'bg-white text-[#800000]' : 'bg-[#FFF0F0] text-[#800000] border border-[#FF9999]'
+                  }`}>
                     {flaggedCount}
                   </span>
                 </button>
@@ -1552,14 +1553,16 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <button
                   type="button"
                   onClick={() => setReportViewFilter('pending_review')}
-                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 cursor-pointer font-bold ${
                     reportViewFilter === 'pending_review'
-                      ? 'bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30'
-                      : 'text-slate-400 hover:text-amber-300'
+                      ? 'bg-[#800000] text-white !text-white shadow-xs'
+                      : 'text-amber-800 hover:bg-amber-100/60'
                   }`}
                 >
                   <span>Pending Action</span>
-                  <span className="bg-amber-500/20 text-amber-300 text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold">
+                  <span className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    reportViewFilter === 'pending_review' ? 'bg-white text-[#800000]' : 'bg-amber-100 text-amber-900'
+                  }`}>
                     {pendingActionCount}
                   </span>
                 </button>
@@ -1568,42 +1571,42 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
             {/* Governance Analytics Cards */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="bg-[#12151B] border border-rose-900/40 p-3 rounded-xl flex items-center justify-between">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Below Cutoff (&lt;{attendanceThreshold}%)</span>
-                  <span className="text-xl font-bold text-rose-400 font-mono">{lowAttendanceCount}</span>
+                  <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Below Cutoff (&lt;{attendanceThreshold}%)</span>
+                  <span className="text-xl font-bold text-rose-700 font-mono">{lowAttendanceCount}</span>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+                <div className="w-9 h-9 rounded-xl bg-rose-100 border border-rose-300 flex items-center justify-center text-rose-700">
                   <AlertTriangle className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-[#12151B] border border-purple-900/40 p-3 rounded-xl flex items-center justify-between">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Total Council Flagged</span>
-                  <span className="text-xl font-bold text-purple-400 font-mono">{flaggedCount}</span>
+                  <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Total Council Flagged</span>
+                  <span className="text-xl font-bold text-[#800000] font-mono">{flaggedCount}</span>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <div className="w-9 h-9 rounded-xl bg-[#FFE5E5] border border-[#FF9999] flex items-center justify-center text-[#800000]">
                   <Flag className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-[#12151B] border border-amber-900/40 p-3 rounded-xl flex items-center justify-between">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Pending Action</span>
-                  <span className="text-xl font-bold text-amber-400 font-mono">{pendingActionCount}</span>
+                  <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Pending Action</span>
+                  <span className="text-xl font-bold text-amber-800 font-mono">{pendingActionCount}</span>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 border border-amber-300 flex items-center justify-center text-amber-700">
                   <Clock className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="bg-[#12151B] border border-emerald-900/40 p-3 rounded-xl flex items-center justify-between">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Resolved / Counseled</span>
-                  <span className="text-xl font-bold text-emerald-400 font-mono">{counseledCount}</span>
+                  <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Resolved / Counseled</span>
+                  <span className="text-xl font-bold text-emerald-700 font-mono">{counseledCount}</span>
                 </div>
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 border border-emerald-300 flex items-center justify-center text-emerald-700">
                   <CheckCircle2 className="w-5 h-5" />
                 </div>
               </div>
@@ -1611,14 +1614,14 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
           </div>
 
           {/* Report Control Header & Export Actions */}
-          <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div className="bg-white border border-[#FF9999] rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#FF9999] pb-4">
               <div>
-                <h3 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-lg font-bold text-[#800000] flex items-center gap-2">
+                  <FileText className="w-5 h-5 text-[#800000]" />
                   Custom Member Attendance & Absentee Report
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-600 mt-0.5">
                   Analyze individual member percentages for Present, Absent (Unexcused), and Excused status across assemblies.
                 </p>
               </div>
@@ -1628,18 +1631,18 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <button
                   type="button"
                   onClick={handleExportCSV}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold px-4 py-2 rounded-xl shadow transition flex items-center gap-2 cursor-pointer"
+                  className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-4 py-2 rounded-xl shadow-sm transition flex items-center gap-2 cursor-pointer"
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 text-white" />
                   <span>Export CSV Report</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleCopySummary}
-                  className="bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold px-3.5 py-2 rounded-xl shadow transition flex items-center gap-2 cursor-pointer"
+                  className="bg-white hover:bg-[#FFF0F0] border border-[#FF9999] text-[#800000] text-xs font-bold px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-2 cursor-pointer"
                 >
-                  {copiedReport ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                  {copiedReport ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-[#800000]" />}
                   <span>{copiedReport ? 'Copied to Clipboard!' : 'Copy Summary'}</span>
                 </button>
               </div>
@@ -1649,7 +1652,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
               {/* Search Box */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Search Member</label>
+                <label className="block text-slate-700 font-medium mb-1">Search Member</label>
                 <div className="relative">
                   <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
                   <input
@@ -1657,18 +1660,18 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                     placeholder="Name or ID card..."
                     value={reportSearchQuery}
                     onChange={(e) => setReportSearchQuery(e.target.value)}
-                    className="w-full bg-[#161920] border border-slate-800 rounded-lg pl-8 pr-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-[#FF9999] rounded-lg pl-8 pr-3 py-2 text-slate-800 focus:outline-none focus:border-[#800000]"
                   />
                 </div>
               </div>
 
               {/* Period Filter */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Time Horizon</label>
+                <label className="block text-slate-700 font-medium mb-1">Time Horizon</label>
                 <select
                   value={reportPeriod}
                   onChange={(e) => setReportPeriod(e.target.value as any)}
-                  className="w-full bg-[#161920] border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   <option value="all">All Time History</option>
                   <option value="30days">Last 30 Days</option>
@@ -1680,11 +1683,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
               {/* Sub-Crew Scope */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Sub-Crew Scope</label>
+                <label className="block text-slate-700 font-medium mb-1">Sub-Crew Scope</label>
                 <select
                   value={reportCrewId}
                   onChange={(e) => setReportCrewId(e.target.value)}
-                  className="w-full bg-[#161920] border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   <option value="All">All Sub-Crews</option>
                   {crews.map((c) => (
@@ -1697,11 +1700,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
               {/* Event Type Filter */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Event Category</label>
+                <label className="block text-slate-700 font-medium mb-1">Event Category</label>
                 <select
                   value={reportEventType}
                   onChange={(e) => setReportEventType(e.target.value)}
-                  className="w-full bg-[#161920] border border-slate-800 rounded-lg px-3 py-2 text-slate-100 focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   <option value="All">All Event Types</option>
                   <option value="Camp">Camps & Expeditions</option>
@@ -1713,11 +1716,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
               {/* Sort By Option */}
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Sort Members By</label>
+                <label className="block text-slate-700 font-medium mb-1">Sort Members By</label>
                 <select
                   value={reportSortBy}
                   onChange={(e) => setReportSortBy(e.target.value as any)}
-                  className="w-full bg-[#161920] border border-slate-800 rounded-lg px-3 py-2 text-slate-100 font-semibold focus:outline-none focus:border-emerald-500 cursor-pointer text-emerald-400"
+                  className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-[#800000] font-semibold focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   <option value="absent_desc">Highest Absent % (Unexcused)</option>
                   <option value="excused_desc">Highest Excused %</option>
@@ -1730,23 +1733,23 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
             {/* Custom Dates if custom selected */}
             {reportPeriod === 'custom' && (
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl flex flex-wrap items-center gap-4 text-xs">
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl flex flex-wrap items-center gap-4 text-xs">
                 <div className="flex items-center gap-2">
-                  <label className="text-slate-400 font-medium">Start Date:</label>
+                  <label className="text-slate-700 font-medium">Start Date:</label>
                   <input
                     type="date"
                     value={reportCustomStart}
                     onChange={(e) => setReportCustomStart(e.target.value)}
-                    className="bg-[#1A1E26] border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none font-mono"
+                    className="bg-white border border-[#FF9999] rounded-lg px-2.5 py-1 text-slate-800 focus:outline-none font-mono"
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <label className="text-slate-400 font-medium">End Date:</label>
+                  <label className="text-slate-700 font-medium">End Date:</label>
                   <input
                     type="date"
                     value={reportCustomEnd}
                     onChange={(e) => setReportCustomEnd(e.target.value)}
-                    className="bg-[#1A1E26] border border-slate-800 rounded-lg px-2.5 py-1 text-slate-200 focus:outline-none font-mono"
+                    className="bg-white border border-[#FF9999] rounded-lg px-2.5 py-1 text-slate-800 focus:outline-none font-mono"
                   />
                 </div>
               </div>
@@ -1754,58 +1757,58 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
             {/* KPI Summary Banner */}
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2">
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Assemblies Evaluated</span>
-                <span className="text-lg font-bold text-slate-100 font-mono">{reportScopeStats.totalEvents}</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Assemblies Evaluated</span>
+                <span className="text-lg font-bold text-[#800000] font-mono">{reportScopeStats.totalEvents}</span>
               </div>
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Members Evaluated</span>
-                <span className="text-lg font-bold text-emerald-400 font-mono">{reportScopeStats.totalMembers}</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Members Evaluated</span>
+                <span className="text-lg font-bold text-[#800000] font-mono">{reportScopeStats.totalMembers}</span>
               </div>
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Avg Present Rate</span>
-                <span className="text-lg font-bold text-sky-400 font-mono">{reportScopeStats.avgPresentRate}%</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Avg Present Rate</span>
+                <span className="text-lg font-bold text-sky-700 font-mono">{reportScopeStats.avgPresentRate}%</span>
               </div>
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Unexcused Absences</span>
-                <span className="text-lg font-bold text-rose-400 font-mono">{reportScopeStats.totalUnexcused}</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Unexcused Absences</span>
+                <span className="text-lg font-bold text-rose-700 font-mono">{reportScopeStats.totalUnexcused}</span>
               </div>
-              <div className="bg-[#161920] border border-slate-800 p-3 rounded-xl">
-                <span className="text-[10px] text-slate-400 block font-medium uppercase tracking-wider">Official Excuses</span>
-                <span className="text-lg font-bold text-blue-400 font-mono">{reportScopeStats.totalExcused}</span>
+              <div className="bg-[#FFF0F0] border border-[#FF9999] p-3 rounded-xl">
+                <span className="text-[10px] text-slate-600 block font-medium uppercase tracking-wider">Official Excuses</span>
+                <span className="text-lg font-bold text-blue-700 font-mono">{reportScopeStats.totalExcused}</span>
               </div>
             </div>
           </div>
 
           {/* Member Percentage Breakdown Report Table */}
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl shadow-lg overflow-hidden">
-            <div className="p-4 bg-slate-950 border-b border-slate-800 flex items-center justify-between">
-              <h4 className="text-sm font-bold text-slate-200 flex items-center gap-2">
-                <Users className="w-4 h-4 text-emerald-400" />
+          <div className="bg-white border-2 border-[#FF9999] rounded-2xl shadow-sm overflow-hidden">
+            <div className="p-4 bg-[#FFF0F0] border-b border-[#FF9999] flex items-center justify-between">
+              <h4 className="text-sm font-bold text-[#800000] flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#800000]" />
                 Member Percentage & Absentee Breakdown Roster ({filteredReportList.length} Members)
               </h4>
-              <span className="text-[11px] text-slate-400 font-mono">
+              <span className="text-[11px] text-slate-600 font-mono">
                 Showing percentages calculated against {reportScopeStats.totalEvents} assemblies
               </span>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs text-slate-200">
-                <thead className="bg-[#12151C] text-slate-400 font-mono text-[11px] uppercase border-b border-slate-800">
+              <table className="w-full text-left text-xs text-slate-800">
+                <thead className="bg-[#FFF0F0]/70 text-slate-700 font-mono text-[11px] uppercase border-b border-[#FF9999]">
                   <tr>
                     <th className="py-3.5 px-4 font-semibold">Member</th>
                     <th className="py-3.5 px-4 font-semibold">Sub-Crew</th>
                     <th className="py-3.5 px-4 font-semibold text-center">Assemblies</th>
-                    <th className="py-3.5 px-4 font-semibold text-center text-emerald-400">Present % (Count)</th>
-                    <th className="py-3.5 px-4 font-semibold text-center text-rose-400">Absent / Unexcused %</th>
-                    <th className="py-3.5 px-4 font-semibold text-center text-blue-400">Excused %</th>
-                    <th className="py-3.5 px-4 font-semibold text-center text-amber-400">Exempt</th>
+                    <th className="py-3.5 px-4 font-semibold text-center text-emerald-800">Present % (Count)</th>
+                    <th className="py-3.5 px-4 font-semibold text-center text-rose-800">Absent / Unexcused %</th>
+                    <th className="py-3.5 px-4 font-semibold text-center text-blue-800">Excused %</th>
+                    <th className="py-3.5 px-4 font-semibold text-center text-amber-800">Exempt</th>
                     <th className="py-3.5 px-4 font-semibold text-center">Turnout Rating</th>
-                    <th className="py-3.5 px-4 font-semibold text-center text-purple-400">Council Flag / Status</th>
+                    <th className="py-3.5 px-4 font-semibold text-center text-[#800000]">Council Flag / Status</th>
                     <th className="py-3.5 px-4 font-semibold text-right">Actions & Notice</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80">
+                <tbody className="divide-y divide-[#FF9999]/50">
                   {filteredReportList.map((item) => {
                     const isExpanded = expandedMemberId === item.member.id;
                     const isLowAttendance = item.presentPct < attendanceThreshold;
@@ -1813,34 +1816,34 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
                     return (
                       <React.Fragment key={item.member.id}>
-                        <tr className="hover:bg-slate-950/60 transition">
-                          <td className="py-3 px-4 font-medium text-slate-100">
+                        <tr className="hover:bg-[#FFF0F0]/60 transition">
+                          <td className="py-3 px-4 font-medium text-slate-900">
                             <div className="flex items-center gap-2.5">
-                              <div className="w-7 h-7 rounded-full bg-slate-800 border border-emerald-700/50 flex items-center justify-center font-bold text-xs text-emerald-300">
+                              <div className="w-7 h-7 rounded-full bg-[#FFF0F0] border border-[#FF9999] flex items-center justify-center font-bold text-xs text-[#800000]">
                                 {item.member.name.charAt(0)}
                               </div>
                               <div>
-                                <div className="font-semibold text-slate-100">{item.member.name}</div>
-                                <div className="text-[10px] font-mono text-slate-400">{item.member.councilRole} • {item.member.idCard}</div>
+                                <div className="font-semibold text-slate-900">{item.member.name}</div>
+                                <div className="text-[10px] font-mono text-slate-600">{item.member.councilRole} • {item.member.idCard}</div>
                               </div>
                             </div>
                           </td>
 
-                          <td className="py-3 px-4 text-slate-300">
+                          <td className="py-3 px-4 text-slate-700">
                             <div>{item.member.crewName}</div>
-                            <div className="text-[10px] text-emerald-400 font-semibold">{item.member.section}</div>
+                            <div className="text-[10px] text-[#800000] font-semibold">{item.member.section}</div>
                           </td>
 
-                          <td className="py-3 px-4 text-center font-mono font-bold text-slate-300">
+                          <td className="py-3 px-4 text-center font-mono font-bold text-slate-800">
                             {item.totalAssemblies}
                           </td>
 
                           {/* Present % */}
                           <td className="py-3 px-4 text-center">
-                            <div className="font-mono font-bold text-emerald-400 text-sm">
+                            <div className="font-mono font-bold text-emerald-700 text-sm">
                               {item.presentPct}%
                             </div>
-                            <div className="text-[10px] text-slate-400 font-mono">
+                            <div className="text-[10px] text-slate-600 font-mono">
                               ({item.presentCount} events)
                             </div>
                           </td>
@@ -1848,51 +1851,51 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                           {/* Unexcused Absent % */}
                           <td className="py-3 px-4 text-center">
                             <div className={`font-mono font-bold text-sm ${
-                              item.unexcusedCount > 0 ? 'text-rose-400 bg-rose-500/10 py-0.5 px-1.5 rounded inline-block' : 'text-slate-400'
+                              item.unexcusedCount > 0 ? 'text-rose-700 bg-rose-100/70 py-0.5 px-1.5 rounded inline-block' : 'text-slate-600'
                             }`}>
                               {item.unexcusedPct}%
                             </div>
-                            <div className="text-[10px] text-slate-400 font-mono">
+                            <div className="text-[10px] text-slate-600 font-mono">
                               ({item.unexcusedCount} absent)
                             </div>
                           </td>
 
                           {/* Excused % */}
                           <td className="py-3 px-4 text-center">
-                            <div className="font-mono font-bold text-blue-400 text-sm">
+                            <div className="font-mono font-bold text-blue-700 text-sm">
                               {item.excusedPct}%
                             </div>
-                            <div className="text-[10px] text-slate-400 font-mono">
+                            <div className="text-[10px] text-slate-600 font-mono">
                               ({item.excusedCount} excused)
                             </div>
                           </td>
 
                           {/* Exempt */}
-                          <td className="py-3 px-4 text-center font-mono text-amber-400 text-xs">
+                          <td className="py-3 px-4 text-center font-mono text-amber-800 text-xs font-bold">
                             {item.exemptCount}
                           </td>
 
                           {/* Rating Badge */}
                           <td className="py-3 px-4 text-center">
                             {item.isExemptRole ? (
-                              <span className="bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 font-mono">
-                                <ShieldCheck className="w-3 h-3 text-purple-400" />
+                              <span className="bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 font-mono">
+                                <ShieldCheck className="w-3 h-3 text-[#800000]" />
                                 Exempt ({item.member.isSuperAdmin || item.member.councilRole === 'Superadmin' ? 'Superadmin' : 'Rover Advisor'})
                               </span>
                             ) : item.turnoutRating === 'Exemplary' ? (
-                              <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                              <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                 <CheckCircle2 className="w-3 h-3" /> Exemplary
                               </span>
                             ) : item.turnoutRating === 'Satisfactory' ? (
-                              <span className="bg-blue-500/10 text-blue-400 border border-blue-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                              <span className="bg-blue-100 text-blue-800 border border-blue-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
                                 Satisfactory
                               </span>
                             ) : item.turnoutRating === 'Needs Review' ? (
-                              <span className="bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                              <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold px-2 py-0.5 rounded-full">
                                 Needs Review
                               </span>
                             ) : (
-                              <span className="bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                              <span className="bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                 <AlertTriangle className="w-3 h-3" /> At Risk
                               </span>
                             )}
@@ -1905,29 +1908,29 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                                 <span
                                   className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 border ${
                                     flagData.status === 'Pending Council Review'
-                                      ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                                      ? 'bg-amber-100 text-amber-900 border-amber-300'
                                       : flagData.status === 'Formal Notice Issued'
-                                      ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
+                                      ? 'bg-rose-100 text-rose-900 border-rose-300'
                                       : flagData.status === 'Counseled & Resolved'
-                                      ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
-                                      : 'bg-blue-500/10 text-blue-300 border-blue-500/30'
+                                      ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                                      : 'bg-blue-100 text-blue-900 border-blue-300'
                                   }`}
                                 >
                                   <Flag className="w-3 h-3" />
                                   {flagData.status}
                                 </span>
-                                <div className="text-[9px] text-slate-400 font-mono">
+                                <div className="text-[9px] text-slate-500 font-mono">
                                   By {flagData.flaggedBy}
                                 </div>
                               </div>
                             ) : isLowAttendance && !item.isExemptRole ? (
-                              <span className="bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1 animate-pulse">
+                              <span className="bg-rose-100 text-rose-800 border border-rose-300 text-[10px] font-bold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
                                 <AlertTriangle className="w-3 h-3" /> Below Cutoff (&lt;{attendanceThreshold}%)
                               </span>
                             ) : item.isExemptRole ? (
-                              <span className="text-purple-300/70 font-mono text-[10px]">Exempt Overseer</span>
+                              <span className="text-slate-500 font-mono text-[10px]">Exempt Overseer</span>
                             ) : (
-                              <span className="text-slate-600 font-mono text-[10px]">--</span>
+                              <span className="text-slate-400 font-mono text-[10px]">--</span>
                             )}
                           </td>
 
@@ -1937,10 +1940,10 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                               <button
                                 type="button"
                                 onClick={() => handleOpenNoticeModal(item)}
-                                className="px-2.5 py-1 rounded bg-purple-900/40 hover:bg-purple-800/60 text-purple-200 border border-purple-700/50 font-semibold text-[11px] transition inline-flex items-center gap-1 cursor-pointer"
+                                className="px-2.5 py-1 rounded bg-[#FFF0F0] hover:bg-[#FFE5E5] text-[#800000] border border-[#FF9999] font-bold text-[11px] transition inline-flex items-center gap-1 cursor-pointer shadow-xs"
                                 title="Open Council Review Notice & Record"
                               >
-                                <FileCheck className="w-3 h-3 text-purple-300" />
+                                <FileCheck className="w-3 h-3 text-[#800000]" />
                                 <span>Notice</span>
                               </button>
 
@@ -1949,8 +1952,8 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                                 onClick={() => handleToggleFlagMember(item)}
                                 className={`px-2 py-1 rounded text-[11px] font-semibold transition cursor-pointer border ${
                                   flagData
-                                    ? 'bg-slate-800 hover:bg-rose-950/60 text-rose-300 border-rose-800/50'
-                                    : 'bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border-amber-500/30'
+                                    ? 'bg-rose-100 hover:bg-rose-200 text-rose-800 border-rose-300'
+                                    : 'bg-white hover:bg-[#FFF0F0] text-[#800000] border-[#FF9999]'
                                 }`}
                                 title={flagData ? 'Remove flag' : 'Flag for Council Review'}
                               >
@@ -1960,10 +1963,10 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                               <button
                                 type="button"
                                 onClick={() => setExpandedMemberId(isExpanded ? null : item.member.id)}
-                                className="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium text-[11px] transition inline-flex items-center gap-1 cursor-pointer"
+                                className="px-2 py-1 rounded bg-white hover:bg-[#FFF0F0] border border-[#FF9999] text-slate-700 font-medium text-[11px] transition inline-flex items-center gap-1 cursor-pointer"
                                 title="Toggle assembly timeline"
                               >
-                                {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                                {isExpanded ? <ChevronUp className="w-3.5 h-3.5 text-[#800000]" /> : <ChevronDown className="w-3.5 h-3.5 text-[#800000]" />}
                               </button>
                             </div>
                           </td>
@@ -1971,11 +1974,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
                         {/* Expanded Individual Member Timeline */}
                         {isExpanded && (
-                          <tr className="bg-slate-950/80">
-                            <td colSpan={10} className="p-4 border-t border-slate-800">
+                          <tr className="bg-[#FFF0F0]/50">
+                            <td colSpan={10} className="p-4 border-t border-[#FF9999]">
                               <div className="space-y-3">
-                                <h5 className="font-bold text-slate-200 text-xs flex items-center gap-2">
-                                  <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                                <h5 className="font-bold text-[#800000] text-xs flex items-center gap-2">
+                                  <Clock className="w-3.5 h-3.5 text-[#800000]" />
                                   Individual Attendance History for {item.member.name}
                                 </h5>
 
@@ -1985,17 +1988,17 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                                     return (
                                       <div
                                         key={ev.id}
-                                        className="bg-[#12151C] border border-slate-800 p-2.5 rounded-lg flex items-center justify-between"
+                                        className="bg-white border border-[#FF9999] p-2.5 rounded-lg flex items-center justify-between shadow-xs"
                                       >
                                         <div>
-                                          <div className="font-semibold text-slate-200 text-[11px]">
+                                          <div className="font-semibold text-slate-900 text-[11px]">
                                             {ev.title}
                                           </div>
-                                          <div className="text-[10px] text-slate-400 font-mono">
+                                          <div className="text-[10px] text-slate-600 font-mono">
                                             {ev.startDate.split('T')[0]} • {ev.type}
                                           </div>
                                           {recData.reason && (
-                                            <div className="text-[10px] text-amber-300 italic mt-0.5">
+                                            <div className="text-[10px] text-amber-800 italic mt-0.5">
                                               Reason: {recData.reason}
                                             </div>
                                           )}
@@ -2042,14 +2045,14 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
           {/* =========================================================================
               "WHO CAME VS WHO DIDN'T" SPECIFIC EVENT DRILLDOWN
              ========================================================================= */}
-          <div className="bg-[#1A1E26] border border-slate-800 rounded-2xl p-5 shadow-lg space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-3">
+          <div className="bg-white border border-[#FF9999] rounded-2xl p-5 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#FF9999] pb-3">
               <div>
-                <h4 className="text-base font-bold text-slate-100 flex items-center gap-2">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400" />
+                <h4 className="text-base font-bold text-[#800000] flex items-center gap-2">
+                  <CheckCircle2 className="w-5 h-5 text-[#800000]" />
                   Specific Assembly Drilldown: "Who Came vs Who Didn't"
                 </h4>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <p className="text-xs text-slate-600 mt-0.5">
                   Select any assembly or event to inspect side-by-side lists of attendees and absentees.
                 </p>
               </div>
@@ -2058,7 +2061,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <select
                   value={drilldownEventId}
                   onChange={(e) => setDrilldownEventId(e.target.value)}
-                  className="w-full bg-[#161920] border border-slate-800 text-xs text-slate-100 rounded-lg px-3 py-2 font-medium focus:outline-none focus:border-emerald-500 cursor-pointer"
+                  className="w-full bg-white border border-[#FF9999] text-xs text-slate-800 rounded-lg px-3 py-2 font-medium focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
                   {events.map((ev) => (
                     <option key={ev.id} value={ev.id}>
@@ -2072,12 +2075,12 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
             {/* Side-by-Side Breakdown Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {/* WHO CAME (PRESENT) */}
-              <div className="bg-slate-950/80 border border-emerald-900/50 rounded-xl p-4 space-y-3">
-                <div className="flex items-center justify-between border-b border-emerald-900/40 pb-2">
-                  <h5 className="font-bold text-emerald-400 text-xs flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4" /> Who Came ({drilldownData.present.length})
+              <div className="bg-[#FFF0F0]/60 border border-emerald-300 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-emerald-200 pb-2">
+                  <h5 className="font-bold text-emerald-800 text-xs flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-700" /> Who Came ({drilldownData.present.length})
                   </h5>
-                  <span className="text-[10px] font-mono bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded font-bold">
+                  <span className="text-[10px] font-mono bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded font-bold">
                     PRESENT
                   </span>
                 </div>
@@ -2086,13 +2089,13 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                   {drilldownData.present.map((item) => (
                     <div
                       key={item.member.id}
-                      className="bg-[#12151C] border border-slate-800 p-2 rounded-lg flex items-center justify-between"
+                      className="bg-white border border-emerald-200 p-2 rounded-lg flex items-center justify-between shadow-xs"
                     >
                       <div>
-                        <div className="font-semibold text-slate-200">{item.member.name}</div>
-                        <div className="text-[10px] text-slate-400">{item.member.crewName}</div>
+                        <div className="font-semibold text-slate-900">{item.member.name}</div>
+                        <div className="text-[10px] text-slate-600">{item.member.crewName}</div>
                       </div>
-                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     </div>
                   ))}
                   {drilldownData.present.length === 0 && (
@@ -2102,12 +2105,12 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
               </div>
 
               {/* WHO DIDN'T (UNEXCUSED ABSENCES) */}
-              <div className="bg-slate-950/80 border border-rose-900/50 rounded-xl p-4 space-y-3">
-                <div className="flex items-center justify-between border-b border-rose-900/40 pb-2">
-                  <h5 className="font-bold text-rose-400 text-xs flex items-center gap-1.5">
-                    <XCircle className="w-4 h-4" /> Who Didn't ({drilldownData.unexcused.length})
+              <div className="bg-[#FFF0F0]/60 border border-rose-300 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-rose-200 pb-2">
+                  <h5 className="font-bold text-rose-800 text-xs flex items-center gap-1.5">
+                    <XCircle className="w-4 h-4 text-rose-700" /> Who Didn't ({drilldownData.unexcused.length})
                   </h5>
-                  <span className="text-[10px] font-mono bg-rose-500/10 text-rose-400 px-2 py-0.5 rounded font-bold">
+                  <span className="text-[10px] font-mono bg-rose-100 text-rose-800 border border-rose-300 px-2 py-0.5 rounded font-bold">
                     UNEXCUSED
                   </span>
                 </div>
@@ -2116,13 +2119,13 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                   {drilldownData.unexcused.map((item) => (
                     <div
                       key={item.member.id}
-                      className="bg-[#12151C] border border-rose-900/40 p-2 rounded-lg flex items-center justify-between"
+                      className="bg-white border border-rose-200 p-2 rounded-lg flex items-center justify-between shadow-xs"
                     >
                       <div>
-                        <div className="font-semibold text-rose-200">{item.member.name}</div>
-                        <div className="text-[10px] text-slate-400">{item.member.crewName}</div>
+                        <div className="font-semibold text-rose-900">{item.member.name}</div>
+                        <div className="text-[10px] text-slate-600">{item.member.crewName}</div>
                       </div>
-                      <XCircle className="w-4 h-4 text-rose-500" />
+                      <XCircle className="w-4 h-4 text-rose-600" />
                     </div>
                   ))}
                   {drilldownData.unexcused.length === 0 && (
@@ -2132,12 +2135,12 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
               </div>
 
               {/* OFFICIAL EXCUSES */}
-              <div className="bg-slate-950/80 border border-blue-900/50 rounded-xl p-4 space-y-3">
-                <div className="flex items-center justify-between border-b border-blue-900/40 pb-2">
-                  <h5 className="font-bold text-blue-400 text-xs flex items-center gap-1.5">
-                    <Clock className="w-4 h-4" /> Excused ({drilldownData.excused.length})
+              <div className="bg-[#FFF0F0]/60 border border-blue-300 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between border-b border-blue-200 pb-2">
+                  <h5 className="font-bold text-blue-800 text-xs flex items-center gap-1.5">
+                    <Clock className="w-4 h-4 text-blue-700" /> Excused ({drilldownData.excused.length})
                   </h5>
-                  <span className="text-[10px] font-mono bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded font-bold">
+                  <span className="text-[10px] font-mono bg-blue-100 text-blue-800 border border-blue-300 px-2 py-0.5 rounded font-bold">
                     EXCUSED
                   </span>
                 </div>
@@ -2146,11 +2149,11 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                   {drilldownData.excused.map((item) => (
                     <div
                       key={item.member.id}
-                      className="bg-[#12151C] border border-slate-800 p-2 rounded-lg space-y-0.5"
+                      className="bg-white border border-blue-200 p-2 rounded-lg space-y-0.5 shadow-xs"
                     >
-                      <div className="font-semibold text-slate-200">{item.member.name}</div>
+                      <div className="font-semibold text-slate-900">{item.member.name}</div>
                       {item.record?.exemptionReason && (
-                        <div className="text-[10px] text-amber-300 italic">
+                        <div className="text-[10px] text-amber-800 italic">
                           "{item.record.exemptionReason}"
                         </div>
                       )}
@@ -2170,18 +2173,18 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
           OFFICIAL COUNCIL REVIEW NOTICE MODAL
          ========================================================================= */}
       {noticeMember && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#161920] border border-purple-500/30 rounded-2xl p-6 max-w-2xl w-full space-y-5 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 bg-slate-950/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white border-2 border-[#FF9999] rounded-2xl p-6 max-w-2xl w-full space-y-5 shadow-2xl relative animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-[#FF9999] pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                <div className="w-10 h-10 rounded-xl bg-[#FFF0F0] border border-[#FF9999] flex items-center justify-center text-[#800000]">
                   <ShieldAlert className="w-6 h-6" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-100">
+                  <h3 className="text-base font-bold text-[#800000]">
                     Council Attendance Warning & Review Record
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-600">
                     Official governance record for low attendance counseling & notice issuance.
                   </p>
                 </div>
@@ -2190,41 +2193,41 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
               <button
                 type="button"
                 onClick={() => setNoticeMember(null)}
-                className="text-slate-400 hover:text-slate-200 p-1 rounded-lg hover:bg-slate-800 transition cursor-pointer"
+                className="text-slate-500 hover:text-slate-800 p-1 rounded-lg hover:bg-[#FFF0F0] transition cursor-pointer"
               >
-                <X className="w-5 h-5" />
+                <X className="w-5 h-5 text-[#800000]" />
               </button>
             </div>
 
             {/* Member Profile Summary */}
-            <div className="bg-[#12151B] border border-slate-800 rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div className="bg-[#FFF0F0] border border-[#FF9999] rounded-xl p-3.5 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
               <div>
-                <span className="text-[10px] text-slate-400 block font-medium">Member Name:</span>
-                <span className="font-bold text-slate-100 text-sm">{noticeMember.member.name}</span>
+                <span className="text-[10px] text-slate-600 block font-medium">Member Name:</span>
+                <span className="font-bold text-[#800000] text-sm">{noticeMember.member.name}</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 block font-medium">Sub-Crew:</span>
-                <span className="font-semibold text-emerald-400">{noticeMember.member.crewName} ({noticeMember.member.section})</span>
+                <span className="text-[10px] text-slate-600 block font-medium">Sub-Crew:</span>
+                <span className="font-semibold text-slate-800">{noticeMember.member.crewName} ({noticeMember.member.section})</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 block font-medium">Turnout Rate:</span>
-                <span className={`font-mono font-bold ${noticeMember.presentPct < attendanceThreshold ? 'text-rose-400' : 'text-emerald-400'}`}>
+                <span className="text-[10px] text-slate-600 block font-medium">Turnout Rate:</span>
+                <span className={`font-mono font-bold ${noticeMember.presentPct < attendanceThreshold ? 'text-rose-700' : 'text-emerald-700'}`}>
                   {noticeMember.presentPct}% (&lt;{attendanceThreshold}% Cutoff)
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 block font-medium">Unexcused Absences:</span>
-                <span className="font-mono font-bold text-rose-400">{noticeMember.unexcusedCount}</span>
+                <span className="text-[10px] text-slate-600 block font-medium">Unexcused Absences:</span>
+                <span className="font-mono font-bold text-rose-700">{noticeMember.unexcusedCount}</span>
               </div>
             </div>
 
             {/* Status Selector */}
             <div className="space-y-1.5 text-xs">
-              <label className="block text-slate-300 font-bold">Update Council Review Status:</label>
+              <label className="block text-slate-800 font-bold">Update Council Review Status:</label>
               <select
                 value={noticeStatus}
                 onChange={(e) => setNoticeStatus(e.target.value as any)}
-                className="w-full bg-[#12151B] border border-slate-800 rounded-xl px-3 py-2.5 text-slate-100 font-semibold focus:outline-none focus:border-purple-500 cursor-pointer"
+                className="w-full bg-white border border-[#FF9999] rounded-xl px-3 py-2.5 text-slate-800 font-semibold focus:outline-none focus:border-[#800000] cursor-pointer"
               >
                 <option value="Pending Council Review">Pending Council Review (Under Observation)</option>
                 <option value="Formal Notice Issued">Formal Notice Issued (Official Warning Written)</option>
@@ -2235,24 +2238,24 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
 
             {/* Notes Textarea */}
             <div className="space-y-1.5 text-xs">
-              <label className="block text-slate-300 font-bold">Council Review Notes & Recommendations:</label>
+              <label className="block text-slate-800 font-bold">Council Review Notes & Recommendations:</label>
               <textarea
                 rows={4}
                 value={noticeNotes}
                 onChange={(e) => setNoticeNotes(e.target.value)}
                 placeholder="Enter counseling notes, advisor meeting outcome, or attendance plan..."
-                className="w-full bg-[#12151B] border border-slate-800 rounded-xl p-3 text-slate-200 text-xs focus:outline-none focus:border-purple-500 font-sans"
+                className="w-full bg-white border border-[#FF9999] rounded-xl p-3 text-slate-800 text-xs focus:outline-none focus:border-[#800000] font-sans"
               />
             </div>
 
             {/* Footer Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-800">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-[#FF9999]">
               <button
                 type="button"
                 onClick={handleCopyNoticeText}
-                className="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full sm:w-auto bg-white hover:bg-[#FFF0F0] text-[#800000] font-bold text-xs px-4 py-2.5 rounded-xl border border-[#FF9999] transition flex items-center justify-center gap-2 cursor-pointer shadow-xs"
               >
-                {copiedNotice ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-purple-400" />}
+                {copiedNotice ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4 text-[#800000]" />}
                 <span>{copiedNotice ? 'Notice Text Copied!' : 'Copy Formal Notice Text'}</span>
               </button>
 
@@ -2260,16 +2263,16 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <button
                   type="button"
                   onClick={() => setNoticeMember(null)}
-                  className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition cursor-pointer"
+                  className="px-4 py-2.5 rounded-xl bg-white hover:bg-[#FFF0F0] border border-[#FF9999] text-[#800000] text-xs font-bold transition cursor-pointer shadow-xs"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleSaveNotice}
-                  className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition flex items-center gap-2 shadow-lg cursor-pointer"
+                  className="px-5 py-2.5 rounded-xl bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold transition flex items-center gap-2 shadow-sm cursor-pointer"
                 >
-                  <Save className="w-4 h-4" />
+                  <Save className="w-4 h-4 text-white" />
                   <span>Save Governance Record</span>
                 </button>
               </div>

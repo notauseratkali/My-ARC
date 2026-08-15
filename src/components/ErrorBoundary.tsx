@@ -59,16 +59,16 @@ export class ErrorBoundary extends React.Component<Props, State> {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
               <button
                 onClick={this.handleReload}
-                className="w-full sm:w-auto bg-[#002B7F] hover:bg-blue-800 text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-xs"
+                className="w-full sm:w-auto bg-[#800000] hover:bg-[#6b0000] text-white !text-white font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer shadow-xs"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="w-4 h-4 text-white" />
                 <span>Reload Portal</span>
               </button>
               <button
                 onClick={this.handleResetSession}
-                className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer border border-slate-300"
+                className="w-full sm:w-auto bg-[#FFF0F0] hover:bg-white text-[#800000] font-bold px-5 py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2 cursor-pointer border border-[#FF9999] shadow-xs"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-4 h-4 text-[#800000]" />
                 <span>Reset Local Cache</span>
               </button>
             </div>

@@ -193,7 +193,7 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
           <button
             onClick={runAnalysis}
             disabled={isLoading}
-            className="self-start md:self-auto px-4 py-2.5 bg-[#002B7F] hover:bg-blue-900 disabled:bg-slate-300 text-white text-sm font-medium rounded-xl shadow-xs transition-all flex items-center gap-2 shrink-0 cursor-pointer"
+            className="self-start md:self-auto px-4 py-2.5 bg-[#800000] hover:bg-[#6b0000] disabled:bg-[#FFD0D0] disabled:text-[#800000]/60 text-white !text-white text-sm font-bold rounded-xl shadow-xs transition-all flex items-center gap-2 shrink-0 cursor-pointer"
           >
             <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
             {isLoading ? 'Analyzing Member Logs...' : 'Re-Run Analysis'}
@@ -316,10 +316,10 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
               </h3>
               <button
                 onClick={handleCopySummary}
-                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-medium rounded-lg transition-all flex items-center gap-1.5 border border-slate-200 cursor-pointer"
+                className="px-3 py-1.5 bg-[#FFF0F0] hover:bg-white text-[#800000] text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 border border-[#FF9999] cursor-pointer shadow-xs"
                 title="Copy Full Analysis"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-[#006B3F]" /> : <Copy className="w-3.5 h-3.5" />}
+                {copied ? <Check className="w-3.5 h-3.5 text-[#800000]" /> : <Copy className="w-3.5 h-3.5 text-[#800000]" />}
                 {copied ? 'Copied to Clipboard' : 'Copy Summary'}
               </button>
             </div>
@@ -383,7 +383,7 @@ export const AIProgressionAssistant: React.FC<AIProgressionAssistantProps> = ({
                   {onSelectRequirement && (
                     <button
                       onClick={() => onSelectRequirement(item.requirementId)}
-                      className="w-full py-2 bg-slate-50 hover:bg-blue-50 text-[#002B7F] hover:text-blue-900 border border-slate-200 hover:border-blue-300 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-1.5 mt-2 cursor-pointer"
+                      className="w-full py-2 bg-[#FFF0F0] hover:bg-[#800000] text-[#800000] hover:text-white border border-[#FF9999] hover:border-[#800000] text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 mt-2 cursor-pointer"
                     >
                       Focus on Requirement <ArrowRight className="w-3.5 h-3.5" />
                     </button>

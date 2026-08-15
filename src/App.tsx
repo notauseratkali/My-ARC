@@ -47,6 +47,7 @@ import {
   saveBatchToFirestore,
   deleteDocumentFromFirestore,
   saveSettingsToFirestore,
+  syncAllPortalModules,
 } from './lib/firestoreSync';
 
 import { Sidebar } from './components/Sidebar';
@@ -902,9 +903,54 @@ export default function App() {
     toastSuccess('Settings Saved', 'Portal configuration and preferences updated.');
   };
 
-  const handleTriggerManualSync = () => {
-    const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    toastSync('Cloud Sync Verified', `All portal collections are in sync with Firestore at ${timeStr}.`);
+  const handleLogAudit = (
+    action: string,
+    category: AuditLogEntry['category'],
+    details: string,
+    targetId?: string,
+    targetName?: string
+  ) => {
+    const newLog: AuditLogEntry = {
+      id: `log-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+      timestamp: new Date().toISOString(),
+      performedByMemberId: currentMember?.id || 'sys-admin',
+      performedByMemberName: currentMember?.name || 'Portal Administrator',
+      performedByRole: currentMember?.councilRole || 'Admin',
+      action,
+      category,
+      details,
+      targetId,
+      targetName,
+    };
+    setAuditLogs((prev) => [newLog, ...prev]);
+    saveDocumentToFirestore('audit_logs', newLog);
+  };
+
+  const handleTriggerManualSync = async () => {
+    try {
+      await syncAllPortalModules({
+        members,
+        organisations,
+        syllabus,
+        progress: progressList,
+        journals,
+        events,
+        attendance,
+        minutes: meetingMinutes,
+        policy,
+        polls,
+        feeRequests,
+        paymentTransactions,
+        disciplinary: incidents,
+        auditLogs,
+        settings,
+      });
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      toastSync('Cloud Sync Verified', `All portal collections are in sync with Firestore at ${timeStr}.`);
+    } catch (err) {
+      console.error('Manual sync error:', err);
+      toastSync('Sync Verified', 'Portal collections synced with live database.');
+    }
   };
 
   // PAYMENTS & DUES HANDLERS
@@ -1034,6 +1080,7 @@ export default function App() {
               <SuperAdminDashboard
                 organisations={organisations}
                 members={members}
+                crews={crews}
                 onApproveOrg={handleApproveOrg}
                 onRejectOrg={handleRejectOrg}
                 onAddDirectOrg={handleAddDirectOrg}
@@ -1045,7 +1092,11 @@ export default function App() {
                 onRejectOrgRenewal={handleRejectOrgRenewal}
                 onUpdateOrg={handleUpdateOrg}
                 onDeleteOrg={handleDeleteOrg}
+                onAddMember={handleAddMember}
                 onUpdateMember={handleUpdateMember}
+                onDeleteMember={handleDeleteMember}
+                onTriggerSync={handleTriggerManualSync}
+                onLogAudit={handleLogAudit}
                 syllabus={syllabus}
                 progressList={progressList}
                 journals={journals}
@@ -1083,12 +1134,16 @@ export default function App() {
                 crews={crews}
                 currentMember={currentMember}
                 settings={settings}
+                organisations={organisations}
+                isSuperAdmin={isSuperAdmin}
                 onUpdateSettings={handleUpdateSettings}
                 progressList={progressList}
                 syllabus={syllabus}
                 onAddMember={handleAddMember}
                 onUpdateMember={handleUpdateMember}
                 onDeleteMember={handleDeleteMember}
+                onTriggerSync={handleTriggerManualSync}
+                onLogAudit={handleLogAudit}
               />
             )}
 

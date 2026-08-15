@@ -289,15 +289,15 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
       </div>
 
       {/* Editor Container */}
-      <div className="bg-white border border-slate-300 rounded-2xl overflow-hidden focus-within:border-[#002B7F] shadow-2xs transition">
+      <div className="bg-white border border-[#FF9999] rounded-2xl overflow-hidden focus-within:border-[#800000] shadow-2xs transition">
         {/* Microsoft Word Style Toolbar */}
         {activeTab === 'write' && (
-          <div className="bg-slate-50 border-b border-slate-200 p-2 flex flex-wrap items-center gap-1 overflow-x-auto text-xs">
+          <div className="bg-[#FFF0F0]/50 border-b border-[#FFD0D0] p-2 flex flex-wrap items-center gap-1 overflow-x-auto text-xs">
             <button
               type="button"
               onClick={() => applyFormatting('**', '**')}
               title="Bold (Ctrl+B)"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Bold className="w-4 h-4" />
             </button>
@@ -305,7 +305,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => applyFormatting('*', '*')}
               title="Italic (Ctrl+I)"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Italic className="w-4 h-4" />
             </button>
@@ -313,7 +313,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => applyFormatting('<u>', '</u>')}
               title="Underline"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Underline className="w-4 h-4" />
             </button>
@@ -321,18 +321,18 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => applyFormatting('~~', '~~')}
               title="Strikethrough"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Strikethrough className="w-4 h-4" />
             </button>
 
-            <div className="w-px h-5 bg-slate-300 mx-1" />
+            <div className="w-px h-5 bg-[#FFD0D0] mx-1" />
 
             <button
               type="button"
               onClick={() => insertBlockFormat('# ')}
               title="Heading 1"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Heading1 className="w-4 h-4" />
             </button>
@@ -340,7 +340,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('## ')}
               title="Heading 2"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Heading2 className="w-4 h-4" />
             </button>
@@ -348,18 +348,18 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('### ')}
               title="Heading 3"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Heading3 className="w-4 h-4" />
             </button>
 
-            <div className="w-px h-5 bg-slate-300 mx-1" />
+            <div className="w-px h-5 bg-[#FFD0D0] mx-1" />
 
             <button
               type="button"
               onClick={() => insertBlockFormat('• ')}
               title="Bulleted List"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <List className="w-4 h-4" />
             </button>
@@ -367,7 +367,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('1. ')}
               title="Numbered List"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <ListOrdered className="w-4 h-4" />
             </button>
@@ -375,7 +375,7 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={() => insertBlockFormat('> ')}
               title="Quote Block"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             >
               <Quote className="w-4 h-4" />
             </button>
@@ -384,20 +384,20 @@ export const RichDocumentEditor: React.FC<RichDocumentEditorProps> = ({
               type="button"
               onClick={insertTableTemplate}
               title="Insert Resolution / Decision Table"
-              className="p-1.5 text-slate-700 hover:text-slate-900 hover:bg-slate-200 rounded-lg transition flex items-center gap-1 cursor-pointer"
+              className="p-1.5 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-lg transition flex items-center gap-1 cursor-pointer"
             >
-              <TableIcon className="w-4 h-4 text-[#002B7F]" />
+              <TableIcon className="w-4 h-4 text-[#800000]" />
             </button>
 
-            <div className="w-px h-5 bg-slate-300 mx-1" />
+            <div className="w-px h-5 bg-[#FFD0D0] mx-1" />
 
             {/* Photo Upload Trigger Button */}
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-[#002B7F] border border-blue-200 rounded-lg transition flex items-center gap-1 font-semibold text-xs ml-auto cursor-pointer"
+              className="px-2.5 py-1 bg-[#FFF0F0] hover:bg-white text-[#800000] border border-[#FF9999] rounded-lg transition flex items-center gap-1 font-bold text-xs ml-auto cursor-pointer shadow-xs"
             >
-              <ImageIcon className="w-4 h-4" />
+              <ImageIcon className="w-4 h-4 text-[#800000]" />
               <span>Insert Photo</span>
             </button>
 

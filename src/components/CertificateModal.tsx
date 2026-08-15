@@ -101,23 +101,23 @@ export const CertificateModal: React.FC<CertificateModalProps> = ({
             <button
               onClick={handleDownloadPdf}
               disabled={isGenerating}
-              className="bg-[#002B7F] hover:bg-blue-800 text-white px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition shadow-xs disabled:opacity-50 cursor-pointer"
+              className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition shadow-xs disabled:opacity-50 cursor-pointer"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-4 h-4 text-white" />
               <span>{isGenerating ? 'Rendering PDF...' : 'Download PDF Certificate'}</span>
             </button>
             <button
               onClick={handlePrint}
-              className="bg-slate-50 hover:bg-slate-100 text-slate-700 px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition border border-slate-200 cursor-pointer"
+              className="bg-[#FFF0F0] hover:bg-white text-[#800000] px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition border border-[#FF9999] cursor-pointer shadow-xs"
             >
-              <Printer className="w-4 h-4" />
+              <Printer className="w-4 h-4 text-[#800000]" />
               <span>Print</span>
             </button>
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-700 p-2 rounded-xl hover:bg-slate-100 transition cursor-pointer"
+              className="text-[#800000] hover:text-[#FF3333] p-2 rounded-xl hover:bg-[#FFF0F0] transition cursor-pointer"
             >
-              <X className="w-5 h-5" />
+              <X className="w-5 h-5 text-[#800000]" />
             </button>
           </div>
         </div>

@@ -67,7 +67,7 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
           </p>
           <button
             onClick={onClose}
-            className="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-xs font-semibold cursor-pointer"
+            className="bg-[#FFF0F0] hover:bg-white text-[#800000] border border-[#FF9999] px-4 py-2 rounded-xl text-xs font-bold transition cursor-pointer shadow-xs"
           >
             Close
           </button>
@@ -176,9 +176,9 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
 
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition cursor-pointer"
+            className="p-2 text-[#800000] hover:text-[#FF3333] hover:bg-[#FFF0F0] rounded-xl transition cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-[#800000]" />
           </button>
         </div>
 
@@ -328,8 +328,8 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
               disabled={!chairConfirmCheck}
               className={`w-full py-3 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-xs ${
                 chairConfirmCheck
-                  ? 'bg-purple-700 hover:bg-purple-800 text-white cursor-pointer'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                  ? 'bg-[#800000] hover:bg-[#6b0000] text-white cursor-pointer'
+                  : 'bg-[#FFF0F0] text-[#800000]/50 cursor-not-allowed border border-[#FF9999]'
               }`}
             >
               <Crown className="w-4 h-4" />
@@ -385,8 +385,8 @@ export const AdvisorGovernanceModal: React.FC<AdvisorGovernanceModalProps> = ({
               disabled={!overhaulConfirmCheck}
               className={`w-full py-3 rounded-2xl font-bold transition flex items-center justify-center gap-2 text-sm shadow-xs ${
                 overhaulConfirmCheck
-                  ? 'bg-[#800020] hover:bg-rose-900 text-white cursor-pointer'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                  ? 'bg-[#800000] hover:bg-[#6b0000] text-white cursor-pointer'
+                  : 'bg-[#FFF0F0] text-[#800000]/50 cursor-not-allowed border border-[#FF9999]'
               }`}
             >
               <RefreshCw className="w-4 h-4" />

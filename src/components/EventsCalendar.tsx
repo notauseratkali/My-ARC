@@ -360,8 +360,8 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
                   <Bell className="w-4 h-4 text-[#800000]" />
                   <span className="text-slate-700 font-medium">Notifications Status:</span>
                   {ev.notificationSent ? (
-                    <span className="text-emerald-700 font-bold flex items-center gap-1">
-                      <Check className="w-3.5 h-3.5 text-emerald-700" /> SMS & Email Dispatched
+                    <span className="text-[#800000] font-bold flex items-center gap-1">
+                      <Check className="w-3.5 h-3.5 text-[#800000]" /> SMS & Email Dispatched
                     </span>
                   ) : (
                     <span className="text-[#FF3333] font-bold">Pending Notification Dispatch</span>

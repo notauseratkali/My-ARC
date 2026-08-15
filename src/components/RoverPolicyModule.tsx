@@ -225,7 +225,7 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
             <Vote className={`w-4 h-4 ${activeTab === 'polls' ? 'text-white' : 'text-[#800000]'}`} />
             <span>Active Referendum Polls</span>
             {activePolls.length > 0 && (
-              <span className="bg-amber-400 text-slate-900 font-black text-[10px] px-2 py-0.5 rounded-full">
+              <span className="bg-[#FF3333] text-white font-black text-[10px] px-2 py-0.5 rounded-full">
                 {activePolls.length} Active
               </span>
             )}
@@ -253,7 +253,7 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-[#800000]">{policy?.title || 'Rover Operating Policy'}</h2>
-                <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-md">
+                <span className="bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-md">
                   Official Enforced Policy
                 </span>
               </div>
@@ -352,8 +352,8 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-[#FF9999] pb-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="bg-amber-100 text-amber-900 border border-amber-300 px-3 py-0.5 rounded-full text-xs font-mono font-bold flex items-center gap-1">
-                            <Clock className="w-3.5 h-3.5 text-amber-700 animate-spin" /> Active Voting
+                          <span className="bg-[#FFF0F0] text-[#FF3333] border border-[#FF9999] px-3 py-0.5 rounded-full text-xs font-mono font-bold flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5 text-[#FF3333] animate-spin" /> Active Voting
                           </span>
                           <span className="text-xs text-slate-600 font-mono">
                             Initiated by Secretary: {poll.proposedBySecretaryName}
@@ -414,13 +414,13 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
                         <div className="h-4 bg-white rounded-full overflow-hidden flex border border-[#FF9999]">
                           <div
                             style={{ width: `${yeaPercent}%` }}
-                            className="bg-emerald-500 h-full transition-all duration-500 flex items-center justify-center text-[10px] font-black text-white"
+                            className="bg-[#800000] h-full transition-all duration-500 flex items-center justify-center text-[10px] font-black text-white"
                           >
                             {yeaPercent > 10 && `${yeaPercent}% Yea`}
                           </div>
                           <div
                             style={{ width: `${nayPercent}%` }}
-                            className="bg-rose-500 h-full transition-all duration-500 flex items-center justify-center text-[10px] font-black text-white"
+                            className="bg-[#FF3333] h-full transition-all duration-500 flex items-center justify-center text-[10px] font-black text-white"
                           >
                             {nayPercent > 10 && `${nayPercent}% Nay`}
                           </div>
@@ -428,12 +428,12 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
 
                         <div className="flex items-center justify-between text-xs pt-1">
                           <div className="flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-full bg-emerald-500 inline-block" />
-                            <span className="font-bold text-emerald-700">YEA (In Favor): {yeas} votes ({yeaPercent}%)</span>
+                            <span className="w-3 h-3 rounded-full bg-[#800000] inline-block" />
+                            <span className="font-bold text-[#800000]">YEA (In Favor): {yeas} votes ({yeaPercent}%)</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
-                            <span className="font-bold text-rose-700">NAY (Against): {nays} votes ({nayPercent}%)</span>
+                            <span className="w-3 h-3 rounded-full bg-[#FF3333] inline-block" />
+                            <span className="font-bold text-[#FF3333]">NAY (Against): {nays} votes ({nayPercent}%)</span>
                           </div>
                         </div>
                       </div>
@@ -447,8 +447,8 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
                           Logged in as: <strong className="text-slate-900">{currentMember?.name}</strong> ({currentMember?.councilRole}). Your vote is confidential and recorded.
                         </p>
                         {userVote && (
-                          <div className="mt-2 text-xs font-semibold text-emerald-700 flex items-center gap-1">
-                            <Check className="w-4 h-4 text-emerald-600" /> You currently voted: <strong className="uppercase underline ml-1">{userVote.choice}</strong>
+                          <div className="mt-2 text-xs font-semibold text-[#800000] flex items-center gap-1">
+                            <Check className="w-4 h-4 text-[#800000]" /> You currently voted: <strong className="uppercase underline ml-1">{userVote.choice}</strong>
                           </div>
                         )}
                       </div>
@@ -460,8 +460,8 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
                           onClick={() => handleVote(poll, 'Yea')}
                           className={`px-5 py-3 rounded-2xl font-black text-xs transition flex items-center gap-2 shadow-sm cursor-pointer ${
                             userVote?.choice === 'Yea'
-                              ? 'bg-emerald-600 text-white !text-white ring-2 ring-emerald-400'
-                              : 'bg-emerald-50 hover:bg-emerald-600 text-emerald-800 hover:text-white border border-emerald-300'
+                              ? 'bg-[#800000] text-white !text-white ring-2 ring-[#800000]'
+                              : 'bg-[#FFF0F0] hover:bg-[#800000] text-[#800000] hover:text-white border border-[#FF9999]'
                           }`}
                         >
                           <CheckCircle2 className="w-4 h-4" />
@@ -474,8 +474,8 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
                           onClick={() => handleVote(poll, 'Nay')}
                           className={`px-5 py-3 rounded-2xl font-black text-xs transition flex items-center gap-2 shadow-sm cursor-pointer ${
                             userVote?.choice === 'Nay'
-                              ? 'bg-rose-600 text-white !text-white ring-2 ring-rose-400'
-                              : 'bg-rose-50 hover:bg-rose-600 text-rose-800 hover:text-white border border-rose-300'
+                              ? 'bg-[#FF3333] text-white !text-white ring-2 ring-[#FF3333]'
+                              : 'bg-[#FFF0F0] hover:bg-[#FF3333] text-[#FF3333] hover:text-white border border-[#FF9999]'
                           }`}
                         >
                           <XCircle className="w-4 h-4" />
@@ -513,8 +513,8 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
                     <div className="flex items-center justify-between">
                       <span className={`text-xs font-bold px-3 py-1 rounded-full border ${
                         passed
-                          ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
-                          : 'bg-rose-100 text-rose-800 border-rose-300'
+                          ? 'bg-[#FFF0F0] text-[#800000] border-[#FF9999]'
+                          : 'bg-[#FFF0F0] text-[#FF3333] border-[#FF9999]'
                       }`}>
                         {poll.status}
                       </span>
@@ -526,8 +526,8 @@ export const RoverPolicyModule: React.FC<RoverPolicyModuleProps> = ({
 
                     <div className="bg-white p-3 rounded-xl text-xs flex items-center justify-between text-slate-800 border border-[#FF9999]">
                       <span>Total Votes Cast: <strong>{poll.votes.length}</strong></span>
-                      <span className="text-emerald-700 font-bold">Yeas: {yeas}</span>
-                      <span className="text-rose-700 font-bold">Nays: {nays}</span>
+                      <span className="text-[#800000] font-bold">Yeas: {yeas}</span>
+                      <span className="text-[#FF3333] font-bold">Nays: {nays}</span>
                     </div>
                   </div>
                 );
