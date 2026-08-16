@@ -79,7 +79,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
   const [formSecretary, setFormSecretary] = useState('Ibrahim Rizwan (Secretary)');
   const [formAttendees, setFormAttendees] = useState<string[]>([]);
   const [formAbsentees, setFormAbsentees] = useState<string>('');
-  const [formAgenda, setFormAgenda] = useState<string[]>(['1. Roll call and approval of agenda', '2. Sub-crew progress updates']);
+  const [formAgenda, setFormAgenda] = useState<string[]>(['1. Roll call and approval of agenda', '2. Crew progress updates']);
   const [formResolutions, setFormResolutions] = useState<string[]>(['APPROVED: Operations roadmap for upcoming quarter.']);
   const [formActionItems, setFormActionItems] = useState<ActionItem[]>([
     {
@@ -150,7 +150,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
       setFormSecretary(`${currentMember.name} (Secretary)`);
       setFormAttendees(members.slice(0, 5).map((m) => m.name));
       setFormAbsentees('');
-      setFormAgenda(['1. Approval of previous minutes', '2. Sub-crew status reports']);
+      setFormAgenda(['1. Approval of previous minutes', '2. Crew status reports']);
       setFormResolutions(['RESOLVED: Approved proposed activities.']);
       setFormActionItems([
         {
@@ -295,7 +295,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
                 <option value="All">All Meeting Types</option>
                 <option value="Council Executive Meeting">Council Executive Meeting</option>
                 <option value="General Crew Assembly">General Crew Assembly</option>
-                <option value="Sub-Crew Leader Sync">Sub-Crew Leader Sync</option>
+                <option value="Crew Leader Sync">Crew Leader Sync</option>
                 <option value="Emergency Council Meeting">Emergency Council Meeting</option>
                 <option value="Annual General Meeting (AGM)">Annual General Meeting (AGM)</option>
               </select>
@@ -688,7 +688,7 @@ export const MeetingMinutesModule: React.FC<MeetingMinutesModuleProps> = ({
                   >
                     <option value="Council Executive Meeting">Council Executive Meeting</option>
                     <option value="General Crew Assembly">General Crew Assembly</option>
-                    <option value="Sub-Crew Leader Sync">Sub-Crew Leader Sync</option>
+                    <option value="Crew Leader Sync">Crew Leader Sync</option>
                     <option value="Emergency Council Meeting">Emergency Council Meeting</option>
                     <option value="Annual General Meeting (AGM)">Annual General Meeting (AGM)</option>
                   </select>

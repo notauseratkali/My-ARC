@@ -486,6 +486,76 @@ The Council met to review active sub-crew operations, progression rates for Bade
 
 export const INITIAL_SETTINGS: PortalSettings = {
   aiEnabled: true,
+  aiAssistantConfig: {
+    enabled: true,
+    name: 'Meyvaa AI Scout Advisor',
+    tagline: 'Official AI Assistant for Meyvaa Portal - Grounded in Scouting Excellence',
+    allowAllMembers: true,
+    allowedUserIds: ['m-superadmin', 'm-0', 'm-1', 'm-2', 'm-3', 'm-4', 'm-5'],
+    allowedRoles: [
+      'Superadmin',
+      'Rover Advisor',
+      'Chairperson',
+      'Vice Chairperson',
+      'Secretary',
+      'Treasurer',
+      'Event Coordinator',
+      'Progress Coordinator',
+      'Media Coordinator',
+      'Crew Leader',
+      'Member',
+    ],
+    systemPrompt: `You are the Meyvaa Portal AI Scout Advisor, an expert AI assistant dedicated to assisting scout leaders, Rovers, explorers, and council members.
+Your responsibilities:
+1. Provide accurate guidance on Scout syllabus requirements (President's Scout Award, Baden-Powell Award, Auxiliary Badges).
+2. Assist with drafting formal Scout Meeting Minutes, Event Agendas, Camp Plans, Risk Assessments, and Reflection Journals.
+3. Explain group operating policies, referendum rules (minimum 7 days voting, majority Yea required for ratification), and attendance excusal policies.
+4. Encourage leadership, community service, outdoor safety, and adherence to the Scout Promise and Scout Law.
+Always respond in a structured, respectful, and motivating tone. Format responses with clear Markdown headings, bullet points, and actionable checklists.`,
+    tone: 'Encouraging & Inspiring',
+    temperature: 0.3,
+    knowledgeDocs: [
+      {
+        id: 'kdoc-1',
+        title: 'Bylaws & Governance: Referendum Policy Clause',
+        category: 'Bylaws & Governance',
+        content: 'Any council proposed edit or new clause to the Operating Policy MUST be submitted to a crew-wide referendum vote coordinated by the Secretary. The voting deadline must be at least 7 days (1 week). If Yea votes exceed Nay votes upon completion, the amendment is immediately enacted.',
+        lastUpdated: '2026-08-01',
+      },
+      {
+        id: 'kdoc-2',
+        title: 'Syllabus Advancement: BP Award & President Scout Award',
+        category: 'Curriculum & Badges',
+        content: 'The Baden-Powell (BP) Award is the pinnacle Rover badge requiring mastery across Leadership, Community Service, Outdoor Skills, Personal Development, Scoutcraft, and Global Citizenship. All submissions require task verification, hours logging, and written reflection logbooks.',
+        lastUpdated: '2026-08-01',
+      },
+      {
+        id: 'kdoc-3',
+        title: 'Attendance Protocol & Excusal Submissions',
+        category: 'General Operations',
+        content: 'Active membership requires minimum 75% attendance for compulsory events. If a member is unable to attend due to medical, academic, or work obligations, an Exemption Request must be logged prior to the event for Council review.',
+        lastUpdated: '2026-08-01',
+      },
+    ],
+    trainingQAs: [
+      {
+        id: 'tqa-1',
+        question: 'How do I propose a change to the crew operating policy?',
+        answer: 'To propose an amendment, the Council drafts the revision and the Secretary coordinates a formal crew-wide referendum poll. The voting period must remain open for a minimum of 7 days (1 week). If the Yea votes exceed Nay votes, the amendment is officially ratified.',
+        category: 'Governance',
+        createdAt: '2026-08-01',
+      },
+      {
+        id: 'tqa-2',
+        question: 'What are the core requirements for the Baden-Powell Award?',
+        answer: 'The Baden-Powell Award requires completing syllabus tasks across Outdoor Skills, Community Service, Leadership, and Personal Development, maintaining logged practical hours, submitting written reflection logbooks in the Portfolio Journal, and obtaining council verification.',
+        category: 'Syllabus',
+        createdAt: '2026-08-01',
+      },
+    ],
+    lastTrainedAt: '2026-08-15',
+    trainedBy: 'Superadmin (Ahmed Nazih Nafiz)',
+  },
   smsNotificationsEnabled: true,
   emailNotificationsEnabled: true,
   activeTerm: '2025-2026',

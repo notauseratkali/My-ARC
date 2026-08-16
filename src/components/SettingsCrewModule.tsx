@@ -425,7 +425,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                   className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white font-bold text-xs px-3.5 py-2 rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer"
                 >
                   <Plus className="w-4 h-4 text-white" />
-                  <span>Provision Sub-Crew</span>
+                  <span>Provision Crew</span>
                 </button>
               </div>
 
@@ -441,7 +441,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                         </div>
                         <button
                           onClick={() => {
-                            if (confirm(`Remove sub-crew "${c.name}"?`)) {
+                            if (confirm(`Remove crew "${c.name}"?`)) {
                               onDeleteCrew(c.id);
                             }
                           }}
@@ -1043,7 +1043,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="text-lg font-bold font-serif text-slate-900 flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-[#002B7F]" />
-                Provision New Sub-Crew
+                Provision New Crew
               </h3>
               <button type="button" onClick={() => setIsCrewModalOpen(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
                 <X className="w-5 h-5" />
@@ -1052,7 +1052,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
 
             <div className="space-y-3 text-xs">
               <div>
-                <label className="block text-slate-700 font-medium mb-1">Sub-Crew Name *</label>
+                <label className="block text-slate-700 font-medium mb-1">Crew Name *</label>
                 <input
                   type="text"
                   required
@@ -1117,7 +1117,7 @@ export const SettingsCrewModule: React.FC<SettingsCrewModuleProps> = ({
                 type="submit"
                 className="bg-[#800000] hover:bg-[#6b0000] text-white !text-white text-xs font-bold px-5 py-2 rounded-xl transition shadow-xs cursor-pointer"
               >
-                Provision Sub-Crew
+                Provision Crew
               </button>
             </div>
           </form>

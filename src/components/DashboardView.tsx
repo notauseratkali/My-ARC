@@ -274,8 +274,8 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
       {transitionCandidates.length > 0 && (isCouncil || transitionCandidates.some(c => c.id === currentMember?.id)) && (
         <div className="bg-[#FFF0F0] border border-[#FF9999] rounded-xl p-4 flex items-center justify-between gap-4 text-[#800000] text-xs shadow-xs">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-white text-[#FF3333] border border-[#FF9999]">
-              <AlertCircle className="w-5 h-5" />
+            <div className="p-2 rounded-lg bg-white text-[#800000] border border-[#FF9999]">
+              <AlertCircle className="w-5 h-5 text-[#800000]" />
             </div>
             <div>
               <p className="font-semibold text-[#800000]">
@@ -325,18 +325,18 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           className="bg-white border border-[#FFD0D0] hover:border-[#FF9999] p-5 rounded-2xl cursor-pointer transition shadow-xs group"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-slate-500">Sub-Crew Units</span>
+            <span className="text-xs font-medium text-slate-500">{crews.length > 1 ? 'Crew Network' : 'Crew Unit'}</span>
             <div className="w-9 h-9 rounded-xl bg-[#FFF0F0] text-[#800000] border border-[#FF9999] flex items-center justify-center group-hover:scale-105 transition">
               <MapPin className="w-5 h-5 text-[#800000]" />
             </div>
           </div>
           <div className="mt-3 flex items-baseline justify-between">
             <span className="text-3xl font-bold text-slate-900">{crews.length}</span>
-            <span className="text-xs text-[#800000] font-mono">Decentralized</span>
+            <span className="text-xs text-[#800000] font-mono">{crews.length > 1 ? 'Network' : 'Active Crew'}</span>
           </div>
           <div className="mt-2 text-[11px] text-slate-500 border-t border-[#FFD0D0]/50 pt-2 flex items-center justify-between">
             <span>Male • Hulhumale • Villimale</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <ChevronRight className="w-3.5 h-3.5 text-[#800000]" />
           </div>
         </div>
 
@@ -365,7 +365,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             <span>
               {progressList.filter((p) => (isCouncil ? true : p.memberId === currentMember?.id) && (p.status === 'Completed' || p.status === 'Verified')).length} Verified
             </span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <ChevronRight className="w-3.5 h-3.5 text-[#800000]" />
           </div>
         </div>
 
@@ -392,7 +392,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
           </div>
           <div className="mt-2 text-[11px] text-slate-500 border-t border-[#FFD0D0]/50 pt-2 flex items-center justify-between">
             <span>{isCouncil ? `${onboardingMembers.length} Onboarding • ${openDisciplinaryCount} Cases` : 'Good Standing • Active Status'}</span>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+            <ChevronRight className="w-3.5 h-3.5 text-[#800000]" />
           </div>
         </div>
       </div>
@@ -610,7 +610,7 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
                         <span>{new Date(ev.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
                       <div className="flex items-center gap-1 text-slate-500">
-                        <MapPin className="w-3.5 h-3.5 text-slate-400" />
+                        <MapPin className="w-3.5 h-3.5 text-[#800000]" />
                         <span className="truncate max-w-[140px]">{ev.location}</span>
                       </div>
                     </div>
@@ -724,11 +724,11 @@ export const DashboardView: React.FC<DashboardViewProps> = ({
             </div>
           </div>
 
-          {/* Sub-Crews Overview Box */}
+          {/* Crew Overview Box */}
           <div className="bg-white border border-[#FFD0D0] rounded-2xl p-5 shadow-xs space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-slate-900">Sub-Crew Deployment</h3>
-              <span className="text-xs font-mono text-[#800000] font-bold">Multi-Location</span>
+              <h3 className="text-base font-bold text-slate-900">{crews.length > 1 ? 'Crew Network Deployment' : 'Crew Unit Deployment'}</h3>
+              <span className="text-xs font-mono text-[#800000] font-bold">{crews.length > 1 ? 'Network' : 'Unit'}</span>
             </div>
 
             <div className="space-y-2.5">

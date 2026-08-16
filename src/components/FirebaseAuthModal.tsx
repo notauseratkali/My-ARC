@@ -93,12 +93,12 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
         type="button"
         id="firebase-auth-btn"
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 bg-[#12151C] border border-emerald-900/60 hover:border-emerald-500/80 text-slate-200 px-3 py-1.5 rounded-xl text-xs font-medium transition shadow"
+        className="flex items-center gap-2 bg-[#FFF0F0] border border-[#FF9999] hover:border-[#800000] text-[#800000] px-3 py-1.5 rounded-xl text-xs font-medium transition shadow-xs"
       >
-        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-        <Shield className="w-3.5 h-3.5 text-emerald-400" />
-        <span className="hidden md:inline text-emerald-300 font-semibold">Firebase Auth:</span>
-        <span className="font-mono text-slate-200">
+        <div className="w-2.5 h-2.5 rounded-full bg-[#800000] animate-pulse" />
+        <Shield className="w-3.5 h-3.5 text-[#800000]" />
+        <span className="hidden md:inline text-[#800000] font-semibold">Firebase Auth:</span>
+        <span className="font-mono text-[#800000] font-bold">
           {authUser ? authUser.email : 'Strict Admin Sign-In'}
         </span>
       </button>
@@ -110,8 +110,8 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center">
-                  <Lock className="w-5 h-5 text-emerald-400" />
+                <div className="w-9 h-9 rounded-xl bg-[#FFF0F0] border border-[#FF9999] flex items-center justify-center">
+                  <Lock className="w-5 h-5 text-[#800000]" />
                 </div>
                 <div>
                   <h3 className="font-bold text-base text-slate-100">Firebase Roster Sign-In</h3>
@@ -131,7 +131,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
             {authError && (
               <div className="bg-rose-500/10 border border-rose-500/30 text-rose-300 p-4 rounded-xl text-xs space-y-2">
                 <div className="flex items-center gap-2 font-bold text-rose-400">
-                  <AlertOctagon className="w-4 h-4 flex-shrink-0" />
+                  <AlertOctagon className="w-4 h-4 flex-shrink-0 text-[#800000]" />
                   <span>REGISTRATION RESTRICTED</span>
                 </div>
                 <p className="leading-relaxed">{authError}</p>
@@ -143,19 +143,19 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
 
             {/* Current Auth Status */}
             {authUser ? (
-              <div className="bg-[#12151C] border border-emerald-800/50 p-4 rounded-xl space-y-3">
+              <div className="bg-[#12151C] border border-slate-800 p-4 rounded-xl space-y-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-600 text-white font-bold flex items-center justify-center text-sm">
+                  <div className="w-10 h-10 rounded-full bg-[#800000] text-white font-bold flex items-center justify-center text-sm">
                     {authUser.displayName ? authUser.displayName.charAt(0) : authUser.email?.charAt(0)}
                   </div>
                   <div>
                     <div className="font-bold text-xs text-slate-100">{authUser.displayName || 'Scout Member'}</div>
-                    <div className="text-[11px] font-mono text-emerald-400">{authUser.email}</div>
+                    <div className="text-[11px] font-mono text-[#FF9999]">{authUser.email}</div>
                   </div>
                 </div>
 
-                <div className="bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 p-2.5 rounded-lg text-xs flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <div className="bg-[#FFF0F0] border border-[#FF9999] text-[#800000] p-2.5 rounded-lg text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 text-[#800000] flex-shrink-0" />
                   <span>Verified Roster Account — Signed in as <strong>{currentMember.name}</strong> ({currentMember.councilRole}).</span>
                 </div>
 
@@ -171,8 +171,8 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
             ) : (
               <div className="space-y-4">
                 <div className="bg-[#12151C] border border-slate-800 p-4 rounded-xl space-y-2 text-xs text-slate-300">
-                  <div className="font-bold text-emerald-400 flex items-center gap-1.5">
-                    <Shield className="w-4 h-4" /> Policy: Closed Roster Enrollment
+                  <div className="font-bold text-[#FF9999] flex items-center gap-1.5">
+                    <Shield className="w-4 h-4 text-[#800000]" /> Policy: Closed Roster Enrollment
                   </div>
                   <p className="text-slate-400 text-[11px] leading-relaxed">
                     New users cannot self-register. You can only sign in if your email address was previously added by an authorized Leader in the Crew Member Directory.
@@ -183,17 +183,17 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
                   type="button"
                   onClick={handleGoogleSignIn}
                   disabled={isSigningIn}
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2.5 cursor-pointer"
+                  className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-bold text-xs py-3 rounded-xl shadow-lg transition flex items-center justify-center gap-2.5 cursor-pointer !text-white"
                 >
-                  <LogIn className="w-4 h-4" />
+                  <LogIn className="w-4 h-4 text-white" />
                   <span>{isSigningIn ? 'Signing In with Google...' : 'Sign In with Google Popup'}</span>
                 </button>
 
                 {/* Sandbox Preview Quick Authenticator (for iframe / domain restriction fallback) */}
                 <div className="bg-[#12151C] border border-slate-800 p-3.5 rounded-xl space-y-2 text-xs">
-                  <div className="font-bold text-sky-400 flex items-center justify-between">
+                  <div className="font-bold text-slate-300 flex items-center justify-between">
                     <span className="flex items-center gap-1.5">
-                      <Mail className="w-3.5 h-3.5" /> Sandbox Account Selector
+                      <Mail className="w-3.5 h-3.5 text-[#800000]" /> Sandbox Account Selector
                     </span>
                     <span className="text-[10px] text-slate-500 font-mono">Iframe Preview Bypass</span>
                   </div>
@@ -204,7 +204,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
                     <select
                       value={selectedSandboxEmail}
                       onChange={(e) => setSelectedSandboxEmail(e.target.value)}
-                      className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 flex-1 focus:outline-none focus:border-emerald-500 font-mono"
+                      className="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-1.5 flex-1 focus:outline-none focus:border-[#800000] font-mono"
                     >
                       {members
                         .filter((m) => m.email)
@@ -217,10 +217,10 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
                     <button
                       type="button"
                       onClick={() => handleSandboxEmailSignIn(selectedSandboxEmail)}
-                      className="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1 whitespace-nowrap cursor-pointer shadow"
+                      className="bg-[#800000] hover:bg-[#6b0000] text-white font-bold text-xs px-3 py-1.5 rounded-xl transition flex items-center gap-1 whitespace-nowrap cursor-pointer shadow !text-white"
                     >
                       <span>Sign In</span>
-                      <ArrowRight className="w-3 h-3" />
+                      <ArrowRight className="w-3 h-3 text-white" />
                     </button>
                   </div>
                 </div>
@@ -234,7 +234,7 @@ export const FirebaseAuthModal: React.FC<FirebaseAuthModalProps> = ({
                 {members.slice(0, 5).map((m) => (
                   <div key={m.id} className="flex justify-between">
                     <span>{m.name}</span>
-                    <span className="text-emerald-400">{m.email}</span>
+                    <span className="text-[#FF9999]">{m.email}</span>
                   </div>
                 ))}
               </div>

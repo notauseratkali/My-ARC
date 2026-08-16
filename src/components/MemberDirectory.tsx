@@ -3,6 +3,7 @@ import { CertificateModal } from './CertificateModal';
 import { AdvisorGovernanceModal } from './AdvisorGovernanceModal';
 import { Member, Section, MemberStatus, Gender, SubCrew, MemberRequirementProgress, SyllabusRequirement, PortalSettings, AuditLogCategory, Organisation } from '../types';
 import { PRESET_AVATARS, getPlaceholderAvatar } from '../utils/avatarUtils';
+import { getCrewLabel, getCrewAssignmentLabel, getCrewFilterPlaceholder } from '../utils/crewTerminology';
 import {
   Users,
   Search,
@@ -202,7 +203,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
       if (oldMember.dob !== updated.dob) diffs.push(`DOB ("${oldMember.dob}" → "${updated.dob}")`);
       if (oldMember.section !== updated.section) diffs.push(`Section ("${oldMember.section}" → "${updated.section}")`);
       if (oldMember.councilRole !== updated.councilRole) diffs.push(`Council Role ("${oldMember.councilRole}" → "${updated.councilRole}")`);
-      if (oldMember.crewId !== updated.crewId) diffs.push(`Sub-Crew ("${oldMember.crewName}" → "${updated.crewName}")`);
+      if (oldMember.crewId !== updated.crewId) diffs.push(`Crew ("${oldMember.crewName}" → "${updated.crewName}")`);
       if (oldMember.status !== updated.status) diffs.push(`Status ("${oldMember.status}" → "${updated.status}")`);
       if (oldMember.mobile !== updated.mobile) diffs.push(`Mobile ("${oldMember.mobile}" → "${updated.mobile}")`);
       if (oldMember.email !== updated.email) diffs.push(`Email ("${oldMember.email}" → "${updated.email}")`);
@@ -566,7 +567,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
               <Search className="w-4 h-4 text-[#800000] absolute left-3.5 top-3" />
               <input
                 type="text"
-                placeholder="Search by name, ID card, sub-crew (e.g. Male City), or progression status..."
+                placeholder={crews.length > 1 ? "Search by name, ID card, network crew (e.g. Male City), or progression status..." : "Search by name, ID card, crew, or progression status..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-white dark:bg-[#161920] border border-[#FF9999] dark:border-slate-800 rounded-xl pl-10 pr-9 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-[#800000] focus:ring-1 focus:ring-[#800000]"
@@ -585,16 +586,16 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
 
             {/* Filter Selectors Group */}
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              {/* Crew Sub-Group Filter */}
+              {/* Crew / Network Filter */}
               <div className="flex items-center gap-1.5 bg-[#FFF0F0] dark:bg-[#161920] border border-[#FF9999] dark:border-slate-800 px-3 py-1.5 rounded-xl">
                 <MapPin className="w-3.5 h-3.5 text-[#800000]" />
-                <span className="text-slate-700 dark:text-slate-400 font-bold hidden sm:inline">Crew:</span>
+                <span className="text-slate-700 dark:text-slate-400 font-bold hidden sm:inline">{crews.length > 1 ? 'Network:' : 'Crew:'}</span>
                 <select
                   value={crewFilter}
                   onChange={(e) => setCrewFilter(e.target.value)}
                   className="bg-transparent text-slate-900 dark:text-slate-200 focus:outline-none text-xs cursor-pointer font-semibold"
                 >
-                  <option value="All">All Sub-Crews</option>
+                  <option value="All">{crews.length > 1 ? 'All Network Crews' : 'All Crews'}</option>
                   {crews.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -702,7 +703,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
           <div className="col-span-full py-12 text-center text-slate-600 dark:text-slate-400 text-xs bg-[#FFF0F0] dark:bg-[#1A1E26] border-2 border-[#FF9999] dark:border-slate-800 rounded-3xl flex flex-col items-center justify-center space-y-2">
             <Search className="w-8 h-8 text-[#800000]" />
             <p className="font-bold text-[#800000] text-sm">No member records match the specified search parameters.</p>
-            <p className="text-[11px] text-slate-600">Try searching by member name, NID, or sub-crew (e.g. Male City).</p>
+            <p className="text-[11px] text-slate-600">Try searching by member name, NID, or crew (e.g. Male City).</p>
             {(searchQuery || crewFilter !== 'All' || awardStatusFilter !== 'All' || statusFilter !== 'All') && (
               <button
                 type="button"
@@ -726,7 +727,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
               <div
                 key={m.id}
                 onClick={() => setSelectedMember(m)}
-                className="bg-white dark:bg-[#1A1E26] border-2 border-[#FF9999]/40 hover:border-[#800000] rounded-3xl p-5 cursor-pointer transition shadow-sm hover:shadow-md flex flex-col justify-between space-y-4 group"
+                className="bg-white border-2 border-[#FF9999]/40 hover:border-[#800000] rounded-3xl p-5 cursor-pointer transition shadow-sm hover:shadow-md flex flex-col justify-between space-y-4 group"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
@@ -739,10 +740,10 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                         )}
                       </div>
                       <div>
-                        <h3 className="font-bold text-sm text-slate-900 dark:text-slate-100 group-hover:text-[#800000] transition line-clamp-1">
+                        <h3 className="font-bold text-sm text-slate-900 group-hover:text-[#800000] transition line-clamp-1">
                           {m.name}
                         </h3>
-                        <p className="text-[11px] font-mono text-[#800000] dark:text-rose-400 font-bold">ID: {m.idCard}</p>
+                        <p className="text-[11px] font-mono text-[#800000] font-bold">ID: {m.idCard}</p>
                       </div>
                     </div>
 
@@ -779,30 +780,30 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                     </div>
                   </div>
 
-                  {/* Section, Council Role & Crew Sub-group */}
-                  <div className="grid grid-cols-2 gap-2 text-xs text-slate-800 dark:text-slate-300 bg-[#FFF0F0] dark:bg-[#161920] p-2.5 rounded-2xl border border-[#FF9999]/40 dark:border-slate-800">
+                  {/* Section, Council Role & Crew Unit */}
+                  <div className="grid grid-cols-2 gap-2 text-xs text-slate-800 bg-[#FFF0F0] p-2.5 rounded-2xl border border-[#FF9999]/40">
                     <div>
-                      <span className="text-slate-500 text-[10px] block font-mono">Section &amp; Age</span>
-                      <span className="font-bold text-[#800000] dark:text-rose-400">
+                      <span className="text-slate-600 text-[10px] block font-mono">Section &amp; Age</span>
+                      <span className="font-bold text-[#800000]">
                         {m.section} ({m.age} yrs)
                       </span>
                     </div>
                     <div>
-                      <span className="text-slate-500 text-[10px] block font-mono">Crew Sub-Group</span>
-                      <span className="font-bold text-slate-900 dark:text-slate-200 truncate block" title={m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Global Superadmin' : (m.crewName || 'Unassigned Crew')}>
+                      <span className="text-slate-600 text-[10px] block font-mono">{crews.length > 1 ? 'Network Unit' : 'Crew Unit'}</span>
+                      <span className="font-bold text-slate-900 truncate block" title={m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Global Superadmin' : (m.crewName || 'Unassigned Crew')}>
                         {m.isSuperAdmin || m.councilRole === 'Superadmin' ? 'Global Superadmin' : (m.crewName || 'Unassigned Crew')}
                       </span>
                     </div>
                   </div>
 
                   {/* Progression Award Status Badge Bar */}
-                  <div className="bg-[#FFF0F0] dark:bg-[#161920]/80 p-2.5 rounded-2xl border border-[#FF9999]/40 space-y-1.5">
+                  <div className="bg-[#FFF0F0] p-2.5 rounded-2xl border border-[#FF9999]/40 space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-slate-700 dark:text-slate-300 font-bold flex items-center gap-1">
+                      <span className="text-slate-800 font-bold flex items-center gap-1">
                         <Award className="w-3.5 h-3.5 text-[#800000]" />
                         <span className="text-[11px]">{stats.awardName}</span>
                       </span>
-                      <span className="text-[10px] font-mono font-bold text-[#800000] dark:text-rose-400">
+                      <span className="text-[10px] font-mono font-bold text-[#800000]">
                         {stats.completedCount}/{stats.totalCount} Req ({stats.percentage}%)
                       </span>
                     </div>
@@ -816,14 +817,14 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                     </div>
                   </div>
 
-                  <div className="space-y-1 text-xs text-slate-600 dark:text-slate-400">
+                  <div className="space-y-1 text-xs text-slate-600">
                     <div className="flex items-center gap-2 truncate">
                       <Phone className="w-3.5 h-3.5 text-[#800000] flex-shrink-0" />
-                      <span className="font-medium text-slate-800 dark:text-slate-200">{m.mobile || 'No phone set'}</span>
+                      <span className="font-medium text-slate-800">{m.mobile || 'No phone set'}</span>
                     </div>
                     <div className="flex items-center gap-2 truncate">
                       <Mail className="w-3.5 h-3.5 text-[#800000] flex-shrink-0" />
-                      <span className="truncate font-medium text-slate-800 dark:text-slate-200">{m.email || 'No email set'}</span>
+                      <span className="truncate font-medium text-slate-800">{m.email || 'No email set'}</span>
                     </div>
                   </div>
                 </div>
@@ -1051,18 +1052,18 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
               </div>
             </div>
 
-            {/* Crew Sub-Group & Progression Award Status Summary */}
+            {/* Crew Unit & Progression Award Status Summary */}
             {(() => {
               const stats = getMemberAwardStats(selectedMember);
               return (
                 <div className="bg-slate-950/80 border border-slate-800 p-4 rounded-xl space-y-3">
                   <h4 className="font-bold text-amber-400 uppercase tracking-wider text-[11px] font-mono border-b border-slate-800/80 pb-1.5 flex items-center gap-1.5">
                     <Award className="w-4 h-4 text-amber-400" />
-                    <span>5. Crew Sub-Group & Progression Award Status</span>
+                    <span>5. {crews.length > 1 ? 'Network Unit' : 'Crew Unit'} &amp; Progression Award Status</span>
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                     <div className="bg-slate-900 p-3 rounded-lg border border-slate-800 space-y-1">
-                      <span className="text-slate-400 text-[10px] block font-mono">Assigned Crew Sub-Group</span>
+                      <span className="text-slate-400 text-[10px] block font-mono">Assigned {crews.length > 1 ? 'Network Unit' : 'Crew Unit'}</span>
                       <span className="font-bold text-slate-100 flex items-center gap-1.5">
                         <MapPin className="w-3.5 h-3.5 text-emerald-400" />
                         {selectedMember.isSuperAdmin || selectedMember.councilRole === 'Superadmin' ? 'N/A (Superadmin)' : (selectedMember.crewName || 'Unassigned Crew')}
@@ -1338,7 +1339,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Sub-Crew Assignment</label>
+                <label className="block text-slate-300 font-medium mb-1">{crews.length > 1 ? 'Network / Crew Assignment' : 'Crew Assignment'}</label>
                 <select
                   value={formData.crewId}
                   onChange={(e) => setFormData({ ...formData, crewId: e.target.value })}
@@ -1556,7 +1557,7 @@ export const MemberDirectory: React.FC<MemberDirectoryProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Assigned Sub-Crew</label>
+                  <label className="block text-slate-300 font-medium mb-1">{crews.length > 1 ? 'Assigned Network / Crew' : 'Assigned Crew'}</label>
                   {editMemberData.isSuperAdmin || editMemberData.councilRole === 'Superadmin' ? (
                     <input
                       type="text"

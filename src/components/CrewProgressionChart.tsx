@@ -61,7 +61,7 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
       if (!m.isSuperAdmin && m.councilRole !== 'Superadmin' && m.councilRole !== 'Rover Advisor' && m.crewId && m.crewId !== 'portal-admin' && !allCrewMap.has(m.crewId)) {
         allCrewMap.set(m.crewId, {
           id: m.crewId,
-          name: m.crewName || 'Sub-Crew',
+          name: m.crewName || 'Crew Unit',
           location: 'Scout Unit',
         });
       }
@@ -198,32 +198,32 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
         <div>
-          <div className="flex items-center gap-2 text-[#006B3F] font-mono text-xs font-semibold uppercase tracking-wider mb-1">
-            <Award className="w-4 h-4 text-[#006B3F]" />
-            <span>Sub-Crew Progression Analytics</span>
+          <div className="flex items-center gap-2 text-[#800000] font-mono text-xs font-semibold uppercase tracking-wider mb-1">
+            <Award className="w-4 h-4 text-[#800000]" />
+            <span>{crews.length > 1 ? 'Network Progression Analytics' : 'Crew Progression Analytics'}</span>
           </div>
           <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <span>Progression Award Completion Rates</span>
-            <span className="text-xs font-mono font-medium bg-emerald-50 text-[#006B3F] border border-emerald-200 px-2.5 py-0.5 rounded-full">
+            <span className="text-xs font-mono font-medium bg-[#FFF0F0] text-[#800000] border border-[#FF9999] px-2.5 py-0.5 rounded-full">
               Avg {averageCompletionPct}% Network Rate
             </span>
           </h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            President's Scout & Baden-Powell Award syllabus completion rates across sub-crews.
+            President's Scout &amp; Baden-Powell Award syllabus completion rates across {crews.length > 1 ? 'the crew network' : 'the crew'}.
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           {/* Section Filter */}
-          <div className="bg-slate-100 border border-slate-200 rounded-xl p-1 flex items-center text-xs">
+          <div className="bg-[#FFF0F0] border border-[#FF9999] rounded-xl p-1 flex items-center text-xs">
             {(['All', 'Explorer', 'Rover'] as const).map((sec) => (
               <button
                 key={sec}
                 onClick={() => setSelectedSectionFilter(sec)}
                 className={`px-2.5 py-1 rounded-lg text-xs font-medium transition cursor-pointer ${
                   selectedSectionFilter === sec
-                    ? 'bg-[#002B7F] text-white shadow-xs font-semibold'
-                    : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-[#800000] text-white shadow-xs font-semibold !text-white'
+                    : 'text-[#800000] hover:bg-[#FFE5E5]'
                 }`}
               >
                 {sec === 'All' ? 'All Sections' : sec}
@@ -232,17 +232,17 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
           </div>
 
           {/* View Mode Toggle */}
-          <div className="bg-slate-100 border border-slate-200 rounded-xl p-1 flex items-center text-xs">
+          <div className="bg-[#FFF0F0] border border-[#FF9999] rounded-xl p-1 flex items-center text-xs">
             <button
               onClick={() => setActiveView('bar')}
               title="Overall Completion %"
               className={`p-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer ${
                 activeView === 'bar'
-                  ? 'bg-white text-[#002B7F] font-semibold shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#800000] font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-[#800000]'
               }`}
             >
-              <BarChart2 className="w-4 h-4" />
+              <BarChart2 className="w-4 h-4 text-[#800000]" />
               <span className="hidden sm:inline">Overview</span>
             </button>
             <button
@@ -250,11 +250,11 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
               title="Explorer vs Rover Section Breakdown"
               className={`p-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer ${
                 activeView === 'grouped'
-                  ? 'bg-white text-[#002B7F] font-semibold shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#800000] font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-[#800000]'
               }`}
             >
-              <Layers className="w-4 h-4" />
+              <Layers className="w-4 h-4 text-[#800000]" />
               <span className="hidden sm:inline">By Section</span>
             </button>
             <button
@@ -262,11 +262,11 @@ export const CrewProgressionChart: React.FC<CrewProgressionChartProps> = ({
               title="Overall Status Distribution"
               className={`p-1.5 rounded-lg transition flex items-center gap-1 cursor-pointer ${
                 activeView === 'distribution'
-                  ? 'bg-white text-[#002B7F] font-semibold shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-[#800000] font-semibold shadow-xs'
+                  : 'text-slate-600 hover:text-[#800000]'
               }`}
             >
-              <PieIcon className="w-4 h-4" />
+              <PieIcon className="w-4 h-4 text-[#800000]" />
               <span className="hidden sm:inline">Status</span>
             </button>
           </div>

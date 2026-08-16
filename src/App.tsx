@@ -71,6 +71,10 @@ import { PlanRenewalModal } from './components/PlanRenewalModal';
 import { RequireAuth } from './components/RequireAuth';
 import { useToast } from './components/ToastContext';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { AIAssistantChatbot } from './components/AIAssistantChatbot';
+import { AIAssistantTrainingHub } from './components/AIAssistantTrainingHub';
+import { canAccessAIAssistant, canManageAIAssistant } from './utils/aiPermissions';
+import { Bot, Sparkles, Sliders } from 'lucide-react';
 
 function getURLRouteState() {
   const rawPath = (window.location.pathname || '').toLowerCase();
@@ -91,6 +95,9 @@ function getURLRouteState() {
     showSignup = false;
   } else if (path.includes('superadmin') || hash.includes('superadmin') || search.includes('superadmin')) {
     tab = 'superadmin';
+    if (isLoggedIn) showLogin = false;
+  } else if (path.includes('ai-assistant') || path.includes('assistant') || path.includes('advisor') || hash.includes('ai') || search.includes('ai')) {
+    tab = 'ai-assistant';
     if (isLoggedIn) showLogin = false;
   } else if (path.includes('members') || path.includes('directory') || hash.includes('members') || hash.includes('directory') || search.includes('members')) {
     tab = 'members';
@@ -172,6 +179,8 @@ export default function App() {
   const [isOrgSignupOpen, setIsOrgSignupOpen] = useState<boolean>(initialRoute.showSignup);
   const [isRenewalModalOpen, setIsRenewalModalOpen] = useState<boolean>(false);
   const [activeOrgContext, setActiveOrgContext] = useState<string>('all');
+  const [isFloatingChatOpen, setIsFloatingChatOpen] = useState<boolean>(false);
+  const [aiAssistantTabMode, setAiAssistantTabMode] = useState<'chat' | 'training'>('chat');
 
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     const saved = localStorage.getItem('arabiya_theme');
@@ -880,7 +889,7 @@ export default function App() {
     deleteDocumentFromFirestore('disciplinary', id);
   };
 
-  // SUB-CREW & SETTINGS HANDLERS
+  // CREW & SETTINGS HANDLERS
   const handleAddCrew = (crewData: Omit<SubCrew, 'id'>) => {
     const newCrew: SubCrew = {
       ...crewData,
@@ -888,13 +897,13 @@ export default function App() {
     };
     setCrews((prev) => [...prev, newCrew]);
     saveDocumentToFirestore('crews', newCrew);
-    toastSuccess('Sub-Crew Created', `Sub-crew "${newCrew.name}" saved.`);
+    toastSuccess('Crew Created', `Crew "${newCrew.name}" saved.`);
   };
 
   const handleDeleteCrew = (id: string) => {
     setCrews((prev) => prev.filter((c) => c.id !== id));
     deleteDocumentFromFirestore('crews', id);
-    toastInfo('Sub-Crew Deleted', 'Sub-crew removed.');
+    toastInfo('Crew Deleted', 'Crew unit removed.');
   };
 
   const handleUpdateSettings = (newSettings: PortalSettings) => {
@@ -1022,6 +1031,7 @@ export default function App() {
             <h2 className="text-base font-bold text-slate-900 tracking-tight">
               {activeTab === 'superadmin' && 'Superadmin Portal Administration'}
               {activeTab === 'dashboard' && 'Rover Crew Overview'}
+              {activeTab === 'ai-assistant' && 'AI Scout Advisor & Scouting Intelligence'}
               {(activeTab === 'directory' || activeTab === 'members') && 'Members Directory'}
               {activeTab === 'syllabus' && 'Awards & Syllabus Engine'}
               {(activeTab === 'journal' || activeTab === 'journals') && 'Portfolio Notebook'}
@@ -1126,6 +1136,106 @@ export default function App() {
                 settings={settings}
                 setActiveTab={setActiveTab}
               />
+            )}
+
+            {activeTab === 'ai-assistant' && (
+              canAccessAIAssistant(currentMember, settings) ? (
+                <div className="space-y-6">
+                  {/* Superadmin Mode Switcher Bar */}
+                  {isSuperAdmin && (
+                    <div className="bg-white border border-[#FFD0D0] p-4 rounded-2xl shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-[#800000] text-white flex items-center justify-center shadow-xs">
+                          <Bot className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-sm font-bold text-slate-900">
+                              {settings.aiAssistantConfig?.name || 'Meyvaa AI Scout Advisor'}
+                            </h3>
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                              Live & Active
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-600">
+                            Superadmin View • Grounded in Scout syllabus, 7-day referendum bylaws, and council minutes
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-2 w-full sm:w-auto">
+                        <button
+                          type="button"
+                          onClick={() => setAiAssistantTabMode('chat')}
+                          className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                            aiAssistantTabMode === 'chat'
+                              ? 'bg-[#800000] text-white shadow-xs'
+                              : 'bg-[#FFF0F0] text-[#800000] hover:bg-[#FFE5E5] border border-[#FFD0D0]'
+                          }`}
+                        >
+                          <Bot className="w-4 h-4" />
+                          <span>Live Chat Mode</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setAiAssistantTabMode('training')}
+                          className={`flex-1 sm:flex-initial px-4 py-2 rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 cursor-pointer ${
+                            aiAssistantTabMode === 'training'
+                              ? 'bg-[#800000] text-white shadow-xs'
+                              : 'bg-[#FFF0F0] text-[#800000] hover:bg-[#FFE5E5] border border-[#FFD0D0]'
+                          }`}
+                        >
+                          <Sliders className="w-4 h-4" />
+                          <span>Training & Allocation</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Render Chatbot or Training Hub based on mode */}
+                  {isSuperAdmin && aiAssistantTabMode === 'training' ? (
+                    <AIAssistantTrainingHub
+                      settings={settings}
+                      onUpdateSettings={handleUpdateSettings}
+                      members={members}
+                      policy={policy}
+                      syllabus={syllabus}
+                      events={events}
+                      currentMember={currentMember}
+                      onLogAudit={handleLogAudit}
+                    />
+                  ) : (
+                    <AIAssistantChatbot
+                      currentMember={currentMember}
+                      settings={settings}
+                      isFloating={false}
+                      isOpen={true}
+                      onOpenTrainingHub={() => {
+                        if (isSuperAdmin) {
+                          setAiAssistantTabMode('training');
+                        }
+                      }}
+                      onSelectTab={(tab) => setActiveTab(tab)}
+                    />
+                  )}
+                </div>
+              ) : (
+                <div className="bg-white border border-[#FFD0D0] rounded-2xl p-8 text-center space-y-4 max-w-xl mx-auto my-12 shadow-sm">
+                  <div className="w-16 h-16 bg-[#FFF0F0] border border-[#FFD0D0] rounded-2xl flex items-center justify-center mx-auto text-[#800000]">
+                    <Bot className="w-8 h-8 text-[#800000]" />
+                  </div>
+                  <h3 className="text-xl font-bold text-slate-900">AI Assistant Access Restricted</h3>
+                  <p className="text-slate-600 text-xs leading-relaxed">
+                    The AI Scout Advisor is currently restricted by the Portal Superadmin. Only authorized scout leaders and explicitly allocated members can use the chatbot assistant.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('dashboard')}
+                    className="bg-[#800000] hover:bg-[#990000] text-white font-bold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer shadow-xs"
+                  >
+                    Return to Overview Dashboard
+                  </button>
+                </div>
+              )
             )}
 
             {(activeTab === 'directory' || activeTab === 'members') && (
@@ -1383,6 +1493,52 @@ export default function App() {
           organisation={activeOrgObj}
           onSubmitRenewal={handleUploadOrgRenewalReceipt}
         />
+      )}
+
+      {/* Floating AI Scout Advisor Chatbot Widget */}
+      {canAccessAIAssistant(currentMember, settings) && activeTab !== 'ai-assistant' && (
+        <>
+          {isFloatingChatOpen ? (
+            <AIAssistantChatbot
+              currentMember={currentMember}
+              settings={settings}
+              isFloating={true}
+              isOpen={isFloatingChatOpen}
+              onClose={() => setIsFloatingChatOpen(false)}
+              onMinimize={() => setIsFloatingChatOpen(false)}
+              onOpenTrainingHub={() => {
+                setIsFloatingChatOpen(false);
+                setAiAssistantTabMode('training');
+                setActiveTab('ai-assistant');
+              }}
+              onSelectTab={(tab) => {
+                setActiveTab(tab);
+                setIsFloatingChatOpen(false);
+              }}
+            />
+          ) : (
+            <button
+              type="button"
+              id="floating-ai-assistant-btn"
+              onClick={() => setIsFloatingChatOpen(true)}
+              className="fixed bottom-5 right-5 z-40 bg-[#800000] hover:bg-[#990000] text-white p-3 sm:px-4 sm:py-3 rounded-full shadow-2xl flex items-center gap-2.5 transition-all duration-200 hover:scale-105 border border-white/20 cursor-pointer group"
+              title="Open AI Scout Advisor"
+              aria-label="Open AI Scout Advisor"
+            >
+              <div className="relative">
+                <Bot className="w-5 h-5 text-white" />
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full ring-2 ring-[#800000] animate-pulse" />
+              </div>
+              <span className="hidden sm:inline font-bold text-xs tracking-wide">
+                AI Scout Advisor
+              </span>
+              <span className="hidden md:inline-flex items-center gap-1 text-[10px] bg-white/20 px-2 py-0.5 rounded-full backdrop-blur-xs font-semibold">
+                <Sparkles className="w-2.5 h-2.5 text-amber-300" />
+                Active
+              </span>
+            </button>
+          )}
+        </>
       )}
     </div>
     </ErrorBoundary>

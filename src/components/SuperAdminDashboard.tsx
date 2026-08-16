@@ -66,7 +66,9 @@ import {
   Settings2,
   CheckCheck,
   ListChecks,
+  Bot,
 } from 'lucide-react';
+import { AIAssistantTrainingHub } from './AIAssistantTrainingHub';
 
 interface SuperAdminDashboardProps {
   organisations: Organisation[];
@@ -135,7 +137,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
   incidents = [],
   auditLogs = [],
 }) => {
-  const [activeTab, setActiveTab] = useState<'pending' | 'renewals' | 'all' | 'create' | 'payment' | 'users'>('pending');
+  const [activeTab, setActiveTab] = useState<'pending' | 'renewals' | 'all' | 'create' | 'payment' | 'users' | 'ai-training'>('pending');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedReceiptUrl, setSelectedReceiptUrl] = useState<string | null>(null);
 
@@ -802,6 +804,18 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
           >
             <Key className="w-4 h-4 text-inherit" />
             <span className={activeTab === 'users' ? 'text-white font-bold !text-white' : ''}>User Accounts & Passwords ({members.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('ai-training')}
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer ${
+              activeTab === 'ai-training'
+                ? 'bg-[#800000] text-white shadow-xs font-extrabold !text-white'
+                : 'bg-[#FFF0F0] text-[#800000] hover:bg-[#FFE5E5] border border-[#FFB3B3]'
+            }`}
+          >
+            <Bot className="w-4 h-4 text-inherit" />
+            <span className={activeTab === 'ai-training' ? 'text-white font-bold !text-white' : ''}>AI Assistant Training & Allocation</span>
           </button>
         </div>
 
@@ -1969,6 +1983,22 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
         </div>
       )}
 
+      {/* TAB 7: AI ASSISTANT TRAINING & ACCESS ALLOCATION */}
+      {activeTab === 'ai-training' && settings && onUpdateSettings && (
+        <div className="space-y-6">
+          <AIAssistantTrainingHub
+            settings={settings}
+            onUpdateSettings={onUpdateSettings}
+            members={members}
+            policy={policy}
+            syllabus={syllabus}
+            events={events}
+            currentMember={members.find((m) => m.isSuperAdmin || m.councilRole === 'Superadmin') || members[0]}
+            onLogAudit={onLogAudit}
+          />
+        </div>
+      )}
+
       {/* Superadmin Extension Modal */}
       {extensionOrg && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -2603,7 +2633,7 @@ export const SuperAdminDashboard: React.FC<SuperAdminDashboardProps> = ({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-slate-800 font-bold">Sub-Crew Assignment</label>
+                  <label className="text-slate-800 font-bold">{crews && crews.length > 1 ? 'Network / Crew Assignment' : 'Crew Assignment'}</label>
                   <select
                     value={newUserForm.crewId}
                     onChange={(e) => setNewUserForm({ ...newUserForm, crewId: e.target.value })}

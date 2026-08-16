@@ -67,15 +67,15 @@ export const Header: React.FC<HeaderProps> = ({
   const isCouncil = !!currentMember && currentMember.councilRole !== 'Member' && !isSuperAdmin;
 
   const navItems: { id: TabType; label: string; icon: React.ReactNode; badge?: string; restricted?: boolean }[] = [
-    { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4" /> },
-    { id: 'members', label: 'Members Directory', icon: <Users className="w-4 h-4" /> },
-    { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-4 h-4" /> },
-    { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-4 h-4" />, badge: settings?.aiEnabled ? 'AI Ready' : undefined },
-    { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-4 h-4" /> },
-    { id: 'attendance', label: 'Attendance', icon: <CheckSquare className="w-4 h-4" /> },
-    { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-4 h-4" /> },
-    ...(isCouncil ? [{ id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-4 h-4" />, restricted: true }] : []),
-    { id: 'settings', label: isCouncil ? 'Crew Settings' : 'Personal Settings', icon: <Settings className="w-4 h-4" /> },
+    { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-4 h-4 text-[#800000]" /> },
+    { id: 'members', label: 'Members Directory', icon: <Users className="w-4 h-4 text-[#800000]" /> },
+    { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-4 h-4 text-[#800000]" /> },
+    { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-4 h-4 text-[#800000]" />, badge: settings?.aiEnabled ? 'AI Ready' : undefined },
+    { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-4 h-4 text-[#800000]" /> },
+    { id: 'attendance', label: 'Attendance', icon: <CheckSquare className="w-4 h-4 text-[#800000]" /> },
+    { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-4 h-4 text-[#800000]" /> },
+    ...(isCouncil ? [{ id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-4 h-4 text-[#800000]" />, restricted: true }] : []),
+    { id: 'settings', label: isCouncil ? 'Crew Settings' : 'Personal Settings', icon: <Settings className="w-4 h-4 text-[#800000]" /> },
   ];
 
   return (
@@ -115,7 +115,7 @@ export const Header: React.FC<HeaderProps> = ({
                     </span>
                   ) : isCouncil ? (
                     <span className="hidden sm:inline-flex items-center gap-1 bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[10px] font-bold px-2.5 py-0.5 rounded-full font-mono">
-                      <ShieldCheck className="w-3 h-3 text-[#FF3333]" />
+                      <ShieldCheck className="w-3 h-3 text-[#800000]" />
                       <span>Council Admin Mode</span>
                     </span>
                   ) : (
@@ -146,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               {theme === 'dark' ? (
                 <>
-                  <Sun className="w-4 h-4 text-[#FF3333]" />
+                  <Sun className="w-4 h-4 text-[#800000]" />
                   <span className="hidden md:inline text-[#800000]">Light</span>
                 </>
               ) : (
@@ -203,20 +203,20 @@ export const Header: React.FC<HeaderProps> = ({
                     : 'text-slate-700 hover:bg-[#FFF0F0] hover:text-[#800000]'
                 }`}
               >
-                <span className={isActive ? 'text-[#800000]' : 'text-slate-500'}>
+                <span className="text-[#800000]">
                   {item.icon}
                 </span>
                 <span>{item.label}</span>
 
                 {item.badge && (
-                  <span className="bg-[#FF3333] text-white border border-[#FF3333] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
+                  <span className="bg-[#800000] text-white border border-[#800000] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono">
                     {item.badge}
                   </span>
                 )}
 
                 {item.restricted && (
                   <span title="Executive Council Restricted">
-                    <Lock className="w-3 h-3 text-[#FF3333] inline ml-0.5" />
+                    <Lock className="w-3 h-3 text-[#800000] inline ml-0.5" />
                   </span>
                 )}
 

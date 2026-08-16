@@ -598,7 +598,7 @@ export const AttendancePortal: React.FC<AttendancePortalProps> = ({
       'Member ID',
       'Full Name',
       'ID Card',
-      'Sub-Crew',
+      crews.length > 1 ? 'Network Unit' : 'Crew Unit',
       'Section',
       'Council Role',
       'Total Assemblies',
@@ -856,7 +856,7 @@ Issued By: ${currentMember.name} (${currentMember.councilRole})
 MEMBER DETAILS:
 - Name: ${noticeMember.member.name}
 - ID Card: ${noticeMember.member.idCard}
-- Sub-Crew: ${noticeMember.member.crewName} (${noticeMember.member.section})
+- ${crews.length > 1 ? 'Network Unit' : 'Crew Unit'}: ${noticeMember.member.crewName} (${noticeMember.member.section})
 - Council Role: ${noticeMember.member.councilRole}
 
 ATTENDANCE PERFORMANCE ANALYTICS:
@@ -893,7 +893,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
       'Member ID',
       'Full Name',
       'ID Card',
-      'Sub-Crew',
+      crews.length > 1 ? 'Network Unit' : 'Crew Unit',
       'Section',
       'Attendance %',
       'Evaluated Assemblies',
@@ -1249,13 +1249,13 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
               </div>
 
               <div>
-                <label className="block text-slate-700 font-bold mb-1">Filter Sheet by Sub-Crew</label>
+                <label className="block text-slate-700 font-bold mb-1">{crews.length > 1 ? 'Filter Sheet by Network Crew' : 'Filter Sheet by Crew'}</label>
                 <select
                   value={filterCrewId}
                   onChange={(e) => setFilterCrewId(e.target.value)}
                   className="w-full bg-[#FFF0F0] border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
-                  <option value="All">All Crews</option>
+                  <option value="All">{crews.length > 1 ? 'All Network Crews' : 'All Crews'}</option>
                   {crews.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -1305,7 +1305,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <thead className="bg-[#FFF0F0] text-[#800000] font-mono text-[11px] uppercase border-b border-[#FF9999]">
                   <tr>
                     <th className="py-3.5 px-4 font-bold">Member Name</th>
-                    <th className="py-3.5 px-4 font-bold">Sub-Crew & Section</th>
+                    <th className="py-3.5 px-4 font-bold">{crews.length > 1 ? 'Network & Section' : 'Crew & Section'}</th>
                     <th className="py-3.5 px-4 font-bold">Attendance Status</th>
                     <th className="py-3.5 px-4 font-bold">Exemption / Remarks</th>
                   </tr>
@@ -1681,15 +1681,15 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 </select>
               </div>
 
-              {/* Sub-Crew Scope */}
+              {/* Crew / Network Scope */}
               <div>
-                <label className="block text-slate-700 font-medium mb-1">Sub-Crew Scope</label>
+                <label className="block text-slate-700 font-medium mb-1">{crews.length > 1 ? 'Network Scope' : 'Crew Scope'}</label>
                 <select
                   value={reportCrewId}
                   onChange={(e) => setReportCrewId(e.target.value)}
                   className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-800 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
-                  <option value="All">All Sub-Crews</option>
+                  <option value="All">{crews.length > 1 ? 'All Network Crews' : 'All Crews'}</option>
                   {crews.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -1797,7 +1797,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <thead className="bg-[#FFF0F0]/70 text-slate-700 font-mono text-[11px] uppercase border-b border-[#FF9999]">
                   <tr>
                     <th className="py-3.5 px-4 font-semibold">Member</th>
-                    <th className="py-3.5 px-4 font-semibold">Sub-Crew</th>
+                    <th className="py-3.5 px-4 font-semibold">{crews.length > 1 ? 'Network' : 'Crew'}</th>
                     <th className="py-3.5 px-4 font-semibold text-center">Assemblies</th>
                     <th className="py-3.5 px-4 font-semibold text-center text-emerald-800">Present % (Count)</th>
                     <th className="py-3.5 px-4 font-semibold text-center text-rose-800">Absent / Unexcused %</th>
@@ -2206,7 +2206,7 @@ GOVERNANCE REFERENCE: Rover Operating Policy Article 14 (Attendance Compliance)
                 <span className="font-bold text-[#800000] text-sm">{noticeMember.member.name}</span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-600 block font-medium">Sub-Crew:</span>
+                <span className="text-[10px] text-slate-600 block font-medium">{crews.length > 1 ? 'Network Unit:' : 'Crew Unit:'}</span>
                 <span className="font-semibold text-slate-800">{noticeMember.member.crewName} ({noticeMember.member.section})</span>
               </div>
               <div>

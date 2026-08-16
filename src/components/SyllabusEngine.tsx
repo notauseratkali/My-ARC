@@ -1018,7 +1018,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
               Pre-Set Syllabus Curriculum Packs
             </h3>
             <p className="text-xs text-slate-400 leading-relaxed max-w-3xl">
-              Official pre-configured Scout badge modules and award tracks. Council officers can assign an entire pre-set curriculum pack or individual syllabus items to members or sub-crews in one click.
+              Official pre-configured Scout badge modules and award tracks. Council officers can assign an entire pre-set curriculum pack or individual syllabus items to members or crews in one click.
             </p>
           </div>
 
@@ -1269,7 +1269,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
               <div className="flex items-center justify-between border-b border-slate-800 pb-3">
                 <span className="text-xs font-bold text-slate-200 flex items-center gap-2 font-serif">
                   <Users className="w-4 h-4 text-sky-400" />
-                  Sub-Crew Total Tier Completions
+                  Crew Network Total Tier Completions
                 </span>
                 <span className="text-[10px] text-slate-500 font-mono">Male / Hulhumalé / Villimalé</span>
               </div>
@@ -2083,7 +2083,7 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                         : 'bg-slate-950 border-slate-800 text-slate-400'
                     }`}
                   >
-                    Specific Sub-Crew
+                    Specific Crew
                   </button>
                   <button
                     type="button"
@@ -2094,14 +2094,14 @@ export const SyllabusEngine: React.FC<SyllabusEngineProps> = ({
                         : 'bg-slate-950 border-slate-800 text-slate-400'
                     }`}
                   >
-                    All Active Crew
+                    All Active Crews
                   </button>
                 </div>
               </div>
 
               {assignTargetType === 'crew' && (
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Select Target Sub-Crew</label>
+                  <label className="block text-slate-300 font-medium mb-1">Select Target Crew</label>
                   <select
                     value={assignCrewId}
                     onChange={(e) => setAssignCrewId(e.target.value)}

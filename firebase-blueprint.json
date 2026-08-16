@@ -243,6 +243,31 @@
         "notes": { "type": "string" }
       },
       "required": ["memberId", "status"]
+    },
+    "AIMemberQuestionLog": {
+      "title": "AIMemberQuestionLog",
+      "description": "Collected member question and response log for AI model training and quality control",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "memberId": { "type": "string" },
+        "memberName": { "type": "string" },
+        "memberRole": { "type": "string" },
+        "question": { "type": "string" },
+        "response": { "type": "string" },
+        "category": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "status": { "type": "string" },
+        "qualityRating": { "type": "string" },
+        "userFeedback": { "type": "string" },
+        "adminReviewNotes": { "type": "string" },
+        "reviewedBy": { "type": "string" },
+        "reviewedAt": { "type": "string" },
+        "convertedToQAId": { "type": "string" },
+        "responseLatencyMs": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "required": ["id", "memberId", "question", "response", "timestamp"]
     }
   },
   "firestore": {
@@ -313,6 +338,10 @@
     "/attendance_flags/{flagId}": {
       "schema": { "$ref": "#/entities/CouncilFlagRecord" },
       "description": "Collection of low attendance council review flags"
+    },
+    "/ai_question_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AIMemberQuestionLog" },
+      "description": "Collection of member asked questions and quality control logs"
     }
   }
 }

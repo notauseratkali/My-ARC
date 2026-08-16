@@ -445,13 +445,13 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-800 font-bold mb-1">Sub-Crew Scope</label>
+                <label className="block text-slate-800 font-bold mb-1">{crews.length > 1 ? 'Network Scope' : 'Crew Scope'}</label>
                 <select
                   value={formData.crewId}
                   onChange={(e) => setFormData({ ...formData, crewId: e.target.value })}
                   className="w-full bg-white border border-[#FF9999] rounded-lg px-3 py-2 text-slate-900 focus:outline-none focus:border-[#800000] cursor-pointer"
                 >
-                  <option value="all">All Crews (Global Event)</option>
+                  <option value="all">{crews.length > 1 ? 'All Network Crews (Global Event)' : 'All Crews (Global Event)'}</option>
                   {crews.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}

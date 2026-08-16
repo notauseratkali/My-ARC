@@ -24,12 +24,16 @@ import {
   LogOut,
   LogIn,
   Vote,
+  Bot,
+  Sparkles,
 } from 'lucide-react';
 import { hasPermission } from '../utils/permissions';
+import { canAccessAIAssistant } from '../utils/aiPermissions';
 
 export type TabType =
   | 'superadmin'
   | 'dashboard'
+  | 'ai-assistant'
   | 'members'
   | 'syllabus'
   | 'journals'
@@ -85,22 +89,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
     ...(isSuperAdmin
       ? [{ id: 'superadmin' as TabType, label: 'Organisation Directory', icon: <Building2 className="w-5 h-5 text-[#800000]" />, category: 'Main' as const, badge: 'Portal Admin' }]
       : []),
-    { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5" />, category: 'Main' },
-    { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5" />, category: 'Main' },
-    { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-5 h-5" />, category: 'Main' },
-    { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-5 h-5" />, category: 'Main', badge: settings?.aiEnabled ? 'AI' : undefined },
-    { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5" />, category: 'Operations' },
-    { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5" />, category: 'Operations' },
-    { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5" />, category: 'Operations' },
-    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-[#FF3333]" />, category: 'Operations' },
+    { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard className="w-5 h-5 text-[#800000]" />, category: 'Main' },
+    ...(canAccessAIAssistant(currentMember, settings)
+      ? [{
+          id: 'ai-assistant' as TabType,
+          label: 'AI Scout Advisor',
+          icon: <Bot className="w-5 h-5 text-[#800000]" />,
+          category: 'Main' as const,
+          badge: isSuperAdmin ? 'Trained' : 'Active',
+        }]
+      : []),
+    { id: 'members', label: 'Members Directory', icon: <Users className="w-5 h-5 text-[#800000]" />, category: 'Main' },
+    { id: 'syllabus', label: 'Awards & Syllabus', icon: <Award className="w-5 h-5 text-[#800000]" />, category: 'Main' },
+    { id: 'journals', label: 'Portfolio Notebook', icon: <BookOpen className="w-5 h-5 text-[#800000]" />, category: 'Main', badge: settings?.aiEnabled ? 'AI' : undefined },
+    { id: 'events', label: 'Events & Calendar', icon: <Calendar className="w-5 h-5 text-[#800000]" />, category: 'Operations' },
+    { id: 'attendance', label: 'Attendance Portal', icon: <CheckSquare className="w-5 h-5 text-[#800000]" />, category: 'Operations' },
+    { id: 'minutes', label: 'Meeting Minutes', icon: <FileText className="w-5 h-5 text-[#800000]" />, category: 'Operations' },
+    { id: 'policy', label: 'Operating Policy & Polls', icon: <Vote className="w-5 h-5 text-[#800000]" />, category: 'Operations' },
     { id: 'payments', label: 'Payments & Crew Dues', icon: <CreditCard className="w-5 h-5 text-[#800000]" />, category: 'Operations' },
     ...((isCouncil || isSuperAdmin)
       ? [
-          { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5" />, category: 'Operations' as const, restricted: true },
+          { id: 'disciplinary' as TabType, label: 'Disciplinary Log', icon: <ShieldAlert className="w-5 h-5 text-[#800000]" />, category: 'Operations' as const, restricted: true },
           { id: 'audit' as TabType, label: 'Audit Trail & Logs', icon: <History className="w-5 h-5 text-[#800000]" />, category: 'Operations' as const },
         ]
       : []),
-    { id: 'settings', label: (isCouncil || isSuperAdmin) ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5" />, category: 'System' },
+    { id: 'settings', label: (isCouncil || isSuperAdmin) ? 'Crew & Council Settings' : 'Personal Settings', icon: <Settings className="w-5 h-5 text-[#800000]" />, category: 'System' },
   ];
 
   const categories = ['Main', 'Operations', 'System'] as const;
@@ -121,10 +134,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="flex items-center gap-2.5">
           <button
             onClick={() => setIsMobileOpen(true)}
-            className="p-2 text-slate-800 hover:text-[#800000] bg-[#FFF0F0] hover:bg-[#FFE5E5] rounded-xl transition cursor-pointer"
+            className="p-2 text-[#800000] hover:text-[#6b0000] bg-[#FFF0F0] hover:bg-[#FFE5E5] rounded-xl transition cursor-pointer"
             aria-label="Open Sidebar Menu"
           >
-            <Menu className="w-5 h-5" />
+            <Menu className="w-5 h-5 text-[#800000]" />
           </button>
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#800000] via-[#800000] to-[#FF3333] flex items-center justify-center text-white shadow-xs">
@@ -189,7 +202,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         </span>
                       ) : isCouncil ? (
                         <span className="bg-[#FFF0F0] text-[#800000] border border-[#FF9999] text-[9px] font-bold px-1.5 py-0.2 rounded font-mono flex items-center gap-0.5">
-                          <ShieldCheck className="w-2.5 h-2.5 text-[#FF3333]" />
+                          <ShieldCheck className="w-2.5 h-2.5 text-[#800000]" />
                           Council
                         </span>
                       ) : (
@@ -207,18 +220,18 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Desktop Collapse Toggle */}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="hidden lg:flex p-1.5 text-slate-400 hover:text-[#800000] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
+            className="hidden lg:flex p-1.5 text-[#800000] hover:text-[#6b0000] hover:bg-[#FFF0F0] rounded-lg transition cursor-pointer"
             title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
-            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+            {isCollapsed ? <ChevronRight className="w-4 h-4 text-[#800000]" /> : <ChevronLeft className="w-4 h-4 text-[#800000]" />}
           </button>
 
           {/* Mobile Close Button */}
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="lg:hidden p-1.5 text-slate-400 hover:text-[#800000] rounded-lg cursor-pointer"
+            className="lg:hidden p-1.5 text-[#800000] hover:text-[#6b0000] rounded-lg cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5 text-[#800000]" />
           </button>
         </div>
 
@@ -229,7 +242,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             return (
               <div key={cat} className="space-y-1">
                 {(!isCollapsed || isMobileOpen) && (
-                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#800000]/70 px-2 mb-1">
+                  <div className="text-[10px] font-bold uppercase tracking-wider text-[#800000] px-2 mb-1">
                     {cat}
                   </div>
                 )}
@@ -251,7 +264,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                           : 'text-slate-700 hover:bg-[#FFF0F0] hover:text-[#800000]'
                       }`}
                     >
-                      <span className={isActive ? 'text-[#800000]' : 'text-slate-500 group-hover:text-[#800000]'}>
+                      <span className="text-[#800000]">
                         {item.icon}
                       </span>
 
@@ -260,13 +273,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                       )}
 
                       {(!isCollapsed || isMobileOpen) && item.badge && (
-                        <span className="bg-[#FF3333] text-white text-[9px] font-bold px-1.5 py-0.5 rounded font-mono border border-[#FF3333]">
+                        <span className="bg-[#800000] text-white text-[9px] font-bold px-1.5 py-0.5 rounded font-mono border border-[#800000]">
                           {item.badge}
                         </span>
                       )}
 
                       {item.restricted && (
-                        <Lock className="w-3.5 h-3.5 text-[#FF3333] flex-shrink-0" />
+                        <Lock className="w-3.5 h-3.5 text-[#800000] flex-shrink-0" />
                       )}
                     </button>
                   );
@@ -292,7 +305,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               onClick={onOpenLoginModal}
               className="w-full flex items-center justify-center gap-2 bg-[#800000] hover:bg-[#660000] text-white font-bold p-2 rounded-xl transition text-xs shadow-xs cursor-pointer"
             >
-              <LogIn className="w-4 h-4" />
+              <LogIn className="w-4 h-4 text-white" />
               {(!isCollapsed || isMobileOpen) && <span>Log In Portal</span>}
             </button>
           ) : null}

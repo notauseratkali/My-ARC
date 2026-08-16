@@ -381,8 +381,89 @@ export interface CrewPaymentTransaction {
   notes?: string;
 }
 
+export interface AIAssistantTrainingQA {
+  id: string;
+  question: string;
+  answer: string;
+  category?: string;
+  createdAt: string;
+}
+
+export interface AIAssistantKnowledgeDoc {
+  id: string;
+  title: string;
+  category: 'Bylaws & Governance' | 'Curriculum & Badges' | 'Camp & Safety' | 'General Operations' | 'Other';
+  content: string;
+  lastUpdated: string;
+}
+
+export interface AIAssistantConfig {
+  enabled: boolean;
+  name?: string;
+  tagline?: string;
+  allowAllMembers: boolean;
+  allowedUserIds: string[];
+  allowedRoles: CouncilRole[];
+  systemPrompt: string;
+  tone: 'Encouraging & Inspiring' | 'Professional & Structured' | 'Direct & Action-Oriented' | 'Strict Policy Auditor';
+  temperature: number; // 0.0 to 1.0
+  knowledgeDocs: AIAssistantKnowledgeDoc[];
+  trainingQAs: AIAssistantTrainingQA[];
+  lastTrainedAt?: string;
+  trainedBy?: string;
+}
+
+export interface AIAssistantChatMessage {
+  id: string;
+  sender: 'user' | 'assistant';
+  text: string;
+  timestamp: string;
+  suggestedFollowUps?: string[];
+  isError?: boolean;
+  questionLogId?: string;
+  userRating?: 'helpful' | 'unhelpful';
+}
+
+export type AIQuestionCategory =
+  | 'Curriculum & Badges'
+  | 'Bylaws & Governance'
+  | 'Events & Attendance'
+  | 'Portfolio & Journals'
+  | 'Finance & Dues'
+  | 'Access Control & Permissions'
+  | 'General Scouting';
+
+export type AIQuestionQualityStatus =
+  | 'Unreviewed'
+  | 'Promoted to Training'
+  | 'Verified High Quality'
+  | 'Needs Improvement'
+  | 'Knowledge Gap'
+  | 'Restricted / Out of Scope';
+
+export interface AIMemberQuestionLog {
+  id: string;
+  memberId: string;
+  memberName: string;
+  memberRole: CouncilRole | string;
+  question: string;
+  response: string;
+  category: AIQuestionCategory;
+  timestamp: string;
+  status: AIQuestionQualityStatus;
+  qualityRating?: 'helpful' | 'unhelpful' | 'flagged';
+  userFeedback?: string;
+  adminReviewNotes?: string;
+  reviewedBy?: string;
+  reviewedAt?: string;
+  convertedToQAId?: string;
+  responseLatencyMs?: number;
+  source: 'web_chat' | 'floating_widget' | 'sandbox_test';
+}
+
 export interface PortalSettings {
   aiEnabled: boolean;
+  aiAssistantConfig?: AIAssistantConfig;
   smsNotificationsEnabled: boolean;
   emailNotificationsEnabled: boolean;
   activeTerm: string;
